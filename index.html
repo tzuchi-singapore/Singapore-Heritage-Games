@@ -1166,7 +1166,7 @@ const Jigsaw=(()=>{
 
 /* ================= ONLINE: two devices ================= */
 const Net=(()=>{
-  let tr=null,me=0,active=false,queue=[],waiters=[],live={},onDrop=null,hb=null;
+  let tr=null,me=0,active=false,queue=[],waiters=[],live={},onDrop=null,hb=null,partnerU=null;
   const uid=Math.random().toString(36).slice(2,10);
   const newCode=()=>String(Math.floor(1000+Math.random()*9000));
   // every transport buffers incoming messages until someone listens
@@ -1176,33 +1176,44 @@ const Net=(()=>{
     let g;try{g=await room.join('kd-'+code)}catch(e){return null}const s=sink(),lv=[];
     g.on('m',msg=>s.push(msg.data));g.onPeers(c=>{if(c.left.length&&g.peers().filter(p=>!p.sameTab).length===0)lv.forEach(f=>f())});
     return{kind:'room',send:m=>{g.emit('m',{...m,_u:uid}).catch(()=>{})},listen:f=>s.set(f),onLeave:f=>lv.push(f),close:()=>{try{g.leave()}catch(e){}}}}
-  /* on GitHub Pages or any website: PeerJS (direct device-to-device connection) */
-  let peerLib=null;
-  function loadPeer(){if(window.Peer)return Promise.resolve(true);if(peerLib)return peerLib;
-    const add=src=>new Promise(r=>{const s=document.createElement('script');s.src=src;s.onload=()=>r(!!window.Peer);s.onerror=()=>r(false);document.head.appendChild(s)});
-    peerLib=add('vendor/peerjs.min.js').then(ok=>ok||add('https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js'));return peerLib}
-  function wrapConn(peer,conn){const s=sink(),lv=[];conn.on('data',d=>s.push(d));conn.on('close',()=>lv.forEach(f=>f()));conn.on('error',()=>lv.forEach(f=>f()));
-    peer.on('disconnected',()=>{try{peer.reconnect()}catch(e){}});
-    return{kind:'peer',send:m=>{try{if(conn.open)conn.send({...m,_u:uid})}catch(e){}},listen:f=>s.set(f),onLeave:f=>lv.push(f),close:()=>{try{conn.close()}catch(e){}try{peer.destroy()}catch(e){}}}}
-  async function peerHost(code,ready){if(!await loadPeer())return null;
-    return new Promise(res=>{let done=false;const peer=new Peer('kampongdays-'+code,{debug:0});
-      peer.on('open',()=>ready&&ready());peer.on('error',e=>{if(!done){done=true;try{peer.destroy()}catch(_){}res(e&&e.type==='unavailable-id'?'taken':null)}});
-      peer.on('connection',conn=>{conn.on('open',()=>{if(done){try{conn.close()}catch(_){}return}done=true;res(wrapConn(peer,conn))})})})}
-  async function peerJoin(code){if(!await loadPeer())return null;
-    return new Promise(res=>{let done=false;const peer=new Peer({debug:0});const fail=()=>{if(!done){done=true;try{peer.destroy()}catch(e){}res(null)}};
-      peer.on('error',fail);peer.on('open',()=>{const conn=peer.connect('kampongdays-'+code,{reliable:true});conn.on('open',()=>{if(done)return;done=true;res(wrapConn(peer,conn))});conn.on('error',fail)});setTimeout(fail,15000)})}
+  /* on GitHub Pages or any website: a public MQTT message relay over a normal secure web connection (works on mobile data and most Wi-Fi) */
+  const BROKERS=location.hash==='#localbroker'?['ws://localhost:9001']:location.hash==='#localbroker2'?['ws://localhost:9002','ws://localhost:9001']:['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://test.mosquitto.org:8081'];
+  let mqLib=null;
+  function loadMqtt(){if(window.mqtt)return Promise.resolve(true);if(mqLib)return mqLib;
+    const add=src=>new Promise(r=>{const s=document.createElement('script');s.src=src;s.onload=()=>r(!!window.mqtt);s.onerror=()=>r(false);document.head.appendChild(s)});
+    mqLib=add('vendor/mqtt.min.js').then(ok=>ok||add('https://cdn.jsdelivr.net/npm/mqtt@5.10.4/dist/mqtt.min.js')).then(ok=>ok||add('https://unpkg.com/mqtt@5.10.4/dist/mqtt.min.js'));return mqLib}
+  function mqConnect(url,topic,onMsg){return new Promise(res=>{let done=false,c=null;
+    try{c=mqtt.connect(url,{clientId:'kd_'+uid+'_'+Math.random().toString(36).slice(2,6),clean:true,connectTimeout:5000,reconnectPeriod:3000,keepalive:30,
+      will:{topic,payload:JSON.stringify({t:'bye',_u:uid}),qos:1,retain:false}})}catch(e){res(null);return}
+    const fail=()=>{if(!done){done=true;try{c.end(true)}catch(e){}res(null)}};
+    c.on('connect',()=>{if(done)return;c.subscribe(topic,{qos:1},err=>{if(done)return;if(err){fail();return}done=true;res(c)})});
+    c.on('message',(t,p)=>{let d=null;try{d=JSON.parse(p.toString())}catch(e){}if(d&&typeof d==='object')onMsg(d,c)});
+    c.on('error',()=>{});setTimeout(fail,6000)})}
+  async function viaMqtt(code,role,ready){if(!await loadMqtt())return null;const topic='kampongdays/v1/'+code,s=sink(),lv=[];
+    const pub=(c,m)=>{try{c.publish(topic,JSON.stringify({...m,_u:uid}),{qos:1})}catch(e){}};
+    const wrap=(clients,lockOf)=>({kind:'mqtt',send:m=>{const k=lockOf();(k?[k]:clients).forEach(c=>pub(c,m))},listen:f=>s.set(f),onLeave:f=>lv.push(f),
+      close:()=>{clients.forEach(c=>{try{c.end(true)}catch(e){}})}});
+    if(role==='host'){let lock=null;const cs=[];
+      await Promise.all(BROKERS.map(async u=>{const c=await mqConnect(u,topic,(d,cl)=>{if(d._u===uid)return;
+          if(d.t==='hello'&&!lock){lock=cl;cs.forEach(x=>{if(x!==cl){try{x.end(true)}catch(e){}}})}if(!lock||lock===cl)s.push(d)});
+        if(c){cs.push(c);ready&&ready()}}));
+      return cs.length?wrap(cs,()=>lock):null}
+    for(const u of BROKERS){let welcomed=false;const c=await mqConnect(u,topic,d=>{if(d._u===uid)return;if(d.t==='welcome')welcomed=true;s.push(d)});if(!c)continue;
+      for(let i=0;i<7&&!welcomed;i++){pub(c,{t:'hello'});await sleep(700)}
+      if(welcomed)return wrap([c],()=>c);try{c.end(true)}catch(e){}}
+    return null}
   /* testing on one computer: two tabs with #localnet */
   function viaBC(code){if(location.hash!=='#localnet'||!window.BroadcastChannel)return null;const bc=new BroadcastChannel('kd-'+code),s=sink();bc.onmessage=e=>s.push(e.data);
     return{kind:'bc',send:m=>bc.postMessage({...m,_u:uid}),listen:f=>s.set(f),onLeave:()=>{},close:()=>bc.close()}}
   async function transport(code,role,ready){const bc=viaBC(code);if(bc){ready&&ready();return bc}const r=await viaRoom(code);if(r){ready&&ready();return r}
-    return role==='host'?peerHost(code,ready):peerJoin(code)}
+    return viaMqtt(code,role,ready)}
   /* messages during a game */
-  function route(d){if(!d||typeof d!=='object'||typeof d.t!=='string')return;
+  function route(d){if(!d||typeof d!=='object'||typeof d.t!=='string')return;if(partnerU&&d._u&&d._u!==partnerU)return;
     if(d.t==='bye'){drop(true);return}if(d.t==='ping'||d.t==='hello'||d.t==='welcome')return;
     if(live[d.t]){live[d.t](d);return}queue.push(d);pump()}
   function pump(){for(let i=0;i<waiters.length;i++){const w=waiters[i],k=queue.findIndex(m=>w.types.includes(m.t));if(k>=0){const[m]=queue.splice(k,1);waiters.splice(i,1);i--;w.res(m)}}}
   function take(types){types=[].concat(types);return new Promise(res=>{waiters.push({types,res});pump()})}
-  function drop(remote){if(!active)return;active=false;clearInterval(hb);try{tr&&tr.close()}catch(e){}tr=null;queue=[];waiters=[];live={};const f=onDrop;onDrop=null;f&&f(remote)}
+  function drop(remote){if(!active)return;active=false;partnerU=null;clearInterval(hb);try{tr&&tr.close()}catch(e){}tr=null;queue=[];waiters=[];live={};const f=onDrop;onDrop=null;f&&f(remote)}
   let lastPos=0,posT=null;
   function send(m){if(!(tr&&active))return;if(m.t==='pos'){clearTimeout(posT);const n=Date.now();if(n-lastPos>=120){lastPos=n;tr.send(m)}else posT=setTimeout(()=>{lastPos=Date.now();if(tr&&active)tr.send(m)},120);return}tr.send(m)}
   function leave(){if(tr&&active)tr.send({t:'bye'});drop(false)}
@@ -1222,10 +1233,10 @@ const Net=(()=>{
     ov.querySelector('#netHost').onclick=async()=>{btns.hidden=true;let code=newCode();
       msg.innerHTML=`<span class="rg-spin sm"></span><span>${L('Setting up…','准备中…')}</span>`;
       const show=()=>{if(open())msg.innerHTML=`<span class="net-lbl">${L('Your game code','你的游戏代码')}</span><span class="net-code">${code}</span><span>${L('Waiting for your friend to join…','等待朋友加入…')}</span>`};
-      let t=null;for(let i=0;i<4&&open();i++){t=await transport(code,'host',show);if(t!=='taken')break;code=newCode()}
+      const t=await transport(code,'host',show);
       if(!open()){try{t&&t.close&&t.close()}catch(e){}return}
-      if(!t||t==='taken'){btns.hidden=false;msg.textContent=L('Could not go online. Check the internet connection and try again.','无法联机，请检查网络后再试。');return}
-      pending=t;await new Promise(res=>t.listen(d=>{if(d.t==='hello'){t.send({t:'welcome',game:gameId});res()}}));
+      if(!t){btns.hidden=false;msg.textContent=L('Could not go online. Check the internet connection and try again.','无法联机，请检查网络后再试。');return}
+      pending=t;await new Promise(res=>t.listen(d=>{if(d.t==='hello'){partnerU=d._u||null;t.send({t:'welcome',game:gameId});res()}}));
       if(!open())return;connected(t,'host')};
     const join=async()=>{const code=(ov.querySelector('#netCode').value||'').replace(/\D/g,'');if(code.length!==4){msg.textContent=L('Type the 4-digit code from your friend’s screen.','请输入朋友屏幕上的4位数字代码。');return}
       btns.hidden=true;msg.innerHTML=`<span class="rg-spin sm"></span><span>${L('Connecting…','连接中…')}</span>`;
@@ -1233,7 +1244,7 @@ const Net=(()=>{
       const notFound=()=>{try{t&&t.close()}catch(e){}btns.hidden=false;msg.textContent=L('No game found with that code. Check the number, and make sure your friend is still waiting.','找不到这个代码的游戏。请检查号码，并确认朋友还在等待。')};
       if(!t){notFound();return}pending=t;let w=null;const got=new Promise(res=>t.listen(d=>{if(d.t==='welcome'){w=d;res()}}));
       for(let i=0;i<20&&!w&&open();i++){t.send({t:'hello'});await Promise.race([got,sleep(750)])}
-      if(!open())return;if(!w){notFound();return}
+      if(!open())return;if(!w){notFound();return}partnerU=w._u||null;
       if(w.game!==gameId){try{t.close()}catch(e){}btns.hidden=false;const g=GAMES.find(x=>x.id===w.game);msg.textContent=L(`Your friend is playing ${g?g.en[0]:'another game'}. Open that game and join again.`,`朋友在玩${g?g.zh[0]:'另一个游戏'}。请打开那个游戏再加入。`);return}
       connected(t,'guest')};
     ov.querySelector('#netJoin').onclick=join;ov.querySelector('#netCode').addEventListener('keydown',e=>{if(e.key==='Enter')join()})}
