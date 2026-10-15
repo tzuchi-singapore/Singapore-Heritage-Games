@@ -344,7 +344,7 @@ p{margin:0}
 .sd-img{position:relative;border-radius:14px;overflow:hidden;border:3px solid var(--ink);box-shadow:0 5px 0 var(--ink);cursor:crosshair;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .sd-img img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;pointer-events:none}
 .sd-marks{position:absolute;inset:0;pointer-events:none}
-.sd-ring{position:absolute;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:4px solid #FFD34E;box-shadow:0 0 0 3px rgba(58,37,23,.55),inset 0 0 0 2px rgba(58,37,23,.4);animation:pop .4s}
+.sd-ring{position:absolute;transform:translate(-50%,-50%);border-radius:50%;border:4px solid #FFD34E;box-shadow:0 0 0 3px rgba(58,37,23,.55),inset 0 0 0 2px rgba(58,37,23,.4);animation:pop .4s}
 .sd-ring.hint{border-color:#7BE0A0;animation:sdHint 1s infinite}
 @keyframes sdHint{50%{transform:translate(-50%,-50%) scale(1.25);opacity:.6}}
 .sd-miss{position:absolute;width:30px;height:30px;transform:translate(-50%,-50%);animation:sdMiss .7s forwards}
@@ -423,9 +423,22 @@ canvas.play{width:min(100%,560px);border-radius:16px;border:3px solid var(--ink)
 .mems{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
 .mem{background:var(--paper-2);border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;display:grid;grid-template-rows:auto 1fr}
 .mem img{width:100%;aspect-ratio:1;object-fit:cover;display:block;border-bottom:2px solid var(--ink)}
-.mem .mb{padding:12px 14px 16px;display:grid;gap:6px}
+.mem .mb{padding:12px 14px 16px;display:grid;gap:6px;align-content:start}
 .mem h3{font-size:calc((22px) * var(--fs,1));color:var(--enamel-dk)}
 .mem p{font-size:calc((16px) * var(--fs,1));color:var(--ink-soft)}
+.alb-top{display:grid;gap:12px;margin:14px 0 6px}
+.alb-prog{display:grid;gap:6px}
+.alb-prog b{font-size:calc(17px * var(--fs,1));color:var(--ink)}
+.alb-bar{height:14px;border-radius:99px;background:var(--paper-2);border:2px solid var(--ink);overflow:hidden}
+.alb-bar i{display:block;height:100%;background:linear-gradient(90deg,#E8A33C,#FFD34E);border-radius:99px;transition:width .6s}
+.mem.open{cursor:pointer;transition:transform .15s}
+.mem.open:hover{transform:translateY(-3px)}
+.mem.open:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
+.mem-pic{position:relative;overflow:hidden;border-bottom:2px solid var(--ink)}
+.mem-pic img{border-bottom:0!important}
+.mem-no{position:absolute;left:10px;top:10px;min-width:34px;height:34px;padding:0 8px;border-radius:99px;display:grid;place-items:center;background:rgba(58,37,23,.82);color:#FFF6E3;font-weight:900;font-size:calc(15px * var(--fs,1))}
+.mem-lock{position:absolute;left:50%;top:50%;width:64px;height:64px;transform:translate(-50%,-50%);border-radius:50%;background:rgba(255,246,227,.92) no-repeat center/30px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233A2517' stroke-width='2.4' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V8a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E");box-shadow:0 0 0 3px rgba(58,37,23,.5)}
+.alb-empty{grid-column:1/-1;text-align:center;padding:30px 10px;color:var(--ink-soft);font-weight:700;font-size:calc(17px * var(--fs,1))}
 .mem.locked img{filter:grayscale(1) blur(6px) brightness(.8)}
 .mem.locked .mb p{font-style:italic}
 
@@ -446,8 +459,7 @@ canvas.play{width:min(100%,560px);border-radius:16px;border:3px solid var(--ink)
 .result-line{font-size:calc((20px) * var(--fs,1));font-weight:800}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
-</head>
-<body>
+
 <header class="top">
   <div class="top-in">
     <button class="tbtn back" id="backBtn" hidden aria-label="Back">←</button>
@@ -480,6 +492,7 @@ canvas.play{width:min(100%,560px);border-radius:16px;border:3px solid var(--ink)
       <h2 style="font-size:calc(clamp(34px,6vw,48px) * var(--fs,1));color:var(--enamel-dk)" data-t="albumTitle">Memory Album</h2>
       <p style="color:var(--ink-soft);margin-top:6px" data-t="albumSub">Every game you finish unlocks one picture of the old days.</p>
     </div>
+    <div class="alb-top"><div class="alb-prog"><b id="albCount"></b><div class="alb-bar"><i id="albBar"></i></div></div><div id="albFilt"></div></div>
     <div class="mems" id="mems"></div>
   </section>
 </main>
@@ -500,8 +513,7 @@ canvas.play{width:min(100%,560px);border-radius:16px;border:3px solid var(--ink)
 safe-buffer/index.js:
   (*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> *)
 */
-</script>
-<script>
+</script><script>
 /* ---------- state & helpers ---------- */
 const S={lang:'en',sound:true,slow:false,album:[]};
 try{Object.assign(S,JSON.parse(localStorage.getItem('kampong-days-v1')||'{}'))}catch(e){}
@@ -566,7 +578,7 @@ function openModal({img,eyebrow,title,html,buttons}){
 /* ---------- content ---------- */
 const MEMS=[
  {id:'mamashop',img:'img/mamashop.webp',en:['The Mama Shop','Before supermarkets, the neighbourhood provision shop sold everything: sweets in glass jars, kerosene, rice by the kati. Regulars could pay at the end of the month, written in a little book.'],zh:['小店 Mama Shop','以前没有超市，邻里小店什么都卖：玻璃罐里的糖果、火水、按斤卖的米。熟客还可以记账，月底才付钱。']},
- {id:'kacang',img:'img/kacang.webp',en:['The Kacang Puteh Man','He pushed a cart of little tin compartments filled with roasted nuts and peas, and scooped them into paper cones, often outside the cinema.','卖花生豆的叔叔'],zh:['卖花生豆的叔叔','推着装满小铁格的车，里面是炒花生和豆子，用纸卷成小锥筒装给你，常在戏院门口出现。']},
+ {id:'kacang',img:'img/kacang.webp',en:['The Kacang Puteh Man','He pushed a cart of little tin compartments filled with roasted nuts and peas, and scooped them into paper cones, often outside the cinema.'],zh:['卖花生豆的叔叔','推着装满小铁格的车，里面是炒花生和豆子，用纸卷成小锥筒装给你，常在戏院门口出现。']},
  {id:'trishaw',img:'img/trishaw.webp',en:['Trishaw Rides','Before buses and taxis were everywhere, trishaws carried people, groceries and schoolchildren through the streets.'],zh:['三轮车','在巴士和德士还不普遍的年代，三轮车载人、载货，也载孩子上学。']},
  {id:'standpipe',img:'img/standpipe.webp',en:['The Kampong Standpipe','Many kampongs shared one public tap. Families queued with buckets, and children turned bath time into play time.'],zh:['甘榜公共水喉','很多甘榜共用一个水喉，大家提着水桶排队，小孩子把洗澡变成玩水时间。']},
  {id:'iceball',img:'img/iceball.webp',en:['Ice Ball','Shaved ice pressed into a ball and soaked in red and green syrup. It cost a few cents and dripped down your arm on hot afternoons.'],zh:['冰球','刨冰压成一颗球，淋上红绿糖浆，只要几分钱，炎热的下午吃得满手都是。']},
@@ -583,6 +595,48 @@ const MEMS=[
  {id:'icecream',img:'img/m-icecream.webp',en:['The Ice Cream Uncle','He rang his bell from a bicycle with an ice box, then sliced a block of ice cream and wrapped it in bread or a wafer.'],zh:['卖雪糕的阿伯','骑着有冰箱的脚车摇铃铛，把雪糕切成一块，夹在面包或威化饼里。']},
  {id:'gotong',img:'img/m-gotong.webp',en:['Gotong Royong','Neighbours of every race helped each other: cooking in giant pots for weddings and festivals, and building and repairing together.'],zh:['甘榜互助精神','不同种族的邻居互相帮忙：婚礼、节日一起用大锅煮饭，一起盖房子、修房子。']},
  {id:'movie',img:'img/movie.webp',en:['Open-Air Movies','Travelling film shows hung a cloth screen in the kampong. Families brought stools and mats and watched under the stars.'],zh:['露天电影','流动放映队在甘榜挂起布幕，大家带着凳子和草席，在星空下看电影。']},
+ {id:'kampong2',img:'img/m2-kampong.webp',en:["Life in the Kampong", "Wooden houses on stilts with attap roofs, chickens in the yard and doors left open. Everyone knew everyone, and children ran freely from house to house."],zh:["甘榜生活", "高脚木屋、亚答屋顶、院子里跑来跑去的鸡，家家户户门都不关。邻里彼此认识，小孩在各家之间自由奔跑。"]},
+ {id:'bumboat2',img:'img/m2-bumboat.webp',en:["Bumboats on the River", "Before the river clean-up of the 1980s, the Singapore River was crowded with lighters. Coolies carried sacks of rice and spices on their backs to the riverside godowns."],zh:["新加坡河上的驳船", "在八十年代清理河道以前，新加坡河上挤满了驳船。苦力们背着一袋袋米和香料，送进河边的货仓。"]},
+ {id:'library2',img:'img/m2-library.webp',en:["The Old National Library", "The red-brick library on Stamford Road opened in 1960. Generations borrowed their first storybooks there, and many were sad to see it torn down in 2004."],zh:["旧国家图书馆", "史丹福路的红砖图书馆在1960年开幕，好几代人在这里借了人生第一本故事书。2004年拆除时，很多人都依依不舍。"]},
+ {id:'theatre2',img:'img/m2-theatre.webp',en:["The National Theatre", "Opened in 1963 and built partly with public donations of “a dollar a brick”. Its five-pointed front stood for the five stars on our flag."],zh:["国家剧场", "1963年开幕，部分经费来自民众“一块钱一块砖”的捐款。正面五个尖角，代表国旗上的五颗星。"]},
+ {id:'satay2',img:'img/m2-satay.webp',en:["The Satay Club", "By the sea near the Esplanade, satay men fanned their charcoal grills every evening. Families sat on low stools and counted their sticks at the end."],zh:["沙爹俱乐部", "滨海艺术中心一带的海边，每到傍晚，沙爹小贩就扇起炭炉。一家人坐在矮凳上吃，吃完再数竹签算钱。"]},
+ {id:'kallang2',img:'img/m2-kallang.webp',en:["The Kallang Roar", "At the old National Stadium, the crowd cheered so loudly during Malaysia Cup matches that the noise became famous as the Kallang Roar."],zh:["加冷咆哮", "在旧国家体育场看马来西亚杯足球赛，观众的欢呼声震天响，被称为“加冷咆哮”。"]},
+ {id:'hawpar2',img:'img/m2-hawpar.webp',en:["Haw Par Villa", "Built in 1937, this garden of painted statues told Chinese legends and moral tales. Many children remember being both fascinated and frightened."],zh:["虎豹别墅", "建于1937年，园里一座座彩绘雕像讲述中国传说和做人的道理。很多人小时候看了又好奇、又害怕。"]},
+ {id:'dragon2',img:'img/m2-dragon.webp',en:["The Dragon Playground", "The mosaic dragon playgrounds of the HDB estates were designed in the 1970s. The one in Toa Payoh still stands, and kids still slide down its tail."],zh:["龙形游乐场", "组屋区的马赛克龙形游乐场设计于七十年代。大巴窑那一座至今还在，孩子们仍在龙尾滑梯上玩。"]},
+ {id:'kelong2',img:'img/m2-kelong.webp',en:["The Kelong", "Fishermen built wooden platforms on stilts out at sea. At night, lamps drew the fish in, and at dawn the big nets were lifted full of the catch."],zh:["海上渔寮 Kelong", "渔民在海上用木桩搭起高脚平台。晚上点灯引鱼，天亮时把大网拉起来，满满都是鱼。"]},
+ {id:'changi2',img:'img/m2-changi.webp',en:["Weekends at Changi Beach", "Families took the bus to Changi with mats, tiffin carriers and a thermos of tea, and stayed until the sun went down over the sea."],zh:["樟宜海边的周末", "一家人带着草席、饭盒和一壶热茶坐巴士到樟宜海边，一玩就是一整天，直到太阳下山。"]},
+ {id:'tv2',img:'img/m2-tv.webp',en:["The Family Television", "Television came to Singapore in 1963. Few homes had a set at first, so neighbours crowded into one living room to watch together."],zh:["家里的电视机", "新加坡在1963年开始有电视。起初很少人家里有电视，邻居们都挤在同一个客厅里一起看。"]},
+ {id:'wetmarket2',img:'img/m2-wetmarket.webp',en:["The Wet Market", "The floor was always wet from fish, ice and washing. Aunties came early with rattan baskets to get the freshest catch and bargain for a little extra."],zh:["巴刹", "地上总是湿湿的，有鱼水、冰块和冲洗的水。安娣们一早提着藤篮来，挑最新鲜的鱼，还要讲价多拿一点。"]},
+ {id:'cny2',img:'img/m2-cny.webp',en:["New Year in Chinatown", "Before Chinese New Year, Chinatown filled with lanterns and stalls of waxed duck, sweets and new clothes. Children waited all year for their red packets."],zh:["牛车水过年", "农历新年前，牛车水挂满灯笼，摆满腊鸭、糖果和新衣的摊子。孩子们等了一整年，就为了拿红包。"]},
+ {id:'raya2',img:'img/m2-raya.webp',en:["Hari Raya in the Kampong", "Pelita oil lamps lit up the kampong. Open houses welcomed neighbours of every race to share ketupat, rendang and kuih."],zh:["甘榜开斋节", "甘榜里点起一盏盏油灯。家家开放门户，欢迎各族邻居来吃马来粽、仁当和糕点。"]},
+ {id:'deepavali2',img:'img/m2-deepavali.webp',en:["Deepavali on Serangoon Road", "Little India glowed with oil lamps and lights. Families bought flower garlands, new clothes and sweets to share with friends and neighbours."],zh:["实龙岗路的屠妖节", "小印度点亮油灯和彩灯。一家人买花环、新衣和甜点，和亲友邻居分享。"]},
+ {id:'chingay2',img:'img/m2-chingay.webp',en:["The Chingay Parade", "First held in 1973, Chingay brought giant flags, lion dances and stilt walkers into the streets to welcome the New Year."],zh:["妆艺大游行", "1973年第一次举行，巨型旗帜、舞狮和踩高跷走上街头，热热闹闹迎新年。"]},
+ {id:'lantern2',img:'img/m2-lantern.webp',en:["Mid-Autumn Lanterns", "Children carried paper lanterns lit by real candles, shaped like rabbits, fish and carambola. Sometimes a lantern caught fire, and everyone laughed."],zh:["中秋提灯笼", "孩子们提着点真蜡烛的纸灯笼，有兔子、鱼和杨桃的样子。有时灯笼烧了起来，大家笑成一团。"]},
+ {id:'letterwriter2',img:'img/m2-letterwriter.webp',en:["The Letter Writer", "In Chinatown, letter writers sat at small tables and wrote letters home to China for those who could not read or write, often sent with money for the family."],zh:["代写书信的先生", "牛车水的代书先生坐在小桌前，为不识字的人写信寄回中国家乡，信里常附上寄给家人的钱。"]},
+ {id:'breadman2',img:'img/m2-breadman.webp',en:["The Bread Man", "His bicycle horn brought children running out for a fresh loaf, sometimes spread with kaya or butter right there on the spot."],zh:["卖面包的阿伯", "听到他脚车的喇叭声，孩子们就跑出来买新鲜面包，有时还当场涂上咖椰或牛油。"]},
+ {id:'tikam2',img:'img/m2-tikam.webp',en:["Tikam-Tikam", "For a few cents, you poked a hole or pulled a ticket from the board, hoping to win the toy hanging at the top. Most of the time you got a sweet."],zh:["抽抽乐", "花几分钱，戳一个洞或撕一张票，希望能中挂在最上面的玩具。不过大多数时候只拿到一颗糖。"]},
+ {id:'kites2',img:'img/m2-kites.webp',en:["Kite Fighting", "Boys coated their kite strings with glue and powdered glass, then tried to cut each other's kites out of the sky."],zh:["斗风筝", "男孩们在风筝线上涂胶水和玻璃粉，在天上互相割断对方的风筝线。"]},
+ {id:'assembly2',img:'img/m2-assembly.webp',en:["Morning Assembly", "Every school day began in the field, singing the national anthem, saying the pledge and watching the flag go up."],zh:["早晨集会", "每天上学都在操场开始：唱国歌、念信约，看着国旗慢慢升起。"]},
+ {id:'classroom2',img:'img/m2-classroom.webp',en:["The Old Classroom", "Wooden desks with lift-up lids, chalk dust on the blackboard and ceiling fans turning slowly overhead."],zh:["旧日课室", "掀盖式木桌、黑板上的粉笔灰，头上的吊扇慢慢转着。"]},
+ {id:'sungei2',img:'img/m2-sungei.webp',en:["Sungei Road Market", "Singapore's oldest flea market sold everything second-hand, from old radios to shoes. It closed in 2017 after more than 80 years."],zh:["结霜桥跳蚤市场", "新加坡最老的跳蚤市场，什么旧东西都有，从收音机到鞋子。经营了八十多年，2017年结束。"]},
+ {id:'clifford2',img:'img/m2-clifford.webp',en:["Clifford Pier", "Opened in 1933, this was where boats landed passengers from the ships. Its red lamp gave it the Chinese name 红灯码头."],zh:["红灯码头", "1933年启用，从大船下来的乘客都在这里上岸。码头的红灯，让它有了“红灯码头”这个名字。"]},
+ {id:'railway2',img:'img/m2-railway.webp',en:["Tanjong Pagar Railway Station", "From 1932, trains left here for Malaya. Families came to wave goodbye. The last train departed in 2011."],zh:["丹戎巴葛火车站", "从1932年起，火车从这里开往马来亚，亲人们都来挥手送别。最后一班火车在2011年开出。"]},
+ {id:'cobbler2',img:'img/m2-cobbler.webp',en:["The Roadside Cobbler", "Shoes were mended, not thrown away. The cobbler sat on his low stool under a tree, stitching soles and heels for a few cents."],zh:["路边补鞋匠", "鞋子坏了是拿去补，不是丢掉。补鞋匠坐在树下的矮凳上，几分钱就帮你缝好鞋底鞋跟。"]},
+ {id:'wayang2',img:'img/m2-wayang.webp',en:["Chinese Street Opera", "Wayang stages went up for festivals and the seventh month. Children sneaked backstage to watch the actors paint their faces."],zh:["街戏 Wayang", "节庆和农历七月都会搭起戏台。小孩子偷偷溜到后台，看演员画脸谱。"]},
+ {id:'potehi2',img:'img/m2-potehi.webp',en:["Potehi Puppet Show", "Hokkien glove puppets performed at temple celebrations. One puppeteer could voice many characters, swords clashing in tiny hands."],zh:["布袋戏", "福建布袋戏在神诞庆典中演出。一个师傅能配好多角色的声音，小小的手里刀剑相交。"]},
+ {id:'mobilelib2',img:'img/m2-mobilelib.webp',en:["The Library on Wheels", "Mobile library vans brought shelves of books to estates and villages far from town, and children queued up to borrow their favourites."],zh:["流动图书馆", "流动图书馆车把一架架书送到远离市区的组屋区和乡村，孩子们排队借自己喜欢的书。"]},
+ {id:'sewing2',img:'img/m2-sewing.webp',en:["The Treadle Sewing Machine", "Mothers sewed clothes, school uniforms and curtains on a foot-pedal machine. The steady click of the treadle filled the afternoon."],zh:["脚踏缝纫机", "妈妈们用脚踏缝纫机做衣服、校服和窗帘。下午总能听到踏板规律的哒哒声。"]},
+ {id:'kitchen2',img:'img/m2-kitchen.webp',en:["The Kampong Kitchen", "Grandmothers cooked over charcoal and firewood in clay pots and big woks. The smell of smoke and spices drifted across the kampong."],zh:["甘榜厨房", "阿嬷用木炭和柴火，在瓦锅和大铁锅里煮饭。烟味和香料味飘满整个甘榜。"]},
+ {id:'rubber2',img:'img/m2-rubber.webp',en:["Rubber Tapping", "Tappers set out before dawn, when the latex flows best, cutting the bark and collecting the white sap in little cups."],zh:["割胶", "割胶工人天还没亮就出门，那时胶汁流得最多。他们割开树皮，用小杯子接住白色的胶汁。"]},
+ {id:'farm2',img:'img/m2-farm.webp',en:["The Farms of Punggol", "Punggol was once farmland, with pig, poultry and vegetable farms, ponds full of ducks and the smell of the countryside."],zh:["榜鹅的农场", "榜鹅以前是农地，有养猪场、鸡鸭场和菜园，鱼塘里满是鸭子，到处是乡村的气息。"]},
+ {id:'kompang2',img:'img/m2-kompang.webp',en:["The Kompang Wedding", "At a Malay wedding, kompang drummers led the groom's procession to the bride's house, and the whole kampong came to celebrate."],zh:["马来婚礼的手鼓", "马来婚礼上，手鼓队打着鼓带领新郎前往新娘家，整个甘榜都来一起庆祝。"]},
+ {id:'pushcart2',img:'img/m2-pushcart.webp',en:["Pushcart Hawkers", "Before hawker centres, hawkers cooked on pushcarts by the roadside under kerosene lamps. From the 1970s they moved into hawker centres."],zh:["路边推车小贩", "还没有小贩中心的时候，小贩在路边推车上煮食，点着火水灯。七十年代起，他们陆续搬进小贩中心。"]},
+ {id:'hdb2',img:'img/m2-hdb.webp',en:["Our First HDB Flat", "Moving from the kampong to a new flat meant piped water, electric lights and a lift. Neighbours helped carry the furniture up."],zh:["我们的第一间组屋", "从甘榜搬进新组屋，就有了自来水、电灯和电梯。邻居们都来帮忙抬家具上楼。"]},
+ {id:'fivefoot2',img:'img/m2-fivefoot.webp',en:["The Five-Foot Way", "The covered walkway in front of shophouses kept people out of the sun and rain. Hawkers, barbers and children all made it their own."],zh:["五脚基", "店屋前有遮盖的走廊，为路人挡太阳、遮风雨。小贩、理发师和孩子们都在这里活动。"]},
+ {id:'ndp2',img:'img/m2-ndp.webp',en:["National Day at the Padang", "The first National Day Parade was held at the Padang in 1966. Crowds lined the field to cheer the marching contingents."],zh:["政府大厦大草场的国庆", "1966年第一次国庆检阅在大草场举行，人们围在草场边，为步操队伍欢呼。"]},
+ {id:'postman2',img:'img/m2-postman.webp',en:["The Postman", "His bicycle bell meant a letter had arrived, perhaps from a relative overseas. Children raced to the door to see who it was for."],zh:["邮差", "听到邮差的脚车铃声，就知道有信来了，也许是海外亲人寄来的。孩子们抢着跑到门口看是谁的信。"]},
+ {id:'kueh2',img:'img/m2-kueh.webp',en:["The Kueh Seller", "Her basket held rows of colourful kueh on banana leaves: ondeh-ondeh, kueh lapis and more. The best ones were gone by mid-morning."],zh:["卖糕点的娘惹", "她的篮子里摆满香蕉叶上的彩色糕点：椰丝球、千层糕等等。好吃的不到中午就卖光了。"]},
+ {id:'cinema2',img:'img/m2-cinema.webp',en:["A Night at the Cinema", "Families queued at the grand old cinemas under hand-painted posters, with kacang puteh in paper cones to share inside."],zh:["看电影的夜晚", "一家人在手绘大海报下排队进老戏院，手里拿着纸卷的花生豆，进去一起分着吃。"]},
 ];
 
 const GAMES=[
@@ -648,10 +702,19 @@ function renderHome(){
       a.onclick=()=>show('album');grid.appendChild(a)}
     wrap.appendChild(sec)});
 }
+let albFilter='all';
 function renderAlbum(){
+  const got=MEMS.filter(m=>S.album.includes(m.id)).length,pct=Math.round(got/MEMS.length*100);
+  $('#albCount').textContent=L(`${got} of ${MEMS.length} memories collected`,`已收集 ${got} / ${MEMS.length} 张回忆`);$('#albBar').style.width=Math.max(pct,got?2:0)+'%';
+  $('#albFilt').innerHTML=segHTML('albSeg',[['all',L('All','全部')],['got',L('Collected','已收集')],['left',L('Still to find','未解锁')]],albFilter);
+  bindSeg('albSeg',v=>{albFilter=v;renderAlbum()});
   const w=$('#mems');w.innerHTML='';
-  MEMS.forEach(m=>{const open=S.album.includes(m.id);const t=m[S.lang];const d=document.createElement('div');d.className='mem'+(open?'':' locked');
-    d.innerHTML=`<img src="${m.img}" alt="" loading="lazy"><div class="mb"><h3>${open?t[0]:L('Locked','未解锁')}</h3><p>${open?t[1]:L('Finish any game to unlock this memory.','玩完任何一局游戏，就能解锁。')}</p></div>`;w.appendChild(d)});
+  MEMS.forEach((m,i)=>{const open=S.album.includes(m.id);if(albFilter==='got'&&!open||albFilter==='left'&&open)return;const t=m[S.lang];
+    const d=document.createElement('div');d.className='mem'+(open?' open':' locked');
+    d.innerHTML=`<div class="mem-pic"><img src="${m.img}" alt="" loading="lazy"><span class="mem-no">${i+1}</span>${open?'':'<span class="mem-lock" aria-hidden="true"></span>'}</div><div class="mb"><h3>${open?t[0]:L('Locked','未解锁')}</h3><p>${open?t[1]:L('Finish any game to unlock this memory.','玩完任何一局游戏，就能解锁。')}</p></div>`;
+    if(open){d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-label',t[0]);d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();d.click()}};d.onclick=()=>{sfx.tap();openModal({img:m.img,eyebrow:L(`Memory ${i+1} of ${MEMS.length}`,`第 ${i+1} / ${MEMS.length} 张回忆`),title:t[0],html:`<p class="result-line" style="font-weight:500">${t[1]}</p>`,buttons:[{label:L('Close','关闭'),primary:true}]})}}
+    w.appendChild(d)});
+  if(!w.children.length)w.innerHTML=`<p class="alb-empty">${albFilter==='got'?L('Play any game to collect your first memory.','玩任何一个游戏，收集第一张回忆。'):L('You have collected every memory. Wonderful!','你已经收集了全部回忆，太棒了！')}</p>`;
 }
 function renderGameShell(g){
   const t=g[S.lang];
@@ -2221,7 +2284,7 @@ const Rhythm=(()=>{
     stop(){stopPlay();removeEventListener('resize',ro);document.removeEventListener('visibilitychange',vis)},_dbg:{analyse,chart,DIFF,get G(){return G}}};
 })();
 
-window.SD_SCENES=[{"id":"mamashop","en":"The Mama Shop","zh":"\u5c0f\u5e97","diffs":[{"x":0.7417,"y":0.1244,"r":0.0683},{"x":0.5317,"y":0.6556,"r":0.0317},{"x":0.2708,"y":0.7589,"r":0.0567},{"x":0.31,"y":0.4556,"r":0.0333},{"x":0.1375,"y":0.9133,"r":0.0333},{"x":0.1775,"y":0.5244,"r":0.0583},{"x":0.7517,"y":0.4356,"r":0.025}]},{"id":"kampong","en":"Kampong Life","zh":"\u7518\u699c\u751f\u6d3b","diffs":[{"x":0.3258,"y":0.4556,"r":0.035},{"x":0.1667,"y":0.7111,"r":0.0217},{"x":0.4208,"y":0.8444,"r":0.0267},{"x":0.4375,"y":0.6256,"r":0.0233},{"x":0.2042,"y":0.4256,"r":0.025},{"x":0.6375,"y":0.6,"r":0.0183},{"x":0.4317,"y":0.42,"r":0.0217}]},{"id":"chinatown","en":"Chinatown Street","zh":"\u725b\u8f66\u6c34\u8857\u5934","diffs":[{"x":0.105,"y":0.4667,"r":0.0367},{"x":0.4833,"y":0.5611,"r":0.0583},{"x":0.2458,"y":0.7167,"r":0.0375},{"x":0.975,"y":0.8167,"r":0.0375},{"x":0.7025,"y":0.7667,"r":0.0333},{"x":0.5667,"y":0.55,"r":0.0458},{"x":0.2858,"y":0.8856,"r":0.02}]},{"id":"voiddeck","en":"Void Deck Fun","zh":"\u7ec4\u5c4b\u697c\u4e0b","diffs":[{"x":0.7525,"y":0.3333,"r":0.0233},{"x":0.1292,"y":0.12,"r":0.0583},{"x":0.4067,"y":0.65,"r":0.02},{"x":0.7458,"y":0.1311,"r":0.0317},{"x":0.0767,"y":0.6667,"r":0.06},{"x":0.8883,"y":0.2511,"r":0.0317},{"x":0.0375,"y":0.3778,"r":0.0142}]}];
+window.SD_SCENES=[{"id":"mamashop","en":"The Mama Shop","zh":"小店","diffs":[{"x":0.7417,"y":0.1228,"w":0.1,"h":0.1633},{"x":0.5288,"y":0.6561,"w":0.0475,"h":0.0722},{"x":0.2708,"y":0.7583,"w":0.1017,"h":0.0744},{"x":0.3075,"y":0.4587,"w":0.0433,"h":0.0714},{"x":0.1379,"y":0.9144,"w":0.0625,"h":0.0644},{"x":0.1771,"y":0.5244,"w":0.0542,"h":0.14},{"x":0.7504,"y":0.4367,"w":0.0292,"h":0.0644}]},{"id":"kampong","en":"Kampong Life","zh":"甘榜生活","diffs":[{"x":0.3283,"y":0.4544,"w":0.045,"h":0.0822},{"x":0.1675,"y":0.7111,"w":0.0417,"h":0.0422},{"x":0.4204,"y":0.8472,"w":0.0425,"h":0.0589},{"x":0.4375,"y":0.6256,"w":0.0333,"h":0.0489},{"x":0.2062,"y":0.4261,"w":0.0325,"h":0.0567},{"x":0.6379,"y":0.6011,"w":0.0258,"h":0.0422},{"x":0.4317,"y":0.4228,"w":0.0333,"h":0.05}]},{"id":"chinatown","en":"Chinatown Street","zh":"牛车水街头","diffs":[{"x":0.1042,"y":0.4739,"w":0.0417,"h":0.0633},{"x":0.4812,"y":0.5611,"w":0.0992,"h":0.0622},{"x":0.2446,"y":0.72,"w":0.0358,"h":0.0844},{"x":0.975,"y":0.8206,"w":0.0433,"h":0.0941},{"x":0.7062,"y":0.7689,"w":0.0308,"h":0.0667},{"x":0.5696,"y":0.5499,"w":0.0808,"h":0.0424},{"x":0.2883,"y":0.8841,"w":0.0333,"h":0.0438}]},{"id":"voiddeck","en":"Void Deck Fun","zh":"组屋楼下","diffs":[{"x":0.7554,"y":0.3367,"w":0.0392,"h":0.0467},{"x":0.1292,"y":0.1228,"w":0.1033,"h":0.0967},{"x":0.4071,"y":0.6478,"w":0.0408,"h":0.0489},{"x":0.7457,"y":0.1328,"w":0.0553,"h":0.0567},{"x":0.0783,"y":0.6683,"w":0.11,"h":0.1011},{"x":0.8879,"y":0.2517,"w":0.0558,"h":0.0544},{"x":0.0379,"y":0.3783,"w":0.0225,"h":0.0344}]}];
 /* ================= MEMORY FLIP CARDS ================= */
 const MemoryCards=(()=>{
   const ITEMS=[
@@ -2293,11 +2356,18 @@ const SpotDiff=(()=>{
     root.querySelectorAll('.sd-sc').forEach(b=>b.onclick=()=>{sc=+b.dataset.i;sfx.tap();start()});
     root.querySelectorAll('.sd-img').forEach(box=>box.addEventListener('pointerdown',e=>tap(e,box)));
     $('#sdHint').onclick=hint}
+  // ring: an ellipse hugging the measured change, at least a fingertip wide
   function mark(i,cls){const d=D()[i];root.querySelectorAll('.sd-marks').forEach(m=>{const r=document.createElement('i');r.className='sd-ring '+(cls||'');
-      r.style.left=d.x*100+'%';r.style.top=d.y*100+'%';r.style.width=Math.max(d.r*2.3,.08)*100+'%';m.appendChild(r);if(cls==='hint')setTimeout(()=>r.remove(),2200)})}
+      const W=m.clientWidth||300,H=m.clientHeight||225,pw=Math.max(d.w*W+18,34),ph=Math.max(d.h*H+18,34);
+      r.style.left=d.x*100+'%';r.style.top=d.y*100+'%';r.style.width=pw+'px';r.style.height=ph+'px';m.appendChild(r);if(cls==='hint')setTimeout(()=>r.remove(),2200)})}
+  // distance in screen pixels from the tap to the edge of the change box (0 when inside)
+  function gap(px,py,d,W,H){const hw=d.w*W/2,hh=d.h*H/2,dx=Math.max(0,Math.abs(px-d.x*W)-hw),dy=Math.max(0,Math.abs(py-d.y*H)-hh);return Math.hypot(dx,dy)}
   function tap(e,box){if(done)return;if(!t0){t0=Date.now();tick=setInterval(()=>{const x=$('#sdTime');if(x)x.textContent=fmt(Math.round((Date.now()-t0)/1000))},500)}
-    const r=box.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height,ar=r.width/r.height;
-    let hit=-1,best=9;D().forEach((d,i)=>{if(found.includes(i))return;const dist=Math.hypot((x-d.x)*ar,y-d.y),tol=d.r*ar+.05;if(dist<tol&&dist<best){best=dist;hit=i}});
+    const r=box.querySelector('img').getBoundingClientRect(),W=r.width,H=r.height,px=e.clientX-r.left,py=e.clientY-r.top,x=px/W,y=py/H;
+    if(px<0||py<0||px>W||py>H)return;
+    const slack=e.pointerType==='mouse'?14:24;   // a fingertip covers more than a mouse pointer
+    let hit=-1,best=1e9;D().forEach((d,i)=>{if(found.includes(i))return;const g=gap(px,py,d,W,H),c=g*1000+Math.hypot(px-d.x*W,py-d.y*H);if(g<=slack&&c<best){best=c;hit=i}});
+    if(hit<0&&D().some((d,i)=>found.includes(i)&&gap(px,py,d,W,H)<slack))return;   // re-tapping a found change is not a miss
     if(hit>=0){found.push(hit);mark(hit);sfx.good();$('#sdFound').textContent=`${found.length}/${LV[lv].n}`;
       if(found.length===LV[lv].n){done=true;clearInterval(tick);win()}else setStatus(L(`Well spotted! ${LV[lv].n-found.length} more to find.`,`眼力真好！还有 ${LV[lv].n-found.length} 处。`),0)}
     else{miss++;tone(220,.08,'sine',.06);const m=box.querySelector('.sd-marks'),xx=document.createElement('i');xx.className='sd-miss';xx.style.left=x*100+'%';xx.style.top=y*100+'%';m.appendChild(xx);setTimeout(()=>xx.remove(),700)}}
