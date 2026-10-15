@@ -1300,7 +1300,7 @@ const Jigsaw=(()=>{
 
 /* ================= ONLINE: two devices ================= */
 const Net=(()=>{
-  let tr=null,me=0,active=false,queue=[],waiters=[],live={},onDrop=null,hb=null,partnerU=null;
+  let tr=null,me=0,active=false,queue=[],waiters=[],live={},onDrop=null,hb=null,partnerU=null,partnerHeard=false,welcomeT=null;
   const uid=Math.random().toString(36).slice(2,10);
   const newCode=()=>String(Math.floor(1000+Math.random()*9000));
   // every transport buffers incoming messages until someone listens
@@ -1311,8 +1311,8 @@ const Net=(()=>{
     g.on('m',msg=>s.push(msg.data));g.onPeers(c=>{if(c.left.length&&g.peers().filter(p=>!p.sameTab).length===0)lv.forEach(f=>f())});
     return{kind:'room',send:m=>{g.emit('m',{...m,_u:uid}).catch(()=>{})},listen:f=>s.set(f),onLeave:f=>lv.push(f),close:()=>{try{g.leave()}catch(e){}}}}
   /* on GitHub Pages or any website: public MQTT message relays over secure web connections; all are tried at once */
-  const NET_VER='3';
-  const BROKERS=location.hash==='#localbroker'?[{n:'Local',u:'ws://localhost:9001'}]:location.hash==='#localbroker2'?[{n:'Dead',u:'ws://localhost:9002'},{n:'Local',u:'ws://localhost:9001'}]:
+  const NET_VER='4';
+  const BROKERS=location.hash==='#localbroker3'?[{n:'LocalA',u:'ws://localhost:9001'},{n:'LocalB',u:'ws://localhost:9003'}]:location.hash==='#localbroker'?[{n:'Local',u:'ws://localhost:9001'}]:location.hash==='#localbroker2'?[{n:'Dead',u:'ws://localhost:9002'},{n:'Local',u:'ws://localhost:9001'}]:
     [{n:'Shiftr',u:'wss://public.cloud.shiftr.io',o:{username:'public',password:'public'}},{n:'EMQX',u:'wss://broker.emqx.io:8084/mqtt'},{n:'HiveMQ',u:'wss://broker.hivemq.com:8884/mqtt'},{n:'Mosquitto',u:'wss://test.mosquitto.org:8081'}];
   let mqLib=null;
   function loadMqtt(){if(window.mqtt)return Promise.resolve(true);if(mqLib)return mqLib;
@@ -1325,16 +1325,18 @@ const Net=(()=>{
     c.on('connect',()=>{if(done)return;c.subscribe(topic,{qos:0},err=>{if(done)return;if(err){fail();return}done=true;c._kdName=b.n;res(c)})});
     c.on('message',(t,p)=>{let d=null;try{d=JSON.parse(p.toString())}catch(e){}if(d&&typeof d==='object')onMsg(d,c)});
     c.on('error',()=>{});setTimeout(fail,8000)})}
-  async function viaMqtt(code,role,progress){if(!await loadMqtt())return null;const topic='kampongdays/v3/'+code,s=sink(),lv=[],cs=[];let lock=null;
-    const pub=(c,m)=>{try{c.publish(topic,JSON.stringify({...m,_u:uid}),{qos:0})}catch(e){}};
-    const onMsg=(d,cl)=>{if(d._u===uid)return;if(lock&&lock!==cl)return;if(!lock&&(d.to===uid&&(d.t==='seen'||d.t==='welcome'))){lock=cl}s.push(d)};
-    const t={kind:'mqtt',relays:()=>lock?[lock._kdName]:cs.map(c=>c._kdName),send:m=>{(lock?[lock]:cs).forEach(c=>pub(c,m))},lockTo:()=>{},listen:f=>s.set(f),onLeave:f=>lv.push(f),
-      close:()=>{cs.forEach(c=>{try{c.end(true)}catch(e){}})},pin:c=>{lock=c}};
-    // remember which relay each guest's hello came on, so the host can answer there only
-    t.onMsgRelay=null;
+  // every message goes out on every connected relay; the receiver keeps the first copy and drops the rest
+  async function viaMqtt(code,role,progress){if(!await loadMqtt())return null;const topic='kampongdays/v3/'+code,s=sink(),lv=[],cs=[];
+    let seq=0;const got=new Map();
+    const fresh=d=>{if(d._i===undefined)return true;const k=d._u+':'+d._i;if(got.has(k))return false;got.set(k,Date.now());
+      if(got.size>600){const cut=Date.now()-60000;for(const [kk,tt] of got)if(tt<cut)got.delete(kk)}return true};
+    const onMsg=d=>{if(d._u===uid||!fresh(d))return;s.push(d)};
+    const t={kind:'mqtt',relays:()=>cs.filter(c=>c.connected).map(c=>c._kdName),
+      send:m=>{const p=JSON.stringify({...m,_u:uid,_i:++seq});cs.forEach(c=>{try{if(c.connected)c.publish(topic,p,{qos:0})}catch(e){}})},
+      listen:f=>s.set(f),onLeave:f=>lv.push(f),close:()=>{cs.forEach(c=>{try{c.end(true)}catch(e){}})}};
     return new Promise(res=>{let left=BROKERS.length,first=true;
-      BROKERS.forEach(async b=>{const c=await mqConnect(b,topic,(d,cl)=>{if(role==='host'&&d.t==='hello'&&!lock&&d._u!==uid)d._relay=cl;onMsg(d,cl)});
-        if(c){cs.push(c);progress&&progress(cs.map(x=>x._kdName));if(first){first=false;res(t)}}
+      BROKERS.forEach(async b=>{const c=await mqConnect(b,topic,onMsg);
+        if(c){cs.push(c);progress&&progress(t.relays());if(first){first=false;res(t)}}
         if(--left===0&&first)res(null)})})}
   /* testing on one computer: two tabs with #localnet */
   function viaBC(code){if(location.hash!=='#localnet'||!window.BroadcastChannel)return null;const bc=new BroadcastChannel('kd-'+code),s=sink();bc.onmessage=e=>s.push(e.data);
@@ -1342,12 +1344,12 @@ const Net=(()=>{
   async function transport(code,role,ready){const bc=viaBC(code);if(bc){ready&&ready(['test']);bc.relays=()=>['test'];return bc}const r=await viaRoom(code);if(r){ready&&ready(['Claude']);r.relays=()=>['Claude'];return r}
     return viaMqtt(code,role,ready)}
   /* messages during a game */
-  function route(d){if(!d||typeof d!=='object'||typeof d.t!=='string')return;if(partnerU&&d._u&&d._u!==partnerU)return;
-    if(d.t==='bye'){drop(true);return}if(['ping','hello','welcome','seen','decline'].includes(d.t))return;
+  function route(d){if(!d||typeof d!=='object'||typeof d.t!=='string')return;if(partnerU&&d._u&&d._u!==partnerU)return;if(!partnerHeard&&d.t!=='hello'&&d.t!=='seen'){partnerHeard=true;clearInterval(welcomeT)}
+    if(d.t==='bye'){drop(true);return}if(['ping','hello','welcome','seen','decline','ready'].includes(d.t))return;
     if(live[d.t]){live[d.t](d);return}queue.push(d);pump()}
   function pump(){for(let i=0;i<waiters.length;i++){const w=waiters[i],k=queue.findIndex(m=>w.types.includes(m.t));if(k>=0){const[m]=queue.splice(k,1);waiters.splice(i,1);i--;w.res(m)}}}
   function take(types){types=[].concat(types);return new Promise(res=>{waiters.push({types,res});pump()})}
-  function drop(remote){if(!active)return;active=false;partnerU=null;clearInterval(hb);try{tr&&tr.close()}catch(e){}tr=null;queue=[];waiters=[];live={};const f=onDrop;onDrop=null;f&&f(remote)}
+  function drop(remote){if(!active)return;active=false;partnerU=null;clearInterval(hb);clearInterval(welcomeT);try{tr&&tr.close()}catch(e){}tr=null;queue=[];waiters=[];live={};const f=onDrop;onDrop=null;f&&f(remote)}
   let lastPos=0,posT=null;
   function send(m){if(!(tr&&active))return;if(m.t==='pos'){clearTimeout(posT);const n=Date.now();if(n-lastPos>=120){lastPos=n;tr.send(m)}else posT=setTimeout(()=>{lastPos=Date.now();if(tr&&active)tr.send(m)},120);return}tr.send(m)}
   function leave(){if(tr&&active)tr.send({t:'bye'});drop(false)}
@@ -1376,14 +1378,14 @@ const Net=(()=>{
       const show=list=>{showRelays(list);if(open()&&!req.dataset.who)msg.innerHTML=`<span class="net-lbl">${L('Your game code','你的游戏代码')}</span><span class="net-code">${code}</span><span>${L('Waiting for your friend to join…','等待朋友加入…')}</span>`};
       const t=await transport(code,'host',show);if(!open()){try{t&&t.close()}catch(e){}return}
       if(!t){btns.hidden=false;msg.textContent=L('Could not go online. Check that this device has internet, then try again.','无法联机。请确认这台设备能上网，然后再试。');return}
-      pending=t;show(t.relays?t.relays():null);let who=null,whoRelay=null;
+      pending=t;show(t.relays?t.relays():null);let who=null;
       const ask=(id,dev)=>{who=id;req.dataset.who=id;req.hidden=false;sfx.good();
         req.innerHTML=`<b>${L('A friend wants to join!','朋友想加入！')}</b><span>${L('From','来自')} ${dev?String(dev).slice(0,30).replace(/[<>&"]/g,''):L('another device','另一台设备')}</span>
           <div class="row" style="justify-content:center"><button class="btn primary big" id="netAccept">${L('Accept & start','接受并开始')}</button><button class="btn big" id="netDecline">${L('Decline','拒绝')}</button></div>`;
         msg.innerHTML=`<span class="net-lbl">${L('Game code','游戏代码')} ${code}</span>`;
-        req.querySelector('#netAccept').onclick=()=>{partnerU=id;if(whoRelay&&t.pin)t.pin(whoRelay);t.send({t:'welcome',to:id,game:gameId});setTimeout(()=>t.send({t:'welcome',to:id,game:gameId}),600);connected(t,'host')};
-        req.querySelector('#netDecline').onclick=()=>{t.send({t:'decline',to:id});who=null;whoRelay=null;delete req.dataset.who;req.hidden=true;show(t.relays())}};
-      t.listen(d=>{if(d.t==='hello'&&d._u){if(!who){whoRelay=d._relay||null;ask(d._u,d.dev)}if(d._u===who)t.send({t:'seen',to:d._u,game:gameId})}
+        req.querySelector('#netAccept').onclick=()=>{partnerU=id;partnerHeard=false;const w={t:'welcome',to:id,game:gameId};t.send(w);let k=0;clearInterval(welcomeT);welcomeT=setInterval(()=>{if(partnerHeard||++k>30){clearInterval(welcomeT);return}if(tr===t&&active)t.send(w)},700);connected(t,'host')};
+        req.querySelector('#netDecline').onclick=()=>{t.send({t:'decline',to:id});who=null;delete req.dataset.who;req.hidden=true;show(t.relays())}};
+      t.listen(d=>{if(d.t==='hello'&&d._u){if(!who){ask(d._u,d.dev)}if(d._u===who)t.send({t:'seen',to:d._u,game:gameId})}
         if(d.t==='bye'&&d._u===who){who=null;delete req.dataset.who;req.hidden=true;show(t.relays())}})};
     /* GUEST */
     const join=async()=>{const code=(ov.querySelector('#netCode').value||'').replace(/\D/g,'');if(code.length!==4){msg.textContent=L('Type the 4-digit code from your friend’s screen.','请输入朋友屏幕上的4位数字代码。');return}
@@ -1400,7 +1402,7 @@ const Net=(()=>{
         if(d.t==='seen'&&!seen){seen=true;if(d.game&&d.game!==gameId){done=true;clearT();try{t.close()}catch(e){}btns.hidden=false;const g=GAMES.find(x=>x.id===d.game);msg.textContent=L(`Your friend is playing ${g?g.en[0]:'another game'}. Open that game and join again.`,`朋友在玩${g?g.zh[0]:'另一个游戏'}。请打开那个游戏再加入。`);return}
           showRelays(t.relays());msg.innerHTML=spin(L('Found your friend! Waiting for them to tap Accept…','找到朋友了！等待对方按“接受”…'))}
         if(d.t==='decline'){done=true;clearT();try{t.close()}catch(e){}btns.hidden=false;msg.textContent=L('Your friend declined. You can try again.','朋友拒绝了，你可以再试一次。')}
-        if(d.t==='welcome'){done=true;partnerU=d._u||null;connected(t,'guest')}})};
+        if(d.t==='welcome'){done=true;partnerU=d._u||null;partnerHeard=true;connected(t,'guest');t.send({t:'ready'});setTimeout(()=>{if(tr===t)t.send({t:'ready'})},500)}})};
     ov.querySelector('#netJoin').onclick=join;ov.querySelector('#netCode').addEventListener('keydown',e=>{if(e.key==='Enter')join()})}
   function closeLobby(){const o=document.getElementById('netLobby');if(o)o.remove()}
   return{lobby,send,take,leave,closeLobby,get me(){return me},get on(){return active},set onDrop(f){onDrop=f},setLive(t,f){live[t]=f},reset(){queue=[];waiters=[]}};
