@@ -344,7 +344,16 @@ p{margin:0}
 .sd-img{position:relative;border-radius:14px;overflow:hidden;border:3px solid var(--ink);box-shadow:0 5px 0 var(--ink);cursor:crosshair;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .sd-img img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;pointer-events:none}
 .sd-marks{position:absolute;inset:0;pointer-events:none}
-.sd-ring{position:absolute;transform:translate(-50%,-50%);border-radius:50%;border:4px solid #FFD34E;box-shadow:0 0 0 3px rgba(58,37,23,.55),inset 0 0 0 2px rgba(58,37,23,.4);animation:pop .4s}
+.sd-cap{display:flex!important;align-items:center;justify-content:space-between;gap:8px;min-height:44px;flex-wrap:wrap}
+.sd-help{display:inline-flex;align-items:center;gap:6px;padding:6px 8px 6px 12px;border-radius:99px;border:2px solid var(--ink);background:#FFE58A;color:var(--ink);font:inherit;font-weight:900;text-transform:none;letter-spacing:0;font-size:calc(16px * var(--fs,1));cursor:pointer;box-shadow:0 3px 0 var(--ink);min-height:44px}
+.sd-help b{display:grid;place-items:center;min-width:26px;height:26px;border-radius:99px;background:var(--ink);color:#FFF6E3;font-size:calc(14px * var(--fs,1))}
+.sd-help:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.sd-help.used{background:var(--paper-2);color:var(--ink-soft);box-shadow:none;cursor:default}
+.sd-help.used b{background:var(--ink-soft)}
+.sd-wait{position:absolute;inset:0;display:none;place-items:center;background:rgba(255,246,227,.55)}
+.sd-img.loading .sd-wait{display:grid}
+.sd-ring{position:absolute;transform:translate(-50%,-50%);border-radius:50%;border:4px solid #FFD34E;box-shadow:0 0 0 3px rgba(58,37,23,.55),inset 0 0 0 2px rgba(58,37,23,.4);animation:sdPop .4s}
+@keyframes sdPop{0%{transform:translate(-50%,-50%) scale(0)}70%{transform:translate(-50%,-50%) scale(1.25)}100%{transform:translate(-50%,-50%) scale(1)}}
 .sd-ring.hint{border-color:#7BE0A0;animation:sdHint 1s infinite}
 @keyframes sdHint{50%{transform:translate(-50%,-50%) scale(1.25);opacity:.6}}
 .sd-miss{position:absolute;width:30px;height:30px;transform:translate(-50%,-50%);animation:sdMiss .7s forwards}
@@ -671,8 +680,8 @@ const GAMES=[
   rules:{en:['All the cards start face down.','Tap two cards to turn them over. If they show the same picture, they stay face up.','If they are different, they turn back over. Try to remember where each picture was!','Easy has 6 pairs, Medium 8 pairs and Hard 12 pairs. Find every pair to win, in as few turns as you can.'],
    zh:['所有卡片一开始都是背面朝上。','每次点两张卡翻开。如果图案一样，就保持翻开。','如果不一样，会翻回去。记住每个图案的位置！','简单6对，中等8对，困难12对。找出所有配对就赢了，次数越少越好。']}},
  {id:'spot',cat:'puzzle',img:'img/sd-chinatown-a.webp',en:['Spot the Difference','Four heritage scenes','Find the changes between two old Singapore pictures.'],zh:['找不同','四个怀旧场景','找出两张老新加坡图画的不同之处。'],
-  rules:{en:['Two pictures of the same scene are shown. Some things in the second picture have been changed.','Look carefully and tap each change you spot, on either picture. A circle marks it on both.','Easy has 3 changes, Medium 5 and Hard 7. Choose any of the four scenes.','Stuck? Tap Hint and a glowing circle shows where to look.'],
-   zh:['同一个场景有两张图，第二张图里有些东西被改了。','仔细看，在任何一张图上点出你看到的不同，两张图都会画上圆圈。','简单3处，中等5处，困难7处。四个场景任你选。','找不到？按“提示”，发光的圆圈会告诉你在哪里。']}},
+  rules:{en:['Two pictures of the same scene are shown. Some things in the second picture have been changed.','Look carefully and tap each change you spot, on either picture. A circle marks it on both.','Easy has 3 changes, Medium 5 and Hard 7. Every game picks new changes, even on the same picture.','You have 1 Help each game. Tap the bulb button and a glowing circle shows where to look.','You can pinch to zoom in; only a single quick tap counts as a guess.'],
+   zh:['同一个场景有两张图，第二张图里有些东西被改了。','仔细看，在任何一张图上点出你看到的不同，两张图都会画上圆圈。','简单3处，中等5处，困难7处。每一局都会换新的不同，同一张图也不一样。','每局有1次“帮助”。按灯泡按钮，发光的圆圈会告诉你在哪里。','可以用两指放大图片，只有单指轻点才算作答。']}},
  {id:'jigsaw',cat:'puzzle',img:'img/jig-shophouses.webp',en:['Jigsaw Puzzle','Scenes of old Singapore','Piece together the river, shophouses and kampong days.'],zh:['拼图','老新加坡风景','拼出新加坡河、店屋和甘榜的旧日风光。'],
   rules:{en:['Choose a picture of old Singapore and how many pieces you want.','Press and drag a piece from the tray onto the board.','When a piece is close to its right place, it clicks in by itself.','Use “Show picture” for a faint guide on the board.','Finish the picture to unlock a memory card.'],
    zh:['选一张老新加坡的图片，再选块数。','按住拼块，从下面拖到上面的拼图板。','拼块靠近正确位置时，会自己卡进去。','按“显示图案”，拼图板上会有淡淡的参考图。','拼完整张图，就能解锁一张回忆卡。']}},
@@ -2286,7 +2295,7 @@ const Rhythm=(()=>{
     stop(){stopPlay();removeEventListener('resize',ro);document.removeEventListener('visibilitychange',vis)},_dbg:{analyse,chart,DIFF,get G(){return G}}};
 })();
 
-window.SD_SCENES=[{"id":"mamashop","en":"The Mama Shop","zh":"小店","diffs":[{"x":0.7417,"y":0.1228,"w":0.1,"h":0.1633},{"x":0.5288,"y":0.6561,"w":0.0475,"h":0.0722},{"x":0.2708,"y":0.7583,"w":0.1017,"h":0.0744},{"x":0.3075,"y":0.4587,"w":0.0433,"h":0.0714},{"x":0.1379,"y":0.9144,"w":0.0625,"h":0.0644},{"x":0.1771,"y":0.5244,"w":0.0542,"h":0.14},{"x":0.7504,"y":0.4367,"w":0.0292,"h":0.0644}]},{"id":"kampong","en":"Kampong Life","zh":"甘榜生活","diffs":[{"x":0.3283,"y":0.4544,"w":0.045,"h":0.0822},{"x":0.1675,"y":0.7111,"w":0.0417,"h":0.0422},{"x":0.4204,"y":0.8472,"w":0.0425,"h":0.0589},{"x":0.4375,"y":0.6256,"w":0.0333,"h":0.0489},{"x":0.2062,"y":0.4261,"w":0.0325,"h":0.0567},{"x":0.6379,"y":0.6011,"w":0.0258,"h":0.0422},{"x":0.4317,"y":0.4228,"w":0.0333,"h":0.05}]},{"id":"chinatown","en":"Chinatown Street","zh":"牛车水街头","diffs":[{"x":0.1042,"y":0.4739,"w":0.0417,"h":0.0633},{"x":0.4812,"y":0.5611,"w":0.0992,"h":0.0622},{"x":0.2446,"y":0.72,"w":0.0358,"h":0.0844},{"x":0.975,"y":0.8206,"w":0.0433,"h":0.0941},{"x":0.7062,"y":0.7689,"w":0.0308,"h":0.0667},{"x":0.5696,"y":0.5499,"w":0.0808,"h":0.0424},{"x":0.2883,"y":0.8841,"w":0.0333,"h":0.0438}]},{"id":"voiddeck","en":"Void Deck Fun","zh":"组屋楼下","diffs":[{"x":0.7554,"y":0.3367,"w":0.0392,"h":0.0467},{"x":0.1292,"y":0.1228,"w":0.1033,"h":0.0967},{"x":0.4071,"y":0.6478,"w":0.0408,"h":0.0489},{"x":0.7457,"y":0.1328,"w":0.0553,"h":0.0567},{"x":0.0783,"y":0.6683,"w":0.11,"h":0.1011},{"x":0.8879,"y":0.2517,"w":0.0558,"h":0.0544},{"x":0.0379,"y":0.3783,"w":0.0225,"h":0.0344}]}];
+window.SD_SCENES=[{"id":"mamashop","en":"The Mama Shop","zh":"小店","pool":[[890,112,72,82,"h"],[638,578,32,34,"h"],[325,683,68,36,"hf"],[372,410,30,40,"h"],[165,822,40,30,"h"],[213,472,36,70,"hf"],[902,392,20,30,"h"],[560,215,28,42,"hf"],[620,200,22,42,"hf"],[455,470,30,38,"h"],[575,470,30,38,"h"],[232,818,30,28,"h"],[578,678,16,26,"hf"],[55,265,45,65,"hf"],[965,285,35,60,"hf"],[1150,340,30,70,"hf"],[50,640,40,30,"h"],[890,525,30,22,"h"],[638,640,28,22,"h"],[700,205,28,60,"h"],[490,280,40,28,"h"],[337,475,28,38,"h"],[397,475,28,38,"h"]]},{"id":"kampong","en":"Kampong Life","zh":"甘榜生活","pool":[[391,410,30,42,"h"],[200,640,26,22,"h"],[505,760,32,30,"c",75,0],[525,563,28,26,"f"],[245,383,22,30,"h"],[765,540,18,22,"h"],[518,378,22,26,"h"],[172,365,22,32,"h"],[143,352,20,30,"h"],[420,625,22,24,"h"],[540,660,45,55,"hf"],[440,740,30,32,"hf"],[700,730,26,22,"h"],[680,805,55,45,"h"],[755,700,18,24,"h"],[875,660,32,22,"h"],[205,675,26,22,"h"],[50,795,45,25,"h"],[148,585,22,30,"h"],[655,315,22,25,"h"],[585,560,18,26,"h"],[478,563,22,22,"hf"],[1015,42,26,22,"h"]]},{"id":"chinatown","en":"Chinatown Street","zh":"牛车水街头","pool":[[126,420,34,44,"h"],[580,505,70,30,"h"],[295,645,30,45,"h"],[1170,735,28,45,"h"],[843,690,26,40,"h"],[680,495,55,22,"h"],[343,797,24,20,"h"],[55,25,30,35,"h"],[182,85,28,35,"h"],[315,145,25,32,"h"],[218,155,22,32,"hf"],[125,170,22,70,"h"],[205,295,40,45,"h"],[700,760,50,25,"h"],[672,662,18,18,"h"],[640,730,25,20,"h"],[1050,645,22,25,"h"],[1115,545,22,22,"h"],[920,640,20,25,"h"],[165,690,35,25,"h"],[95,815,40,30,"h"],[95,875,35,25,"h"],[420,505,90,30,"h"],[1010,420,40,30,"h"],[935,280,20,25,"h"],[870,288,20,25,"h"],[395,295,25,60,"h"],[855,665,25,30,"h"]]},{"id":"voiddeck","en":"Void Deck Fun","zh":"组屋楼下","pool":[[903,300,28,28,"h"],[155,108,70,62,"hf"],[488,585,24,20,"h"],[895,118,38,28,"h"],[92,600,72,58,"h"],[1066,226,38,26,"c",72,0],[45,340,17,14,"h"],[270,155,40,45,"hf"],[685,180,30,30,"f"],[810,60,40,30,"h"],[125,320,25,20,"h"],[370,240,20,35,"h"],[425,215,18,22,"h"],[485,220,20,22,"h"],[540,320,22,25,"h"],[600,620,60,50,"h"],[740,680,30,30,"h"],[785,600,20,25,"h"],[835,565,20,20,"h"],[900,595,22,22,"h"],[1090,620,30,25,"hf"],[790,840,70,40,"h"],[1010,770,60,40,"h"],[1150,770,30,30,"h"],[500,860,22,25,"h"],[550,770,25,25,"h"],[850,380,18,25,"h"],[915,410,18,25,"h"],[1125,420,20,25,"h"],[270,820,30,25,"h"],[385,860,30,20,"f"],[215,380,30,30,"h"]]}];
 /* ================= MEMORY FLIP CARDS ================= */
 const MemoryCards=(()=>{
   const ITEMS=[
@@ -2339,47 +2348,93 @@ const MemoryCards=(()=>{
 
 /* ================= SPOT THE DIFFERENCE ================= */
 const SpotDiff=(()=>{
-  // diffs are in 0..1 image coordinates, listed from most to least obvious
-  const SCENES=window.SD_SCENES||[];
-  const LV={easy:{n:3,en:'Easy',zh:'简单'},medium:{n:5,en:'Medium',zh:'中等'},hard:{n:7,en:'Hard',zh:'困难'}};
-  let root,lv='easy',sc=0,found=[],miss=0,hints=0,t0=0,tick=null,token=0,done=false;
+  // Each game picks fresh changes from a pool of spots in the picture and paints them in the browser:
+  // a new colour, a mirror flip, or the object covered up. Replaying the same picture gives new changes.
+  const SCENES=window.SD_SCENES||[],W=1200,H=900;
+  const LV={easy:{n:3,top:.6,en:'Easy',zh:'简单'},medium:{n:5,top:.85,en:'Medium',zh:'中等'},hard:{n:7,top:1,en:'Hard',zh:'困难'}};
+  let root,lv='easy',sc=0,found=[],miss=0,helpLeft=1,t0=0,tick=null,token=0,done=false,ready=false,diffs=[],url=null;
+  const base={};   // decoded original pixels per scene
   const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
-  const S=()=>SCENES[sc],D=()=>S().diffs.slice(0,LV[lv].n);
+  const S=()=>SCENES[sc],D=()=>diffs;
+  function loadBase(id){if(base[id])return base[id];base[id]=new Promise((res,rej)=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;
+      const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0,W,H);res(x.getImageData(0,0,W,H))};im.onerror=()=>{delete base[id];rej()};im.src=`img/sd-${id}-a.webp`});return base[id]}
+  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  function rot(r,g,b,deg){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0;
+    if(d){h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h*=60}const s=mx?d/mx:0,v=mx;h=(h+deg+360)%360;const s2=Math.min(1,s*1.12);
+    const c=v*s2,x=c*(1-Math.abs((h/60)%2-1)),m=v-c;let o=h<60?[c,x,0]:h<120?[x,c,0]:h<180?[0,c,x]:h<240?[0,x,c]:h<300?[x,0,c]:[c,0,x];return[(o[0]+m)*255,(o[1]+m)*255,(o[2]+m)*255]}
+  // paint one change into out (reading from the untouched original), then measure what actually changed
+  function paint(src,out,p,op){const[x,y,rx,ry]=p,dx=p[5]||0,dy=p[6]||0,pad=6,mr=Math.min(rx,ry),deg=100+Math.random()*160;
+    const x0=Math.max(0,Math.floor(x-rx-pad)),x1=Math.min(W-1,Math.ceil(x+rx+pad)),y0=Math.max(0,Math.floor(y-ry-pad)),y1=Math.min(H-1,Math.ceil(y+ry+pad));
+    const sd=src.data,od=out.data,xs=[],ys=[];
+    for(let py=y0;py<=y1;py++)for(let px=x0;px<=x1;px++){const e=Math.hypot((px-x)/rx,(py-y)/ry),a=Math.max(0,Math.min(1,.5-(e-1)*mr/7));if(a<=0)continue;
+      const i=(py*W+px)*4;let n;
+      if(op==='h')n=rot(sd[i],sd[i+1],sd[i+2],deg);
+      else{const qx=op==='f'?Math.round(2*x-px):px+dx,qy=op==='f'?py:py+dy;if(qx<0||qx>=W||qy<0||qy>=H)continue;const j=(qy*W+qx)*4;n=[sd[j],sd[j+1],sd[j+2]]}
+      const r=sd[i]*(1-a)+n[0]*a,g=sd[i+1]*(1-a)+n[1]*a,b=sd[i+2]*(1-a)+n[2]*a;od[i]=r;od[i+1]=g;od[i+2]=b;
+      if(Math.abs(r-sd[i])+Math.abs(g-sd[i+1])+Math.abs(b-sd[i+2])>60){xs.push(px);ys.push(py)}}
+    return{xs,ys,x0,x1,y0,y1}}
+  function undo(src,out,r){for(let py=r.y0;py<=r.y1;py++){const i=(py*W+r.x0)*4,j=(py*W+r.x1+1)*4;out.data.set(src.data.subarray(i,j),i)}}
+  const pct=(a,q)=>{a.sort((m,n)=>m-n);return a[Math.min(a.length-1,Math.floor(a.length*q))]};
+  function makeChanges(src,pool,n,top){const out=new ImageData(new Uint8ClampedArray(src.data),W,H),picked=[];
+    const byArea=pool.slice().sort((a,b)=>b[2]*b[3]-a[2]*a[3]);
+    const tryFrom=list=>{for(const p of shuffle(list)){if(picked.length>=n)return;if(picked.some(q=>q.p===p||Math.hypot(q.p[0]-p[0],q.p[1]-p[1])<Math.max(q.p[2],q.p[3])+Math.max(p[2],p[3])+24))continue;
+        const need=Math.max(140,.14*Math.PI*p[2]*p[3]);
+        for(const op of shuffle(p[4].split(''))){const r=paint(src,out,p,op);if(r.xs.length>=need){const x0=pct(r.xs.slice(),.03),x1=pct(r.xs,.97),y0=pct(r.ys.slice(),.03),y1=pct(r.ys,.97);
+            picked.push({p,x:(x0+x1)/2/W,y:(y0+y1)/2/H,w:Math.max(x1-x0,12)/W,h:Math.max(y1-y0,12)/H});break}undo(src,out,r)}}};
+    tryFrom(byArea.slice(0,Math.ceil(byArea.length*top)));if(picked.length<n)tryFrom(byArea);
+    return{out,diffs:shuffle(picked).map(({x,y,w,h})=>({x,y,w,h}))}}
+  const helpIc=`<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>`;
   function build(){const s=S();
     root.innerHTML=`<div class="row">${segHTML('sdLv',Object.entries(LV).map(([k,v])=>[k,`${L(v.en,v.zh)} · ${v.n}`]),lv)}</div>
       <div class="sd-scenes">${SCENES.map((x,i)=>`<button class="sd-sc" data-i="${i}" aria-pressed="${i===sc}"><img src="img/sd-${x.id}-a.webp" alt=""><span>${L(x.en,x.zh)}</span></button>`).join('')}</div>
-      <div class="mc-stats"><span><small>${L('Found','找到')}</small><b id="sdFound">0/${LV[lv].n}</b></span><span><small>${L('Time','时间')}</small><b id="sdTime">0:00</b></span><span><button class="btn" id="sdHint">${L('Hint','提示')}</button></span></div>
+      <div class="mc-stats"><span><small>${L('Found','找到')}</small><b id="sdFound">0/${LV[lv].n}</b></span><span><small>${L('Time','时间')}</small><b id="sdTime">0:00</b></span><span><small>${L('Wrong taps','点错')}</small><b id="sdMiss">0</b></span></div>
       <div class="status" id="status"></div>
       <div class="sd-pair">
-        <figure class="sd-fig"><figcaption>${L('Original','原图')}</figcaption><div class="sd-img" data-k="a"><img src="img/sd-${s.id}-a.webp" alt="${L('Original picture','原图')}" draggable="false"><div class="sd-marks"></div></div></figure>
-        <figure class="sd-fig"><figcaption>${L(`Find ${LV[lv].n} changes`,`找出 ${LV[lv].n} 处不同`)}</figcaption><div class="sd-img" data-k="b"><img src="img/sd-${s.id}-${lv}.webp" alt="${L('Changed picture','改动过的图')}" draggable="false"><div class="sd-marks"></div></div></figure>
+        <figure class="sd-fig"><figcaption class="sd-cap"><span>${L('Original','原图')}</span></figcaption><div class="sd-img" data-k="a"><img src="img/sd-${s.id}-a.webp" alt="${L('Original picture','原图')}" draggable="false"><div class="sd-marks"></div></div></figure>
+        <figure class="sd-fig"><figcaption class="sd-cap"><span>${L(`Find ${LV[lv].n} changes`,`找出 ${LV[lv].n} 处不同`)}</span>
+          <button class="sd-help" id="sdHelp" aria-label="${L('Help: show one change. You have 1 help each game.','帮助：显示一处不同。每局只有1次。')}">${helpIc}<span>${L('Help','帮助')}</span><b id="sdHelpN">1</b></button></figcaption>
+          <div class="sd-img loading" data-k="b"><img id="sdB" src="img/sd-${s.id}-a.webp" alt="${L('Changed picture','改动过的图')}" draggable="false"><div class="sd-marks"></div><div class="sd-wait"><span class="rg-spin sm"></span></div></div></figure>
       </div>`;
     bindSeg('sdLv',v=>{lv=v;start()});
     root.querySelectorAll('.sd-sc').forEach(b=>b.onclick=()=>{sc=+b.dataset.i;sfx.tap();start()});
-    root.querySelectorAll('.sd-img').forEach(box=>box.addEventListener('pointerdown',e=>tap(e,box)));
-    $('#sdHint').onclick=hint}
-  // ring: an ellipse hugging the measured change, at least a fingertip wide
+    root.querySelectorAll('.sd-img').forEach(bindTaps);
+    $('#sdHelp').onclick=help}
+  // a tap counts only for one finger that lifts quickly without moving, so pinching and scrolling never count
+  function bindTaps(box){let g=null;const down=new Set();const zoom=()=>window.visualViewport?visualViewport.scale:1;
+    box.addEventListener('pointerdown',e=>{down.add(e.pointerId);if(down.size>1){g=null;return}g={id:e.pointerId,x:e.clientX,y:e.clientY,t:Date.now(),z:zoom(),type:e.pointerType}});
+    box.addEventListener('pointermove',e=>{if(g&&e.pointerId===g.id&&Math.hypot(e.clientX-g.x,e.clientY-g.y)>12)g=null});
+    const end=e=>{down.delete(e.pointerId);if(!g||e.pointerId!==g.id)return;const ok=e.type==='pointerup'&&Date.now()-g.t<700&&Math.abs(zoom()-g.z)<.01,q=g;g=null;if(ok)tap(q.x,q.y,box,q.type)};
+    box.addEventListener('pointerup',end);box.addEventListener('pointercancel',end);box.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')end(e)})}
   function mark(i,cls){const d=D()[i];root.querySelectorAll('.sd-marks').forEach(m=>{const r=document.createElement('i');r.className='sd-ring '+(cls||'');
-      const W=m.clientWidth||300,H=m.clientHeight||225,pw=Math.max(d.w*W+18,34),ph=Math.max(d.h*H+18,34);
-      r.style.left=d.x*100+'%';r.style.top=d.y*100+'%';r.style.width=pw+'px';r.style.height=ph+'px';m.appendChild(r);if(cls==='hint')setTimeout(()=>r.remove(),2200)})}
-  // distance in screen pixels from the tap to the edge of the change box (0 when inside)
-  function gap(px,py,d,W,H){const hw=d.w*W/2,hh=d.h*H/2,dx=Math.max(0,Math.abs(px-d.x*W)-hw),dy=Math.max(0,Math.abs(py-d.y*H)-hh);return Math.hypot(dx,dy)}
-  function tap(e,box){if(done)return;if(!t0){t0=Date.now();tick=setInterval(()=>{const x=$('#sdTime');if(x)x.textContent=fmt(Math.round((Date.now()-t0)/1000))},500)}
-    const r=box.querySelector('img').getBoundingClientRect(),W=r.width,H=r.height,px=e.clientX-r.left,py=e.clientY-r.top,x=px/W,y=py/H;
-    if(px<0||py<0||px>W||py>H)return;
-    const slack=e.pointerType==='mouse'?14:24;   // a fingertip covers more than a mouse pointer
-    let hit=-1,best=1e9;D().forEach((d,i)=>{if(found.includes(i))return;const g=gap(px,py,d,W,H),c=g*1000+Math.hypot(px-d.x*W,py-d.y*H);if(g<=slack&&c<best){best=c;hit=i}});
-    if(hit<0&&D().some((d,i)=>found.includes(i)&&gap(px,py,d,W,H)<slack))return;   // re-tapping a found change is not a miss
-    if(hit>=0){found.push(hit);mark(hit);sfx.good();$('#sdFound').textContent=`${found.length}/${LV[lv].n}`;
+      const mw=m.clientWidth||300,mh=m.clientHeight||225;r.style.left=d.x*100+'%';r.style.top=d.y*100+'%';r.style.width=Math.max(d.w*mw+18,34)+'px';r.style.height=Math.max(d.h*mh+18,34)+'px';m.appendChild(r);
+      if(cls==='hint')setTimeout(()=>r.remove(),3200)})}
+  function gap(px,py,d,w,h){const hw=d.w*w/2,hh=d.h*h/2,dx=Math.max(0,Math.abs(px-d.x*w)-hw),dy=Math.max(0,Math.abs(py-d.y*h)-hh);return Math.hypot(dx,dy)}
+  function startClock(){if(!t0){t0=Date.now();tick=setInterval(()=>{const x=$('#sdTime');if(x)x.textContent=fmt(Math.round((Date.now()-t0)/1000))},500)}}
+  function tap(cx,cy,box,type){if(done||!ready)return;startClock();
+    const r=box.querySelector('img').getBoundingClientRect(),w=r.width,h=r.height,px=cx-r.left,py=cy-r.top;if(px<0||py<0||px>w||py>h)return;
+    const slack=type==='mouse'?14:24;
+    let hit=-1,best=1e9;D().forEach((d,i)=>{if(found.includes(i))return;const g=gap(px,py,d,w,h),c=g*1000+Math.hypot(px-d.x*w,py-d.y*h);if(g<=slack&&c<best){best=c;hit=i}});
+    if(hit<0&&D().some((d,i)=>found.includes(i)&&gap(px,py,d,w,h)<slack))return;
+    if(hit>=0){found.push(hit);root.querySelectorAll('.sd-ring.hint').forEach(x=>x.remove());mark(hit);sfx.good();$('#sdFound').textContent=`${found.length}/${LV[lv].n}`;
       if(found.length===LV[lv].n){done=true;clearInterval(tick);win()}else setStatus(L(`Well spotted! ${LV[lv].n-found.length} more to find.`,`眼力真好！还有 ${LV[lv].n-found.length} 处。`),0)}
-    else{miss++;tone(220,.08,'sine',.06);const m=box.querySelector('.sd-marks'),xx=document.createElement('i');xx.className='sd-miss';xx.style.left=x*100+'%';xx.style.top=y*100+'%';m.appendChild(xx);setTimeout(()=>xx.remove(),700)}}
-  function hint(){if(done)return;const left=D().map((_,i)=>i).filter(i=>!found.includes(i));if(!left.length)return;hints++;mark(left[0],'hint');sfx.tap();
-    setStatus(L('Look inside the glowing circle.','看看发光的圆圈里面。'),1)}
-  function win(){const secs=Math.round((Date.now()-t0)/1000),stars=hints===0&&miss<=2?3:hints<=1?2:1;setStatus(L('You found them all!','全部找到了！'),0);const my=token;
-    setTimeout(()=>{if(my===token)finish('spot',`${'★'.repeat(stars)}${'☆'.repeat(3-stars)} ${L('Sharp eyes!','好眼力！')}`,L(`${LV[lv].n} differences in ${fmt(secs)} · ${hints} hint${hints===1?'':'s'}`,`${LV[lv].n}处不同 · ${fmt(secs)} · 提示 ${hints} 次`),true)},sp(1000))}
-  function start(){token++;clearInterval(tick);t0=0;found=[];miss=0;hints=0;done=false;build();
-    setStatus(L('Compare the two pictures. Tap each change you spot, on either picture.','比较两张图，在任何一张图上点出你看到的不同。'),0)}
-  return{mount(el){root=el;start()},start,stop(){token++;clearInterval(tick)}};
+    else{miss++;$('#sdMiss').textContent=miss;tone(220,.08,'sine',.06);const m=box.querySelector('.sd-marks'),xx=document.createElement('i');xx.className='sd-miss';xx.style.left=px/w*100+'%';xx.style.top=py/h*100+'%';m.appendChild(xx);setTimeout(()=>xx.remove(),700)}}
+  function help(){if(done||!ready)return;const b=$('#sdHelp');if(helpLeft<1){setStatus(L('You have used your 1 help for this game.','这局的1次帮助已经用完了。'),1);return}
+    const left=D().map((_,i)=>i).filter(i=>!found.includes(i));if(!left.length)return;startClock();helpLeft--;$('#sdHelpN').textContent=helpLeft;b.classList.add('used');b.setAttribute('aria-disabled','true');
+    mark(left[Math.floor(Math.random()*left.length)],'hint');sfx.tap();setStatus(L('Look inside the glowing circle, then tap the change.','看看发光的圆圈里面，然后点那处不同。'),1)}
+  function win(){const secs=Math.round((Date.now()-t0)/1000),used=1-helpLeft,stars=!used&&miss<=2?3:miss<=5?2:1;setStatus(L('You found them all!','全部找到了！'),0);const my=token;
+    setTimeout(()=>{if(my===token)finish('spot',`${'★'.repeat(stars)}${'☆'.repeat(3-stars)} ${L('Sharp eyes!','好眼力！')}`,L(`${LV[lv].n} differences in ${fmt(secs)} · ${used?'help used':'no help'} · ${miss} wrong tap${miss===1?'':'s'}`,`${LV[lv].n}处不同 · ${fmt(secs)} · ${used?'用了帮助':'没用帮助'} · 点错 ${miss} 次`),true)},sp(1000))}
+  async function start(){token++;const my=token;clearInterval(tick);t0=0;found=[];miss=0;helpLeft=1;done=false;ready=false;diffs=[];build();
+    setStatus(L('Getting the pictures ready…','正在准备图片…'),0);
+    let src;try{src=await loadBase(S().id)}catch(e){if(my===token)setStatus(L('The picture could not load. Check the internet and tap New game.','图片无法加载，请检查网络后按“重新开始”。'),1);return}
+    if(my!==token)return;await new Promise(r=>setTimeout(r,30));
+    const res=makeChanges(src,S().pool,LV[lv].n,LV[lv].top);if(my!==token)return;
+    const c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').putImageData(res.out,0,0);
+    const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.9));if(my!==token)return;
+    if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(blob);const img=$('#sdB');
+    img.onload=()=>{if(my!==token)return;diffs=res.diffs;ready=true;const bx=img.closest('.sd-img');bx&&bx.classList.remove('loading');
+      setStatus(L(`Compare the two pictures and tap the ${LV[lv].n} changes. New changes every game!`,`比较两张图，点出 ${LV[lv].n} 处不同。每一局都不一样！`),0)};
+    img.src=url}
+  return{mount(el){root=el;start()},start,stop(){token++;clearInterval(tick)},get _d(){return diffs}};
 })();
 
 const IMPL={memory:MemoryCards,spot:SpotDiff,rhythm:Rhythm,congkak:Congkak,fivestones:FiveStones,sticks:Sticks,kuti:Kuti,snakes:Snakes,jigsaw:Jigsaw,xiangqi:Xiangqi,goli:Goli,carrom:Carrom};
