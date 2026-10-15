@@ -306,6 +306,51 @@ p{margin:0}
 .net-req span{color:#FFF6E6;font-weight:700}
 .net-req .btn{color:var(--ink)}.net-req .btn.primary{color:#FFF6E6}
 .net-ver{font-size:12px;color:rgba(232,217,245,.7);text-align:center}
+.mc-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mc-stats>span{display:grid;justify-items:center;align-content:center;background:var(--paper-2);border:2px solid var(--line);border-radius:14px;padding:6px 8px;min-width:0}
+.mc-stats small{font-size:calc(13px * var(--fs,1));font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:1px}
+.mc-stats b{font-family:var(--f-display);font-weight:400;font-size:calc(26px * var(--fs,1));color:var(--enamel-dk);font-variant-numeric:tabular-nums}
+.mc-stats .btn{min-height:44px;width:100%}
+.mc-grid{display:grid;gap:10px;width:min(100%,720px);justify-self:center;perspective:1200px}
+.mc-easy{grid-template-columns:repeat(3,1fr);width:min(100%,520px)}
+.mc-medium{grid-template-columns:repeat(4,1fr);width:min(100%,600px)}
+.mc-hard{grid-template-columns:repeat(4,1fr)}
+@media(min-width:720px){.mc-hard{grid-template-columns:repeat(6,1fr)}}
+.mc-card{aspect-ratio:3/4;border:0;padding:0;background:none;cursor:pointer;min-width:0}
+.mc-in{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.mc-card.up .mc-in{transform:rotateY(180deg)}
+.mc-face{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink)}
+.mc-back{background:#2A6B6B url(img/mc-back.webp) center/cover;display:grid;place-items:center}
+.mc-medal{width:52%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF6E6,#F2D9A6);border:3px solid #B8862F;display:grid;place-items:center;font:900 clamp(13px,3.6vw,22px) "Noto Serif SC","Songti SC",serif;color:#B3231C;box-shadow:0 3px 8px rgba(0,0,0,.35)}
+.mc-front{transform:rotateY(180deg);background:#FBF4E4;display:grid;grid-template-rows:1fr auto}
+.mc-front img{width:100%;height:100%;object-fit:cover;min-height:0}
+.mc-front em{font-style:normal;font-weight:900;font-size:calc(clamp(11px,2.6vw,15px) * var(--fs,1));background:var(--enamel);color:#FFF6E6;padding:3px 4px;text-align:center;line-height:1.15;overflow-wrap:anywhere}
+.mc-card.done .mc-face{border-color:#3FAE5A;box-shadow:0 4px 0 #2E7D40,0 0 0 3px #B7F0C3}
+.mc-card.done .mc-in{animation:mcPop .45s .1s}
+@keyframes mcPop{50%{transform:rotateY(180deg) scale(1.08)}}
+.mc-card:focus-visible .mc-face{outline:3px solid var(--sun)}
+.mc-toast{justify-self:center;display:grid;gap:2px;text-align:center;padding:10px 16px;border-radius:14px;background:var(--enamel-dk);color:#FFF6E6;max-width:min(100%,520px);opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;min-height:0}
+.mc-toast.show{opacity:1;transform:none}
+.mc-toast b{font-family:var(--f-display);font-weight:400;font-size:calc(22px * var(--fs,1));color:#FFD34E}
+.sd-scenes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.sd-sc{border:2px solid var(--ink);border-radius:12px;padding:0;overflow:hidden;background:var(--paper-2);display:grid;text-align:center;min-width:0}
+.sd-sc img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.sd-sc span{font-weight:800;font-size:calc(13px * var(--fs,1));padding:4px;line-height:1.2;overflow-wrap:anywhere}
+.sd-sc[aria-pressed="true"]{box-shadow:0 0 0 4px var(--sun)}
+.sd-pair{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:900px){.sd-pair{grid-template-columns:1fr 1fr}}
+.sd-fig{margin:0;display:grid;gap:6px}
+.sd-fig figcaption{font-weight:900;color:var(--ink-soft);text-transform:uppercase;letter-spacing:1px;font-size:calc(14px * var(--fs,1))}
+.sd-img{position:relative;border-radius:14px;overflow:hidden;border:3px solid var(--ink);box-shadow:0 5px 0 var(--ink);cursor:crosshair;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.sd-img img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;pointer-events:none}
+.sd-marks{position:absolute;inset:0;pointer-events:none}
+.sd-ring{position:absolute;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:4px solid #FFD34E;box-shadow:0 0 0 3px rgba(58,37,23,.55),inset 0 0 0 2px rgba(58,37,23,.4);animation:pop .4s}
+.sd-ring.hint{border-color:#7BE0A0;animation:sdHint 1s infinite}
+@keyframes sdHint{50%{transform:translate(-50%,-50%) scale(1.25);opacity:.6}}
+.sd-miss{position:absolute;width:30px;height:30px;transform:translate(-50%,-50%);animation:sdMiss .7s forwards}
+.sd-miss::before,.sd-miss::after{content:"";position:absolute;left:12px;top:0;width:6px;height:30px;border-radius:3px;background:#E8453C;box-shadow:0 0 0 2px #fff}
+.sd-miss::before{transform:rotate(45deg)}.sd-miss::after{transform:rotate(-45deg)}
+@keyframes sdMiss{0%{opacity:1;transform:translate(-50%,-50%) scale(.6)}30%{transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0}}
 /* congkak */
 .ck{width:min(100%,460px);display:grid;gap:8px;padding:14px;background:linear-gradient(160deg,#9A6A3F,#6E4526);border-radius:60px;border:3px solid var(--ink);box-shadow:inset 0 3px 0 rgba(255,255,255,.18),0 6px 0 var(--ink);grid-template-columns:1fr 1fr}
 .ck.h{width:min(100%,1000px);border-radius:80px;grid-template-columns:1.35fr repeat(7,1fr) 1.35fr;grid-template-rows:1fr 1fr}
@@ -470,7 +515,7 @@ const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()
 
 const D={
   brand:['Kampong Days','甘榜童年'],
-  kicker:['10 heritage games · 1 village','十种传统游戏 · 一个甘榜'],
+  kicker:['12 heritage games · 1 village','十二种传统游戏 · 一个甘榜'],
   presented:['Singapore · Senior Wellness','新加坡 · 乐龄健康'],
   lede:['The games we played on verandahs, void decks and five-foot ways, with the real rules. Finish a game to collect a picture memory of old Singapore.','我们小时候在走廊、组屋楼下和五脚基玩的游戏，规则原汁原味。每玩完一局，就能收集一张老新加坡回忆卡。'],
   note:['Tip: tap A+ for bigger text, “中文” for Chinese, and the gear for a slower pace.','小贴士：按 A+ 放大字体，按“EN”切换英文，按齿轮可放慢速度。'],
@@ -568,6 +613,12 @@ const GAMES=[
  {id:'carrom',cat:'skill',img:'img/carrom.webp',en:['Carrom','Strike and pocket','Pocket your coins, and cover the red Queen.'],zh:['康乐棋','Carrom','把棋子打进洞，别忘了跟进皇后。'],
   rules:{en:['You play the white coins; your opponent plays black. The red coin is the Queen.','Slide the striker along your baseline, then pull back and let go to shoot it forward.','Pocket one of your own coins and you shoot again. Your opponent’s coins that go in count for them.','The Queen is worth 3 points, but you must cover her by pocketing one of your own coins straight after. Otherwise she goes back to the centre.','Pocketing the striker is a foul: one of your coins goes back to the centre.','The first to pocket all their coins wins.'],
    zh:['你打白子，对手打黑子，红色的是皇后。','沿底线移动母子，往后拉再放开，把它往前打。','打进自己的棋子可以再打一杆，打进对方的棋子算对方的。','皇后值3分，但打进后要马上再进一粒自己的棋子跟进，否则皇后放回中间。','母子进洞是犯规：你的一粒棋子要放回中间。','先把自己所有棋子打进洞的赢。']}},
+ {id:'memory',cat:'puzzle',img:'img/memory.webp',en:['Memory Cards','Old-school toys & treats','Turn over the cards and find the matching pairs.'],zh:['记忆翻牌','童年玩具和零食','翻开卡片，找出一样的一对。'],
+  rules:{en:['All the cards start face down.','Tap two cards to turn them over. If they show the same picture, they stay face up.','If they are different, they turn back over. Try to remember where each picture was!','Easy has 6 pairs, Medium 8 pairs and Hard 12 pairs. Find every pair to win, in as few turns as you can.'],
+   zh:['所有卡片一开始都是背面朝上。','每次点两张卡翻开。如果图案一样，就保持翻开。','如果不一样，会翻回去。记住每个图案的位置！','简单6对，中等8对，困难12对。找出所有配对就赢了，次数越少越好。']}},
+ {id:'spot',cat:'puzzle',img:'img/sd-chinatown-a.webp',en:['Spot the Difference','Four heritage scenes','Find the changes between two old Singapore pictures.'],zh:['找不同','四个怀旧场景','找出两张老新加坡图画的不同之处。'],
+  rules:{en:['Two pictures of the same scene are shown. Some things in the second picture have been changed.','Look carefully and tap each change you spot, on either picture. A circle marks it on both.','Easy has 3 changes, Medium 5 and Hard 7. Choose any of the four scenes.','Stuck? Tap Hint and a glowing circle shows where to look.'],
+   zh:['同一个场景有两张图，第二张图里有些东西被改了。','仔细看，在任何一张图上点出你看到的不同，两张图都会画上圆圈。','简单3处，中等5处，困难7处。四个场景任你选。','找不到？按“提示”，发光的圆圈会告诉你在哪里。']}},
  {id:'jigsaw',cat:'puzzle',img:'img/jig-shophouses.webp',en:['Jigsaw Puzzle','Scenes of old Singapore','Piece together the river, shophouses and kampong days.'],zh:['拼图','老新加坡风景','拼出新加坡河、店屋和甘榜的旧日风光。'],
   rules:{en:['Choose a picture of old Singapore and how many pieces you want.','Press and drag a piece from the tray onto the board.','When a piece is close to its right place, it clicks in by itself.','Use “Show picture” for a faint guide on the board.','Finish the picture to unlock a memory card.'],
    zh:['选一张老新加坡的图片，再选块数。','按住拼块，从下面拖到上面的拼图板。','拼块靠近正确位置时，会自己卡进去。','按“显示图案”，拼图板上会有淡淡的参考图。','拼完整张图，就能解锁一张回忆卡。']}},
@@ -2170,7 +2221,96 @@ const Rhythm=(()=>{
     stop(){stopPlay();removeEventListener('resize',ro);document.removeEventListener('visibilitychange',vis)},_dbg:{analyse,chart,DIFF,get G(){return G}}};
 })();
 
-const IMPL={rhythm:Rhythm,congkak:Congkak,fivestones:FiveStones,sticks:Sticks,kuti:Kuti,snakes:Snakes,jigsaw:Jigsaw,xiangqi:Xiangqi,goli:Goli,carrom:Carrom};
+window.SD_SCENES=[{"id":"mamashop","en":"The Mama Shop","zh":"\u5c0f\u5e97","diffs":[{"x":0.7417,"y":0.1244,"r":0.0683},{"x":0.5317,"y":0.6556,"r":0.0317},{"x":0.2708,"y":0.7589,"r":0.0567},{"x":0.31,"y":0.4556,"r":0.0333},{"x":0.1375,"y":0.9133,"r":0.0333},{"x":0.1775,"y":0.5244,"r":0.0583},{"x":0.7517,"y":0.4356,"r":0.025}]},{"id":"kampong","en":"Kampong Life","zh":"\u7518\u699c\u751f\u6d3b","diffs":[{"x":0.3258,"y":0.4556,"r":0.035},{"x":0.1667,"y":0.7111,"r":0.0217},{"x":0.4208,"y":0.8444,"r":0.0267},{"x":0.4375,"y":0.6256,"r":0.0233},{"x":0.2042,"y":0.4256,"r":0.025},{"x":0.6375,"y":0.6,"r":0.0183},{"x":0.4317,"y":0.42,"r":0.0217}]},{"id":"chinatown","en":"Chinatown Street","zh":"\u725b\u8f66\u6c34\u8857\u5934","diffs":[{"x":0.105,"y":0.4667,"r":0.0367},{"x":0.4833,"y":0.5611,"r":0.0583},{"x":0.2458,"y":0.7167,"r":0.0375},{"x":0.975,"y":0.8167,"r":0.0375},{"x":0.7025,"y":0.7667,"r":0.0333},{"x":0.5667,"y":0.55,"r":0.0458},{"x":0.2858,"y":0.8856,"r":0.02}]},{"id":"voiddeck","en":"Void Deck Fun","zh":"\u7ec4\u5c4b\u697c\u4e0b","diffs":[{"x":0.7525,"y":0.3333,"r":0.0233},{"x":0.1292,"y":0.12,"r":0.0583},{"x":0.4067,"y":0.65,"r":0.02},{"x":0.7458,"y":0.1311,"r":0.0317},{"x":0.0767,"y":0.6667,"r":0.06},{"x":0.8883,"y":0.2511,"r":0.0317},{"x":0.0375,"y":0.3778,"r":0.0142}]}];
+/* ================= MEMORY FLIP CARDS ================= */
+const MemoryCards=(()=>{
+  const ITEMS=[
+    {id:'kuti',en:['Kuti Kuti','Flick your plastic animal onto your friend’s to win it.'],zh:['弹公仔','把你的公仔弹到朋友的上面就赢走它。']},
+    {id:'fivestones',en:['Five Stones','Toss one up, scoop the others, catch it before it lands!'],zh:['抓石子','抛起一粒，抓起其他的，落地前接住！']},
+    {id:'chapteh',en:['Chapteh','Kept in the air with the feet, never the hands.'],zh:['毽子','只能用脚踢，不能用手。']},
+    {id:'goli',en:['Goli Marbles','Flicked with the thumb inside a ring drawn in the sand.'],zh:['弹珠','在沙地画的圈里，用拇指弹。']},
+    {id:'gasing',en:['Gasing Top','Wound tight with string and thrown to spin for minutes.'],zh:['陀螺','用绳子绕紧，一甩就转好几分钟。']},
+    {id:'kacang',en:['Kacang Puteh','Roasted nuts in a paper cone, bought outside the cinema.'],zh:['卖花生豆','纸卷里的炒花生和豆子，戏院门口买。']},
+    {id:'iceball',en:['Ice Ball','Shaved ice pressed into a ball and soaked in syrup.'],zh:['冰球','刨冰压成球，淋上糖浆。']},
+    {id:'tingkat',en:['Tingkat','Stacked tiffin carriers took home-cooked food to work.'],zh:['饭格','一层层的饭格，把家里煮的饭带去工作。']},
+    {id:'kopi',en:['Kopi Cup','Thick enamel cups of kopi at the coffee shop.'],zh:['咖啡杯','咖啡店里厚厚的搪瓷咖啡杯。']},
+    {id:'trishaw',en:['Trishaw','The pedal-powered taxi of old Singapore.'],zh:['三轮车','老新加坡靠脚踩的“德士”。']},
+    {id:'clogs',en:['Wooden Clogs','Clack-clack along the five-foot way.'],zh:['木屐','在五脚基上咯咯咯地走。']},
+    {id:'kite',en:['Paper Kite','Homemade kites flew high over the open field.'],zh:['风筝','自己做的风筝在大草场上飞得高高。']},
+  ];
+  const LV={easy:{pairs:6,en:'Easy',zh:'简单',info:['6 pairs','6对']},medium:{pairs:8,en:'Medium',zh:'中等',info:['8 pairs','8对']},hard:{pairs:12,en:'Hard',zh:'困难',info:['12 pairs','12对']}};
+  let root,lv='easy',cards=[],open=[],lock=false,moves=0,found=0,t0=0,tick=null,token=0;
+  const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  function build(){
+    root.innerHTML=`<div class="row">${segHTML('mcLv',Object.entries(LV).map(([k,v])=>[k,`${L(v.en,v.zh)} · ${L(v.info[0],v.info[1])}`]),lv)}</div>
+      <div class="mc-stats"><span><small>${L('Pairs','配对')}</small><b id="mcFound">0/${LV[lv].pairs}</b></span><span><small>${L('Turns','次数')}</small><b id="mcMoves">0</b></span><span><small>${L('Time','时间')}</small><b id="mcTime">0:00</b></span></div>
+      <div class="status" id="status"></div>
+      <div class="mc-grid mc-${lv}" id="mcGrid"></div>
+      <div class="mc-toast" id="mcToast" aria-live="polite"></div>`;
+    bindSeg('mcLv',v=>{lv=v;start()});
+    const g=$('#mcGrid');
+    cards.forEach((c,i)=>{const b=document.createElement('button');b.className='mc-card';b.setAttribute('aria-label',L('Hidden card','未翻开的卡'));
+      b.innerHTML=`<span class="mc-in"><span class="mc-face mc-back"><span class="mc-medal">甘榜</span></span><span class="mc-face mc-front"><img src="img/mc-${c.id}.webp" alt="" draggable="false"><em>${L(c.item.en[0],c.item.zh[0])}</em></span></span>`;
+      b.onclick=()=>flip(i);c.el=b;g.appendChild(b)});
+  }
+  function flip(i){const c=cards[i];if(lock||c.up||c.done)return;if(!t0){t0=Date.now();tick=setInterval(()=>{const e=$('#mcTime');if(e)e.textContent=fmt(Math.round((Date.now()-t0)/1000))},500)}
+    c.up=true;c.el.classList.add('up');c.el.setAttribute('aria-label',L(c.item.en[0],c.item.zh[0]));tone(520+open.length*120,.06,'triangle',.08);open.push(c);
+    if(open.length===2){moves++;$('#mcMoves').textContent=moves;const[a,b]=open;lock=true;const my=token;
+      if(a.id===b.id){setTimeout(()=>{if(my!==token)return;a.done=b.done=true;a.el.classList.add('done');b.el.classList.add('done');open=[];lock=false;found++;
+          $('#mcFound').textContent=`${found}/${LV[lv].pairs}`;sfx.good();toast(a.item);
+          if(found===LV[lv].pairs)win();else setStatus(L('A pair! Keep going.','配对成功！继续。'),0)},sp(380))}
+      else{setTimeout(()=>{if(my!==token)return;sfx.tap();a.up=b.up=false;a.el.classList.remove('up');b.el.classList.remove('up');a.el.setAttribute('aria-label',L('Hidden card','未翻开的卡'));b.el.setAttribute('aria-label',L('Hidden card','未翻开的卡'));open=[];lock=false},sp(950));
+        setStatus(L('Not a pair. Remember where they are!','不是一对，记住它们的位置！'),1)}}
+    else setStatus(L('Now find its partner.','现在找它的另一半。'),0)}
+  function toast(it){const t=$('#mcToast');if(!t)return;t.innerHTML=`<b>${L(it.en[0],it.zh[0])}</b><span>${L(it.en[1],it.zh[1])}</span>`;t.classList.remove('show');void t.offsetWidth;t.classList.add('show')}
+  function win(){clearInterval(tick);const secs=Math.round((Date.now()-t0)/1000),P=LV[lv].pairs,stars=moves<=Math.round(P*1.6)?3:moves<=Math.round(P*2.3)?2:1;
+    setStatus(L('All pairs found!','全部配对完成！'),0);const my=token;
+    setTimeout(()=>{if(my===token)finish('memory',`${'★'.repeat(stars)}${'☆'.repeat(3-stars)} ${L('All pairs found!','全部配对完成！')}`,L(`${P} pairs in ${moves} turns · ${fmt(secs)}`,`${P}对 · ${moves}次 · ${fmt(secs)}`),true)},sp(900))}
+  function start(){token++;clearInterval(tick);t0=0;moves=0;found=0;open=[];lock=false;
+    const pick=shuffle(ITEMS.slice()).slice(0,LV[lv].pairs);cards=shuffle(pick.flatMap(it=>[{id:it.id,item:it},{id:it.id,item:it}]));
+    build();setStatus(L('Tap a card to turn it over, then find its matching pair.','点一张卡翻开，然后找出一样的那一张。'),0)}
+  return{mount(el){root=el;start()},start,stop(){token++;clearInterval(tick)}};
+})();
+
+/* ================= SPOT THE DIFFERENCE ================= */
+const SpotDiff=(()=>{
+  // diffs are in 0..1 image coordinates, listed from most to least obvious
+  const SCENES=window.SD_SCENES||[];
+  const LV={easy:{n:3,en:'Easy',zh:'简单'},medium:{n:5,en:'Medium',zh:'中等'},hard:{n:7,en:'Hard',zh:'困难'}};
+  let root,lv='easy',sc=0,found=[],miss=0,hints=0,t0=0,tick=null,token=0,done=false;
+  const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  const S=()=>SCENES[sc],D=()=>S().diffs.slice(0,LV[lv].n);
+  function build(){const s=S();
+    root.innerHTML=`<div class="row">${segHTML('sdLv',Object.entries(LV).map(([k,v])=>[k,`${L(v.en,v.zh)} · ${v.n}`]),lv)}</div>
+      <div class="sd-scenes">${SCENES.map((x,i)=>`<button class="sd-sc" data-i="${i}" aria-pressed="${i===sc}"><img src="img/sd-${x.id}-a.webp" alt=""><span>${L(x.en,x.zh)}</span></button>`).join('')}</div>
+      <div class="mc-stats"><span><small>${L('Found','找到')}</small><b id="sdFound">0/${LV[lv].n}</b></span><span><small>${L('Time','时间')}</small><b id="sdTime">0:00</b></span><span><button class="btn" id="sdHint">${L('Hint','提示')}</button></span></div>
+      <div class="status" id="status"></div>
+      <div class="sd-pair">
+        <figure class="sd-fig"><figcaption>${L('Original','原图')}</figcaption><div class="sd-img" data-k="a"><img src="img/sd-${s.id}-a.webp" alt="${L('Original picture','原图')}" draggable="false"><div class="sd-marks"></div></div></figure>
+        <figure class="sd-fig"><figcaption>${L(`Find ${LV[lv].n} changes`,`找出 ${LV[lv].n} 处不同`)}</figcaption><div class="sd-img" data-k="b"><img src="img/sd-${s.id}-${lv}.webp" alt="${L('Changed picture','改动过的图')}" draggable="false"><div class="sd-marks"></div></div></figure>
+      </div>`;
+    bindSeg('sdLv',v=>{lv=v;start()});
+    root.querySelectorAll('.sd-sc').forEach(b=>b.onclick=()=>{sc=+b.dataset.i;sfx.tap();start()});
+    root.querySelectorAll('.sd-img').forEach(box=>box.addEventListener('pointerdown',e=>tap(e,box)));
+    $('#sdHint').onclick=hint}
+  function mark(i,cls){const d=D()[i];root.querySelectorAll('.sd-marks').forEach(m=>{const r=document.createElement('i');r.className='sd-ring '+(cls||'');
+      r.style.left=d.x*100+'%';r.style.top=d.y*100+'%';r.style.width=Math.max(d.r*2.3,.08)*100+'%';m.appendChild(r);if(cls==='hint')setTimeout(()=>r.remove(),2200)})}
+  function tap(e,box){if(done)return;if(!t0){t0=Date.now();tick=setInterval(()=>{const x=$('#sdTime');if(x)x.textContent=fmt(Math.round((Date.now()-t0)/1000))},500)}
+    const r=box.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height,ar=r.width/r.height;
+    let hit=-1,best=9;D().forEach((d,i)=>{if(found.includes(i))return;const dist=Math.hypot((x-d.x)*ar,y-d.y),tol=d.r*ar+.05;if(dist<tol&&dist<best){best=dist;hit=i}});
+    if(hit>=0){found.push(hit);mark(hit);sfx.good();$('#sdFound').textContent=`${found.length}/${LV[lv].n}`;
+      if(found.length===LV[lv].n){done=true;clearInterval(tick);win()}else setStatus(L(`Well spotted! ${LV[lv].n-found.length} more to find.`,`眼力真好！还有 ${LV[lv].n-found.length} 处。`),0)}
+    else{miss++;tone(220,.08,'sine',.06);const m=box.querySelector('.sd-marks'),xx=document.createElement('i');xx.className='sd-miss';xx.style.left=x*100+'%';xx.style.top=y*100+'%';m.appendChild(xx);setTimeout(()=>xx.remove(),700)}}
+  function hint(){if(done)return;const left=D().map((_,i)=>i).filter(i=>!found.includes(i));if(!left.length)return;hints++;mark(left[0],'hint');sfx.tap();
+    setStatus(L('Look inside the glowing circle.','看看发光的圆圈里面。'),1)}
+  function win(){const secs=Math.round((Date.now()-t0)/1000),stars=hints===0&&miss<=2?3:hints<=1?2:1;setStatus(L('You found them all!','全部找到了！'),0);const my=token;
+    setTimeout(()=>{if(my===token)finish('spot',`${'★'.repeat(stars)}${'☆'.repeat(3-stars)} ${L('Sharp eyes!','好眼力！')}`,L(`${LV[lv].n} differences in ${fmt(secs)} · ${hints} hint${hints===1?'':'s'}`,`${LV[lv].n}处不同 · ${fmt(secs)} · 提示 ${hints} 次`),true)},sp(1000))}
+  function start(){token++;clearInterval(tick);t0=0;found=[];miss=0;hints=0;done=false;build();
+    setStatus(L('Compare the two pictures. Tap each change you spot, on either picture.','比较两张图，在任何一张图上点出你看到的不同。'),0)}
+  return{mount(el){root=el;start()},start,stop(){token++;clearInterval(tick)}};
+})();
+
+const IMPL={memory:MemoryCards,spot:SpotDiff,rhythm:Rhythm,congkak:Congkak,fivestones:FiveStones,sticks:Sticks,kuti:Kuti,snakes:Snakes,jigsaw:Jigsaw,xiangqi:Xiangqi,goli:Goli,carrom:Carrom};
 
 /* ---------- top bar ---------- */
 $('#backBtn').onclick=()=>{sfx.tap();show('home')};
