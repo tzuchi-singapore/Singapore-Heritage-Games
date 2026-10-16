@@ -115,6 +115,39 @@ p{margin:0}
 .pic span{padding:6px 8px;font-weight:800;font-size:calc((15px) * var(--fs,1))}
 .pic[aria-pressed="true"]{box-shadow:0 0 0 4px var(--sun)}
 #jgGhost[aria-pressed="true"]{background:var(--ink);color:var(--paper-2)}
+.jump{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--top-h,74px));z-index:15;min-width:0;margin:-8px 0 6px;padding:10px 0;background:var(--paper);border-bottom:2px solid rgba(58,37,23,.15)}
+.jump-row{display:grid;grid-template-columns:auto repeat(4,minmax(0,1fr));align-items:center;gap:10px}
+.jump-lbl{font-weight:900;color:var(--ink-soft);font-size:calc(14px * var(--fs,1));text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+.jump-btn{min-width:0;display:flex;align-items:center;justify-content:center;gap:7px;min-height:52px;padding:6px 10px;border-radius:14px;border:2px solid var(--ink);background:var(--paper-2);color:var(--ink);font:inherit;font-weight:900;font-size:calc(16px * var(--fs,1));line-height:1.15;box-shadow:0 3px 0 var(--ink);cursor:pointer;position:relative}
+.jump-btn svg{flex:none}
+.jump-btn span{overflow-wrap:anywhere}
+.jump-btn b{flex:none;min-width:24px;height:24px;padding:0 6px;border-radius:99px;display:grid;place-items:center;background:var(--enamel);color:#FFF6E3;font-size:calc(13px * var(--fs,1))}
+.jump-car{flex:none;width:8px;height:8px;border-right:2.5px solid currentColor;border-bottom:2.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
+.jump-btn.on{background:var(--sun);transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.jump-btn.on .jump-car{transform:translateY(2px) rotate(225deg)}
+@media (max-width:640px){
+  .jump-row{grid-template-columns:repeat(auto-fit,minmax(max(74px,calc(74px * var(--fs,1))),1fr));gap:6px}
+  .jump-lbl{display:none}
+  .jump-btn{flex-direction:column;gap:3px;padding:7px 4px 6px;min-height:62px;font-size:calc(14px * var(--fs,1))}
+  .jump-btn b{position:absolute;top:-8px;right:-6px;min-width:22px;height:22px;font-size:calc(12px * var(--fs,1));box-shadow:0 0 0 2px var(--paper)}
+  .jump-car{display:none}
+}
+.jump-btn:focus-visible,.jump-item:focus-visible,.jump-all:focus-visible{outline:4px solid var(--enamel);outline-offset:2px}
+.jump-list{position:absolute;left:0;right:0;top:calc(100% - 4px);background:var(--paper-2);border:2px solid var(--ink);border-radius:16px;box-shadow:0 6px 0 var(--ink),0 18px 40px rgba(58,37,23,.25);padding:8px;display:grid;gap:4px;max-height:min(70vh,520px);overflow-y:auto;animation:jumpIn .18s ease-out}
+.jump-list[hidden]{display:none}
+@keyframes jumpIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.jump-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 6px 8px;border-bottom:2px dashed rgba(58,37,23,.2);margin-bottom:2px}
+.jump-head b{font-size:calc(18px * var(--fs,1));color:var(--enamel-dk)}
+.jump-all{font:inherit;font-weight:800;font-size:calc(15px * var(--fs,1));color:var(--chilli);background:none;border:0;padding:8px 6px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.jump-item{display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:12px;padding:8px;border-radius:12px;border:0;background:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;min-height:64px}
+.jump-item:hover,.jump-item:active{background:rgba(255,211,78,.35)}
+.jump-item img,.jump-alb{width:64px;height:48px;border-radius:8px;object-fit:cover;border:2px solid var(--ink);display:block}
+.jump-alb{background:linear-gradient(135deg,#E8A33C,#FFD34E)}
+.jump-item b{display:block;font-size:calc(17px * var(--fs,1));line-height:1.2}
+.jump-item small{display:block;color:var(--ink-soft);font-size:calc(14px * var(--fs,1));line-height:1.3;margin-top:2px}
+.jump-arrow{width:10px;height:10px;border-right:3px solid var(--ink-soft);border-bottom:3px solid var(--ink-soft);transform:rotate(-45deg);margin-right:6px}
+.card.flash{animation:cardFlash 2.4s ease-out}
+@keyframes cardFlash{0%,40%{box-shadow:0 0 0 6px var(--sun),0 5px 0 var(--ink)}100%{box-shadow:0 5px 0 var(--ink)}}
 .cats{display:grid;gap:34px}
 .cat{display:grid;gap:14px}
 .cat-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;border-bottom:3px solid var(--ink);padding-bottom:8px}
@@ -481,6 +514,7 @@ canvas.play{width:min(100%,560px);border-radius:16px;border:3px solid var(--ink)
 
 <main class="wrap">
   <section class="screen" id="s-home">
+    <nav class="jump" id="jumpBar" aria-label="Jump to a game"></nav>
     <div class="hero">
       <div>
         <div class="presented"><img src="img/tzuchi.png" alt="Tzu-Chi Foundation"><span data-t="presented">Singapore · Senior Wellness</span></div>
@@ -701,16 +735,45 @@ function show(id,gameId){
 function renderHome(){
   const wrap=$('#gameCards');wrap.innerHTML='';
   const CATS=[['music',L('Music & rhythm','音乐节奏'),L('Oldies on the getai stage','歌台怀旧金曲')],['board',L('Board games','棋盘游戏'),L('Think ahead, take turns','动脑筋，轮流玩')],['skill',L('Skill & flick games','手巧游戏'),L('Steady hands, sharp eyes','手要稳，眼要准')],['puzzle',L('Puzzles & memories','拼图与回忆'),L('Old Singapore, piece by piece','一块一块拼出老新加坡')]];
-  CATS.forEach(([id,title,sub])=>{const sec=document.createElement('section');sec.className='cat';
+  CATS.forEach(([id,title,sub])=>{const sec=document.createElement('section');sec.className='cat';sec.id='cat-'+id;
     sec.innerHTML=`<header class="cat-h"><h2>${title}</h2><span>${sub}</span></header><div class="games"></div>`;const grid=sec.querySelector('.games');
-    GAMES.filter(g=>g.cat===id).forEach(g=>{const t=g[S.lang];const b=document.createElement('button');b.className='card';
+    GAMES.filter(g=>g.cat===id).forEach(g=>{const t=g[S.lang];const b=document.createElement('button');b.className='card';b.id='g-'+g.id;
       b.innerHTML=`<img src="${g.img}" alt="" loading="lazy"><div class="cb"><h3>${t[0]}</h3><div class="alt">${t[1]}</div><p class="d">${t[2]}</p></div>`;
       b.onclick=()=>{sfx.tap();show('game',g.id)};grid.appendChild(b)});
-    if(id==='puzzle'){const a=document.createElement('button');a.className='card album';
+    if(id==='puzzle'){const a=document.createElement('button');a.className='card album';a.id='g-album';
       a.innerHTML=`<div class="album-face"><span>${S.album.length}/${MEMS.length}</span></div><div class="cb"><h3>${L('Memory Album','回忆相册')}</h3><p class="d">${L('Pictures of old Singapore you have collected.','你收集到的老新加坡回忆。')}</p></div>`;
       a.onclick=()=>show('album');grid.appendChild(a)}
     wrap.appendChild(sec)});
+  renderJump(CATS);
 }
+/* ---------- jump bar: category shortcuts with a drop-down list of games ---------- */
+const JUMP_IC={
+  music:'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  board:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>',
+  skill:'<circle cx="8" cy="15" r="4"/><circle cx="17" cy="8" r="3"/><circle cx="17.5" cy="17.5" r="2"/>',
+  puzzle:'<path d="M10 3h4v2.5a1.5 1.5 0 0 0 3 0V3h4v7h-2.5a1.5 1.5 0 0 0 0 3H21v8h-7v-2.5a1.5 1.5 0 0 0-3 0V21H3v-8h2.5a1.5 1.5 0 0 0 0-3H3V3h7z"/>'};
+const JUMP_SHORT={music:['Music','音乐'],board:['Board','棋类'],skill:['Skill','手巧'],puzzle:['Puzzles','拼图']};
+let jumpOpen=null;
+function renderJump(CATS){const bar=$('#jumpBar');if(!bar)return;jumpOpen=null;
+  bar.innerHTML=`<div class="jump-row"><span class="jump-lbl">${L('Jump to','快速前往')}</span>${CATS.map(([id])=>{const n=GAMES.filter(g=>g.cat===id).length+(id==='puzzle'?1:0);
+    return `<button class="jump-btn" data-c="${id}" aria-expanded="false" aria-controls="jumpList"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${JUMP_IC[id]}</svg><span>${L(...JUMP_SHORT[id])}</span><b>${n}</b><i class="jump-car" aria-hidden="true"></i></button>`}).join('')}</div>
+    <div class="jump-list" id="jumpList" role="menu" hidden></div>`;
+  bar.querySelectorAll('.jump-btn').forEach(b=>b.onclick=e=>{e.stopPropagation();sfx.tap();jumpOpen===b.dataset.c?closeJump():openJump(b.dataset.c,CATS)})}
+function openJump(cat,CATS){jumpOpen=cat;const bar=$('#jumpBar'),list=$('#jumpList');
+  bar.querySelectorAll('.jump-btn').forEach(x=>{const on=x.dataset.c===cat;x.classList.toggle('on',on);x.setAttribute('aria-expanded',on)});
+  const c=CATS.find(x=>x[0]===cat),items=GAMES.filter(g=>g.cat===cat).map(g=>({id:g.id,img:g.img,name:g[S.lang][0],alt:g[S.lang][1]}));
+  if(cat==='puzzle')items.push({id:'album',img:'img/m2-kampong.webp',name:L('Memory Album','回忆相册'),alt:L(`${S.album.length} of ${MEMS.length} collected`,`已收集 ${S.album.length}/${MEMS.length}`)});
+  list.innerHTML=`<div class="jump-head"><b>${c[1]}</b><button class="jump-all" data-go="cat-${cat}">${L('Show all','查看全部')}</button></div>`+
+    items.map(it=>`<button class="jump-item" role="menuitem" data-go="g-${it.id}">${it.img?`<img src="${it.img}" alt="" loading="lazy">`:'<span class="jump-alb" aria-hidden="true"></span>'}<span><b>${it.name}</b><small>${it.alt}</small></span><i class="jump-arrow" aria-hidden="true"></i></button>`).join('');
+  list.hidden=false;list.querySelectorAll('[data-go]').forEach(x=>x.onclick=e=>{e.stopPropagation();sfx.tap();closeJump();jumpTo(x.dataset.go)})}
+function closeJump(){jumpOpen=null;const l=$('#jumpList');if(l)l.hidden=true;document.querySelectorAll('.jump-btn').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-expanded','false')})}
+function jumpTo(id){const el=document.getElementById(id);if(!el)return;
+  const off=(document.querySelector('.top')?.offsetHeight||0)+($('#jumpBar')?.offsetHeight||0)+14;
+  window.scrollTo({top:el.getBoundingClientRect().top+scrollY-off,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  if(el.classList.contains('card')){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),2600);setTimeout(()=>{try{el.focus({preventScroll:true})}catch(e){}},700)}}
+document.addEventListener('click',e=>{if(jumpOpen&&!e.target.closest('#jumpBar'))closeJump()});
+(()=>{const t=document.querySelector('.top');if(!t)return;const set=()=>document.documentElement.style.setProperty('--top-h',t.offsetHeight+'px');set();if(window.ResizeObserver)new ResizeObserver(set).observe(t);else addEventListener('resize',set)})();
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&jumpOpen)closeJump()});
 let albFilter='all';
 function renderAlbum(){
   const got=MEMS.filter(m=>S.album.includes(m.id)).length,pct=Math.round(got/MEMS.length*100);
