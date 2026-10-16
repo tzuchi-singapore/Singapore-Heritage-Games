@@ -16,6 +16,8 @@ Kampong Days brings back the games played on verandahs, void decks and five-foot
 | Board games | **Congkak** | The Malay seed-sowing game |
 | | **Snakes & Ladders** | Kampong edition: climb the ladders, dodge the snakes, hear the stories |
 | | **Chinese Chess 象棋** | Play the computer or a friend |
+| | **Draughts** | The kopitiam classic: compulsory captures, chain jumps and crowned kings |
+| | **Reversi** | Trap and flip your opponent's discs; corners are precious |
 | Skill & flick | **Five Stones** | Throw, pick up and catch with a hand you move |
 | | **Pick-up Sticks** | Lift one stick without moving the others |
 | | **Kuti Kuti** | Flick the plastic animals with a swipe |
@@ -29,7 +31,7 @@ Kampong Days brings back the games played on verandahs, void decks and five-foot
 ## Features
 - **For seniors:** large text with A− / A+ (up to 170%), English and 中文, a slow-pace setting, and sound on or off.
 - **Jump to bar:** category shortcuts at the top of the home page.
-- **Play together:** most versus games can be played on one device, or online on two devices with a 4-digit code (the host taps Accept to start).
+- **Play together:** the versus games (Congkak, Snakes & Ladders, Chinese Chess, Draughts, Reversi, Goli and Carrom) can be played against the computer (Chinese Chess, Draughts and Reversi have easy to hard levels), on one device, or online on two devices with a 4-digit code (the host taps Accept to start).
 - **Works anywhere:** phones, tablets and computers, in any modern browser.
 
 ## Privacy

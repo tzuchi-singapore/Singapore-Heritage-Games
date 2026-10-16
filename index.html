@@ -148,6 +148,17 @@ p{margin:0}
 .jump-arrow{width:10px;height:10px;border-right:3px solid var(--ink-soft);border-bottom:3px solid var(--ink-soft);transform:rotate(-45deg);margin-right:6px}
 .card.flash{animation:cardFlash 2.4s ease-out}
 @keyframes cardFlash{0%,40%{box-shadow:0 0 0 6px var(--sun),0 5px 0 var(--ink)}100%{box-shadow:0 5px 0 var(--ink)}}
+.dm-score{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dm-side{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:10px;align-items:center;padding:8px 12px;border-radius:14px;border:2px solid rgba(58,37,23,.25);background:var(--paper-2)}
+.dm-side.on{border-color:var(--ink);box-shadow:0 0 0 3px var(--sun)}
+.dm-side b{font-size:calc(16px * var(--fs,1));line-height:1.2;overflow-wrap:anywhere}
+.dm-side span{grid-column:2;color:var(--ink-soft);font-weight:700;font-size:calc(14px * var(--fs,1))}
+.dm-side .rv-n{font-size:calc(24px * var(--fs,1));font-weight:900;color:var(--ink)}
+.dm-dot,.rv-dot{grid-row:span 2;width:30px;height:30px;border-radius:50%;box-shadow:inset -3px -4px 0 rgba(0,0,0,.25),0 2px 0 rgba(0,0,0,.3)}
+.dm-dot.r{background:radial-gradient(circle at 35% 30%,#F06A55,#C7372B 55%,#8E1C14)}
+.dm-dot.b{background:radial-gradient(circle at 35% 30%,#6B5A4E,#2F241E 55%,#120C09)}
+.rv-dot.bk{background:radial-gradient(circle at 35% 30%,#5A5A5A,#1E1E1E 60%,#050505)}
+.rv-dot.wh{background:radial-gradient(circle at 35% 30%,#fff,#F2EDE2 60%,#CFC7B5);border:1px solid #bbb}
 .cats{display:grid;gap:34px}
 .cat{display:grid;gap:14px}
 .cat-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;border-bottom:3px solid var(--ink);padding-bottom:8px}
@@ -570,7 +581,7 @@ const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()
 
 const D={
   brand:['Kampong Days','甘榜童年'],
-  kicker:['12 heritage games · 1 village','十二种传统游戏 · 一个甘榜'],
+  kicker:['14 heritage games · 1 village','十四种传统游戏 · 一个甘榜'],
   presented:['Singapore · Senior Wellness','新加坡 · 乐龄健康'],
   lede:['The games we played on verandahs, void decks and five-foot ways, with the real rules. Finish a game to collect a picture memory of old Singapore.','我们小时候在走廊、组屋楼下和五脚基玩的游戏，规则原汁原味。每玩完一局，就能收集一张老新加坡回忆卡。'],
   note:['Tip: tap A+ for bigger text, “中文” for Chinese, and the gear for a slower pace.','小贴士：按 A+ 放大字体，按“EN”切换英文，按齿轮可放慢速度。'],
@@ -704,6 +715,12 @@ const GAMES=[
  {id:'xiangqi',cat:'board',img:'img/xiangqi.webp',en:['Chinese Chess','Xiangqi · 象棋','The void deck classic. Checkmate the General.'],zh:['象棋','楚河汉界','组屋楼下的经典，将死对方主帅。'],
   rules:{en:['Red moves first, then players take turns. Moving onto an enemy piece captures it.','General 帥/將 stays inside the palace and moves one step straight. The two Generals may never face each other on an open file.','Advisor 仕/士: one step diagonally inside the palace. Elephant 相/象: two steps diagonally, cannot cross the river, and is blocked if the middle point is occupied.','Horse 傌/馬: one step straight then one diagonally; blocked if a piece sits right beside it. Chariot 俥/車: any distance in a straight line.','Cannon 炮/砲: moves like a Chariot, but captures only by jumping over exactly one piece.','Soldier 兵/卒: one step forward; after crossing the river it may also move sideways. Trap the enemy General (checkmate) to win.'],
    zh:['红方先走，双方轮流走棋，走到对方棋子上就把它吃掉。','帅/将：只能在九宫内直走一步。两个将帅不能在同一直线上直接照面。','仕/士：在九宫内斜走一步。相/象：走田字，不能过河，象眼被堵就不能走。','马：走日字，马脚被堵就不能走。车：直线任意走。','炮：走法和车一样，吃子时要隔一个棋子打过去。','兵/卒：向前走一步，过河后可以左右走。把对方的将帅困死就赢了。']}},
+ {id:'draughts',cat:'board',img:'img/draughts.webp',en:['Draughts','Dam · checkers','The kopitiam classic, once played with bottle caps.'],zh:['跳棋','国际跳棋 · Dam','咖啡店的经典游戏，以前常用汽水瓶盖当棋子。'],
+  rules:{en:['Red moves first, then players take turns. All pieces stay on the dark squares.','A piece moves one square diagonally forward onto an empty square.','Capture by jumping diagonally over an enemy piece onto the empty square behind it. If you can capture, you must: the pieces that can jump will glow.','After a jump, if the same piece can jump again, keep going: tap each landing dot in turn.','A piece that reaches the far side becomes a King (it gets a crown) and may move and capture backwards too.','Win by capturing all your opponent\'s pieces or leaving them with no move.'],
+   zh:['红方先走，双方轮流。所有棋子都在深色格上。','棋子每次斜着向前走一格，走到空格上。','斜着跳过相邻的对方棋子，落在后面的空格上，就把它吃掉。能吃子时一定要吃，可以吃子的棋子会发光。','跳吃之后，如果同一个棋子还能再跳，就继续跳，依次点每个落点。','走到对面底线的棋子升为“王”（戴上皇冠），可以前后走、前后吃。','吃光对方所有棋子，或让对方无棋可走，就赢了。']}},
+ {id:'reversi',cat:'board',img:'img/reversi.webp',en:['Reversi','Black & white · Othello','Trap and flip your opponent\'s discs.'],zh:['黑白棋','翻转棋','夹住对方的棋子，把它们翻成你的颜色。'],
+  rules:{en:['The game starts with four discs in the middle. Black plays first, then players take turns.','Place a disc so that one or more of the other colour\'s discs are trapped in a straight line (across, up-down or diagonal) between your new disc and one of yours.','All trapped discs flip to your colour. One move can flip discs in several directions at once.','The dots show where you can play. If you have no move, you must pass.','Corners are precious: a disc in a corner can never be flipped.','When neither player can move, the one with more discs wins.'],
+   zh:['开局中间有四个棋子，黑子先下，双方轮流。','放下棋子时，要把对方的棋子夹在你新放的棋子和你原有的棋子之间，横、竖、斜都可以。','被夹住的棋子全部翻成你的颜色，一步棋可以同时在几个方向翻棋。','圆点表示可以下的位置。如果无处可下，就要跳过。','角落最宝贵：角上的棋子永远不会被翻。','双方都无法再下时，棋子多的一方获胜。']}},
  {id:'goli',cat:'skill',img:'img/goli.webp',en:['Goli','Marbles in the sand','Flick your shooter and knock marbles out of the ring.'],zh:['打弹珠','Goli','弹出你的弹珠，把圈里的弹珠打出去。'],
   rules:{en:['13 marbles sit in the middle of a ring drawn in the sand.','Slide your goli (the shooter) along the line, then pull back and let go to flick it into the ring.','Every marble you knock out of the ring is yours, and you shoot again from where your goli stopped.','If nothing goes out, your turn ends.','When the ring is empty, whoever won the most marbles wins.'],
    zh:['13粒弹珠放在沙地上画的圈中间。','沿着线移动你的弹珠，往后拉再放开，把它弹进圈里。','打出圈外的弹珠都归你，还可以从弹珠停下的地方再射一次。','没有打出任何弹珠，就换人。','圈里的弹珠打完，赢得最多的人胜。']}},
@@ -2500,7 +2517,270 @@ const SpotDiff=(()=>{
   return{mount(el){root=el;start()},start,stop(){token++;clearInterval(tick)},get _d(){return diffs}};
 })();
 
-const IMPL={memory:MemoryCards,spot:SpotDiff,rhythm:Rhythm,congkak:Congkak,fivestones:FiveStones,sticks:Sticks,kuti:Kuti,snakes:Snakes,jigsaw:Jigsaw,xiangqi:Xiangqi,goli:Goli,carrom:Carrom};
+/* ================= DRAUGHTS (8x8, compulsory captures, multi-jumps, kings) ================= */
+const Draughts=(()=>{
+  const RED='r',BLK='b',LW=800,LH=800,M=44,S=(LW-2*M)/8;
+  let root,cv,ctx,B,turn,moves=[],sel=null,part=null,last=null,hist=[],mode='easy',prevMode='easy',over=false,token=0,ro,thinking=false,busy=false,quiet=0;
+  let anim=null,flying=[],chips=[],sparks=[],banner=null,looping=false,animDone=null;
+  const opp=s=>s===RED?BLK:RED,myColor=()=>Net.me===0?RED:BLK,flipV=()=>mode==='online'&&Net.me===1,remoteTurn=()=>mode==='online'&&turn!==myColor(),aiOn=()=>['easy','normal','hard'].includes(mode);
+  const rc=i=>[i>>3,i&7],id=(r,c)=>r*8+c,inB=(r,c)=>r>=0&&r<8&&c>=0&&c<8;
+  function init(){B=Array(64).fill(null);for(let r=0;r<8;r++)for(let c=0;c<8;c++){if((r+c)%2!==1)continue;if(r<3)B[id(r,c)]={s:BLK,k:false};if(r>4)B[id(r,c)]={s:RED,k:false}}}
+  const fwd=s=>s===RED?-1:1,crownRow=s=>s===RED?0:7;
+  // every legal move is a whole turn: {f, path:[landing squares], caps:[captured squares], promote}
+  function gen(Bd,s){const out=[];
+    const jumps=(from,p,bd,path,caps)=>{const[r,c]=rc(from);let found=false;
+      const dirs=p.k?[[1,1],[1,-1],[-1,1],[-1,-1]]:[[fwd(p.s),1],[fwd(p.s),-1]];
+      for(const[dr,dc]of dirs){const mr=r+dr,mc=c+dc,lr=r+2*dr,lc=c+2*dc;if(!inB(lr,lc))continue;const mid=bd[id(mr,mc)],land=id(lr,lc);
+        if(!mid||mid.s===p.s||caps.includes(id(mr,mc))||bd[land])continue;found=true;
+        const promote=!p.k&&lr===crownRow(p.s),np=[...path,land],nc=[...caps,id(mr,mc)];
+        if(promote)out.push({f:path.length?path[0]:from,path:np,caps:nc,promote:true});
+        else jumps(land,p,bd,np,nc)}
+      if(!found&&path.length)out.push({f:null,path,caps,promote:false})};
+    for(let i=0;i<64;i++){const p=Bd[i];if(!p||p.s!==s)continue;const n0=out.length;const bd=Bd.slice();bd[i]=null;
+      jumps(i,p,bd,[],[]);for(let k=n0;k<out.length;k++)out[k].f=i}
+    if(out.length)return out;
+    for(let i=0;i<64;i++){const p=Bd[i];if(!p||p.s!==s)continue;const[r,c]=rc(i);
+      const dirs=p.k?[[1,1],[1,-1],[-1,1],[-1,-1]]:[[fwd(s),1],[fwd(s),-1]];
+      for(const[dr,dc]of dirs){const nr=r+dr,nc=c+dc;if(inB(nr,nc)&&!Bd[id(nr,nc)])out.push({f:i,path:[id(nr,nc)],caps:[],promote:!p.k&&nr===crownRow(s)})}}
+    return out}
+  function apply(Bd,m){const n=Bd.slice(),p={...n[m.f]};n[m.f]=null;m.caps.forEach(c=>n[c]=null);if(m.promote)p.k=true;n[m.path[m.path.length-1]]=p;return n}
+  function evalB(Bd,s){let v=0;for(let i=0;i<64;i++){const p=Bd[i];if(!p)continue;const[r,c]=rc(i);let x;
+      if(p.k)x=175+(3.5-Math.abs(3.5-c))*2+(3.5-Math.abs(3.5-r))*2;
+      else{const adv=p.s===RED?7-r:r;x=100+adv*6+(adv===0?8:0)+(c===0||c===7?-4:0)}
+      v+=p.s===s?x:-x}return v}
+  let deadline=Infinity;const TIMEUP={};
+  function search(Bd,s,d,a,b){if(performance.now()>deadline)throw TIMEUP;const ms=gen(Bd,s);if(!ms.length)return-10000-d;if(d<=0&&!ms[0].caps.length)return evalB(Bd,s);if(d<=-4)return evalB(Bd,s);
+    ms.sort((x,y)=>y.caps.length-x.caps.length);let best=-1e9;
+    for(const m of ms){const sc=-search(apply(Bd,m),opp(s),d-1,-b,-a);if(sc>best)best=sc;if(best>a)a=best;if(a>=b)break}return best}
+  function aiMove(){const ms=shuffle(gen(B,turn).slice());if(!ms.length)return null;if(ms.length===1)return ms[0];const maxD=mode==='easy'?1:mode==='normal'?4:7;
+    deadline=performance.now()+(mode==='hard'?1100:700);let best=ms[0];
+    for(let d=1;d<=maxD;d++){let bs=-1e9,bm=null;try{for(const m of ms){let sc=-search(apply(B,m),opp(turn),d-1,-1e9,1e9);if(mode==='easy')sc+=rand(0,90);if(sc>bs){bs=sc;bm=m}}}catch(e){if(e!==TIMEUP)throw e;break}
+      best=bm;ms.sort((x,y)=>x===bm?-1:y===bm?1:0)}
+    deadline=Infinity;return best}
+  /* drawing */
+  const X=c=>M+(flipV()?7-c:c)*S+S/2,Y=r=>M+(flipV()?7-r:r)*S+S/2,pos=i=>{const[r,c]=rc(i);return[X(c),Y(r)]};
+  let grain=null;
+  function board(){const g=ctx.createLinearGradient(0,0,LW,LH);g.addColorStop(0,'#6B3E1E');g.addColorStop(1,'#3E220F');ctx.fillStyle=g;ctx.fillRect(0,0,LW,LH);
+    ctx.strokeStyle='rgba(255,220,160,.25)';ctx.lineWidth=2;ctx.strokeRect(10,10,LW-20,LH-20);
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){const x=M+c*S,y=M+r*S,dark=(r+c)%2===1;
+      if(dark){const gg=ctx.createLinearGradient(x,y,x+S,y+S);gg.addColorStop(0,'#8A5530');gg.addColorStop(1,'#6E3F20');ctx.fillStyle=gg}else ctx.fillStyle=(r*3+c)%2?'#F3E2BE':'#EFDAB0';
+      ctx.fillRect(x,y,S,S)}
+    if(!grain){grain=[];for(let i=0;i<70;i++)grain.push([Math.random()*LW,Math.random()*LH,20+Math.random()*60,Math.random()*.6-.3])}
+    ctx.save();ctx.beginPath();ctx.rect(M,M,LW-2*M,LH-2*M);ctx.clip();ctx.strokeStyle='rgba(60,30,10,.12)';ctx.lineWidth=1.5;
+    for(const[x,y,l,a]of grain){ctx.beginPath();ctx.moveTo(x,y);ctx.quadraticCurveTo(x+l/2,y+a*20,x+l,y+a*8);ctx.stroke()}ctx.restore();
+    ctx.strokeStyle='#2A160A';ctx.lineWidth=4;ctx.strokeRect(M,M,LW-2*M,LH-2*M)}
+  function crown(x,y,w){ctx.save();ctx.translate(x,y);ctx.fillStyle='#F5C542';ctx.strokeStyle='#7A5310';ctx.lineWidth=2.5;ctx.beginPath();
+    ctx.moveTo(-w,w*.45);ctx.lineTo(-w,-w*.25);ctx.lineTo(-w*.5,w*.1);ctx.lineTo(0,-w*.55);ctx.lineTo(w*.5,w*.1);ctx.lineTo(w,-w*.25);ctx.lineTo(w,w*.45);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#B3231C';for(const px of[-w,0,w])ctx.beginPath(),ctx.arc(px,px===0?-w*.55:-w*.25,w*.13,0,7),ctx.fill();ctx.restore()}
+  function disc(p,x,y,lift=0,R=S*.4){ctx.save();ctx.translate(x,y-lift);
+    ctx.fillStyle='rgba(20,8,2,.45)';ctx.beginPath();ctx.ellipse(4,R*.22+lift*.6,R*1.02,R*.92,0,0,7);ctx.fill();
+    const red=p.s===RED,layers=p.k?2:1;
+    for(let L=0;L<layers;L++){const oy=-L*R*.22;
+      ctx.fillStyle=red?'#6E140E':'#0E0907';ctx.beginPath();ctx.ellipse(0,oy+R*.12,R,R*.98,0,0,7);ctx.fill();
+      const g=ctx.createRadialGradient(-R*.35,oy-R*.4,R*.1,0,oy,R);if(red){g.addColorStop(0,'#F06A55');g.addColorStop(.55,'#C7372B');g.addColorStop(1,'#8E1C14')}else{g.addColorStop(0,'#6B5A4E');g.addColorStop(.55,'#2F241E');g.addColorStop(1,'#120C09')}
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,oy,R,0,7);ctx.fill();
+      ctx.strokeStyle=red?'rgba(255,200,180,.45)':'rgba(255,240,220,.22)';ctx.lineWidth=2;for(const k of[.78,.56]){ctx.beginPath();ctx.arc(0,oy,R*k,0,7);ctx.stroke()}}
+    if(p.k)crown(0,-R*.22,R*.42);ctx.restore()}
+  const easeIO=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  function kick(){if(looping)return;looping=true;let lt=performance.now();
+    const step=now=>{const dt=Math.min(.04,(now-lt)/1000);lt=now;
+      if(anim&&(now-anim.t0)/anim.dur>=1&&animDone){const r=animDone;animDone=null;r()}
+      flying=flying.filter(f=>{f.vy+=2400*dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.rot+=f.vr*dt;return now-f.t0<1500&&f.y<LH+200});
+      chips=chips.filter(c=>{c.vy+=1800*dt;c.x+=c.vx*dt;c.y+=c.vy*dt;return now-c.t0<c.life});
+      sparks=sparks.filter(s=>now-s.t0<s.life);if(banner&&now-banner.t0>1500)banner=null;
+      draw(now);if(anim||flying.length||chips.length||sparks.length||banner||glowOn())requestAnimationFrame(step);else{looping=false;draw()}};
+    requestAnimationFrame(step)}
+  const human=()=>!over&&!thinking&&!busy&&!remoteTurn()&&!(aiOn()&&turn===BLK);
+  const glowOn=()=>human()&&sel===null&&!part&&moves.length&&moves[0].caps.length;
+  function draw(now=performance.now()){board();
+    if(last&&!anim){ctx.fillStyle='rgba(245,197,66,.35)';for(const i of last){const[r,c]=rc(i);ctx.fillRect(M+(flipV()?7-c:c)*S,M+(flipV()?7-r:r)*S,S,S)}}
+    const movingFrom=part?part.cur:null;
+    for(let i=0;i<64;i++){const p=B[i];if(!p||(anim&&i===anim.hide))continue;const[x,y]=pos(i);disc(p,x,y,sel===i||movingFrom===i?8:0)}
+    if(glowOn()){const k=(Math.sin(now/170)+1)/2;ctx.strokeStyle=`rgba(245,197,66,${.6+k*.4})`;ctx.lineWidth=8+k*5;for(const f of new Set(moves.map(m=>m.f))){const[x,y]=pos(f);ctx.beginPath();ctx.arc(x,y,S*.47,0,7);ctx.stroke()}}
+    const from=part?part.cur:sel;
+    if(from!==null&&from!==undefined&&human()){const[x,y]=pos(from);ctx.strokeStyle='#1D5A84';ctx.lineWidth=6;ctx.beginPath();ctx.arc(x,y-8,S*.48,0,7);ctx.stroke();
+      const n=part?part.path.length:0,cand=moves.filter(m=>m.f===(part?part.f:sel)&&(!part||part.path.every((q,k)=>m.path[k]===q)));
+      for(const m of cand){if(!m.caps.length||m.caps[n]===undefined)continue;const[cx,cy]=pos(m.caps[n]);ctx.strokeStyle='rgba(179,49,42,.95)';ctx.lineWidth=6;ctx.setLineDash([9,7]);ctx.beginPath();ctx.arc(cx,cy,S*.48,0,7);ctx.stroke();ctx.setLineDash([])}
+      for(const t of nextTargets()){const[tx,ty]=pos(t);const capt=moves.some(m=>m.caps.length);ctx.fillStyle=capt?'rgba(179,49,42,.9)':'rgba(29,90,132,.85)';ctx.beginPath();ctx.arc(tx,ty,S*.22,0,7);ctx.fill();
+        ctx.strokeStyle='#FFF6E6';ctx.lineWidth=4;ctx.stroke()}}
+    if(anim){const t=Math.min(1,(now-anim.t0)/anim.dur),e=easeIO(t);disc(anim.p,anim.x0+(anim.x1-anim.x0)*e,anim.y0+(anim.y1-anim.y0)*e,Math.sin(Math.PI*t)*(anim.jump?46:22))}
+    for(const c of chips){ctx.globalAlpha=Math.max(0,1-(now-c.t0)/c.life);ctx.fillStyle=c.c;ctx.fillRect(c.x-c.s/2,c.y-c.s/2,c.s,c.s*.6)}ctx.globalAlpha=1;
+    for(const s of sparks){const a=(now-s.t0)/s.life;ctx.globalAlpha=1-a;ctx.fillStyle=s.c;ctx.beginPath();ctx.arc(s.x+s.vx*a,s.y+s.vy*a,s.r*(1-a*.5),0,7);ctx.fill()}ctx.globalAlpha=1;
+    for(const f of flying){ctx.save();ctx.globalAlpha=Math.max(0,1-(now-f.t0)/1500);ctx.translate(f.x,f.y);ctx.rotate(f.rot);disc(f.p,0,0);ctx.restore()}
+    if(banner){const a=(now-banner.t0)/1500,sc=a<.15?.6+a/.15*.5:1.1-Math.max(0,a-.15)*.1;ctx.save();ctx.globalAlpha=a>.75?Math.max(0,1-(a-.75)/.25):1;ctx.translate(LW/2,LH/2);ctx.scale(sc,sc);
+      ctx.fillStyle='rgba(58,37,23,.8)';ctx.beginPath();ctx.roundRect?ctx.roundRect(-280,-80,560,160,30):ctx.rect(-280,-80,560,160);ctx.fill();
+      ctx.font='900 64px Nunito, sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#F5C542';ctx.fillText(banner.txt,0,-14);ctx.font='800 30px Nunito, sans-serif';ctx.fillStyle='#FFF6E6';ctx.fillText(banner.sub,0,44);ctx.restore()}}
+  const name=s=>mode==='online'?(s===myColor()?(s===RED?L('You (Red)','你（红方）'):L('You (Black)','你（黑方）')):(s===RED?L('Friend (Red)','朋友（红方）'):L('Friend (Black)','朋友（黑方）'))):s===RED?(mode==='two'?L('Red','红方'):L('You (Red)','你（红方）')):(mode==='two'?L('Black','黑方'):L('Computer (Black)','电脑（黑方）'));
+  function counts(){const el=$('#dmScore');if(!el)return;const n=s=>B.filter(p=>p&&p.s===s).length,k=s=>B.filter(p=>p&&p.s===s&&p.k).length;
+    el.innerHTML=[RED,BLK].map(s=>`<div class="dm-side ${turn===s&&!over?'on':''}"><i class="dm-dot ${s}"></i><b>${name(s)}</b><span>${n(s)} ${L('pieces','子')}${k(s)?` · ${k(s)} ${L(k(s)>1?'kings':'king','王')}`:''}</span></div>`).join('')}
+  // a turn may be several hops: part tracks the hops made so far
+  function nextTargets(){const from=part?part.cur:sel;if(from===null||from===undefined)return[];const n=part?part.path.length:0;
+    return[...new Set(moves.filter(m=>m.f===(part?part.f:sel)&&(!part||part.path.every((q,k)=>m.path[k]===q))).map(m=>m.path[n]).filter(x=>x!==undefined))]}
+  async function hop(from,to,capIdx,p){const my=token;const[x0,y0]=pos(from),[x1,y1]=pos(to);B[from]=null;
+    anim={p,x0,y0,x1,y1,t0:performance.now(),dur:sp(capIdx!=null?520:380),jump:capIdx!=null,hide:-1};tone(520,.05,'triangle',.07);
+    await new Promise(r=>{animDone=r;kick()});if(my!==token)return false;anim=null;B[to]=p;
+    if(capIdx!=null){const cp=B[capIdx];B[capIdx]=null;const[cx,cy]=pos(capIdx),dx=x1-x0,dy=y1-y0,d=Math.hypot(dx,dy)||1,now=performance.now();
+      if(cp){flying.push({p:cp,x:cx,y:cy,vx:dx/d*500+rand(-120,120),vy:-900+rand(-100,100),rot:0,vr:rand(-12,12),t0:now})}
+      for(let k=0;k<14;k++)chips.push({x:cx,y:cy,vx:rand(-480,480),vy:rand(-700,-120),t0:now,life:rand(500,900),s:rand(6,13),c:k%3?'#C99A56':(cp&&cp.s===RED?'#C7372B':'#2F241E')});
+      tone(110,.15,'square',.12);tone(70,.24,'sine',.2)}else{tone(190,.07,'triangle',.16)}
+    kick();return true}
+  async function play(m,fromHuman){const my=token;busy=true;hist.push({B:B.slice(),turn,quiet,last});const p={...B[m.f]};let cur=m.f;
+    const startK=p.k;
+    for(let k=part?part.path.length:0;k<m.path.length;k++){const ok=await hop(cur,m.path[k],m.caps.length?m.caps[k]:null,p);if(!ok)return;cur=m.path[k];if(m.caps.length&&k<m.path.length-1)await sleep(sp(120))}
+    if(my!==token)return;
+    if(m.promote&&!startK){p.k=true;B[cur]=p;const[x,y]=pos(cur),now=performance.now();for(let k=0;k<26;k++)sparks.push({x,y,vx:rand(-120,120),vy:rand(-140,60),r:rand(3,7),c:k%2?'#F5C542':'#FFF6E6',t0:now,life:rand(600,1100)});
+      banner={txt:L('King!','升王！'),sub:L(`${name(p.s)} crowned a piece`,`${name(p.s)}的棋子升为王`),t0:now};tone(660,.12,'triangle',.1);tone(880,.12,'triangle',.1,.12);tone(1320,.2,'triangle',.1,.24)}
+    quiet=(m.caps.length||!startK)?0:quiet+1;
+    if(fromHuman&&mode==='online')Net.send({t:'mv',f:m.f,path:m.path});
+    last=[m.f,...m.path];sel=null;part=null;turn=opp(turn);moves=gen(B,turn);busy=false;counts();kick();
+    if(m.caps.length)setStatus(L(`${name(opp(turn))} captured ${m.caps.length} piece${m.caps.length>1?'s':''}!`,`${name(opp(turn))}吃了 ${m.caps.length} 个子！`),opp(turn)===RED?0:1);
+    await sleep(sp(m.caps.length?600:150));if(my!==token)return;check()}
+  function check(){const my=token;counts();
+    if(!moves.length||quiet>=80){over=true;const draw_=quiet>=80&&moves.length,winner=opp(turn);
+      setStatus(draw_?L('Draw: 40 moves each with no capture.','和棋：双方各走40步都没有吃子。'):L(`${name(winner)} wins!`,`${name(winner)}胜！`),winner===RED?0:1);draw();
+      const won=draw_?true:mode==='two'||(mode==='online'?winner===myColor():winner===RED);
+      setTimeout(()=>{if(my===token)finish('draughts',draw_?L("It's a draw",'和棋'):mode==='online'?(winner===myColor()?L('You win!','你赢了！'):L('Your friend wins','朋友赢了')):winner===RED?(mode==='two'?L('Red wins!','红方胜！'):L('You win!','你赢了！')):(mode==='two'?L('Black wins!','黑方胜！'):L('The computer wins','电脑赢了')),
+        draw_?L('Neither side could make progress.','双方都无法取胜。'):B.some(p=>p&&p.s===turn)?L('The other side had no moves left.','对方已经无棋可走。'):L('Every piece was captured.','对方的棋子全被吃光了。'),won)},sp(1200));return}
+    if(remoteTurn()){waitFriend();Net.take('mv').then(mm=>{if(my!==token)return;const m=moves.find(x=>x.f===(mm.f|0)&&x.path.length===(mm.path||[]).length&&x.path.every((q,k)=>q===(mm.path[k]|0)));if(m)play(m,false)});return}
+    if(aiOn()&&turn===BLK){thinking=true;setStatus(L('Computer is thinking…','电脑思考中…'),1);
+      setTimeout(async()=>{if(my!==token)return;const m=aiMove();await sleep(sp(450));if(my!==token||!m)return;thinking=false;play(m,false)},sp(300));return}
+    const must=moves[0].caps.length;
+    setStatus(must?L(`${name(turn)}: you must capture! The glowing pieces can jump.`,`${name(turn)}：必须吃子！发光的棋子可以跳吃。`):L(`${name(turn)} to move: tap a piece, then tap a dot.`,`${name(turn)}走：点一个棋子，再点圆点。`),turn===RED?0:1);kick()}
+  function tap(e){if(!human())return;const r0=cv.getBoundingClientRect(),x=(e.clientX-r0.left)/r0.width*LW,y=(e.clientY-r0.top)/r0.height*LH;
+    let c=Math.floor((x-M)/S),r=Math.floor((y-M)/S);if(c<0||c>7||r<0||r>7)return;if(flipV()){c=7-c;r=7-r}const i=id(r,c);
+    const targets=nextTargets();
+    if(targets.includes(i)){const f=part?part.f:sel,path=[...(part?part.path:[]),i],cand=moves.filter(m=>m.f===f&&path.every((q,k)=>m.path[k]===q));
+      const done=cand.find(m=>m.path.length===path.length);
+      if(done){play(done,true);return}
+      // a multi-jump: make this hop now and wait for the next tap
+      const m=cand[0],k=path.length-1,p={...B[part?part.cur:sel]};busy=true;
+      hop(part?part.cur:sel,i,m.caps[k],p).then(ok=>{if(!ok)return;if(!part){hist.push({B:null})}part={f,path,cur:i};busy=false;
+        setStatus(L('Keep jumping! Tap the next dot.','继续跳！点下一个圆点。'),turn===RED?0:1);draw();kick()});return}
+    if(part)return;
+    if(B[i]&&B[i].s===turn){sel=i;sfx.tap();if(!moves.some(m=>m.f===i))setStatus(moves[0]&&moves[0].caps.length?L('You must capture! Choose one of the glowing pieces.','必须吃子！请选发光的棋子。'):L('This piece cannot move right now.','这个棋子现在不能走。'),turn===RED?0:1);draw();kick()}
+    else{sel=null;draw();kick()}}
+  function undoMove(){if(thinking||busy||part||!hist.length||mode==='online')return;flying=[];chips=[];sparks=[];banner=null;anim=null;
+    hist=hist.filter(h=>h.B);let h;do{h=hist.pop()}while(hist.length&&mode!=='two'&&h.turn!==RED);if(!h)return;
+    B=h.B;turn=h.turn;quiet=h.quiet;last=h.last;over=false;sel=null;part=null;moves=gen(B,turn);sfx.tap();counts();draw();check()}
+  function build(){
+    root.innerHTML=`<div class="row">${segHTML('dmMode',[['easy',L('Computer · easy','电脑 · 简单')],['normal',L('Computer · normal','电脑 · 普通')],['hard',L('Computer · hard','电脑 · 困难')],['two',L('Same device','同一设备')],ONLINE_OPT()],mode)}</div>
+      <div class="dm-score" id="dmScore"></div>
+      <div class="status" id="status"></div>
+      <div class="board-wrap"><canvas class="play" id="dmCv" aria-label="${L('Draughts board','跳棋棋盘')}"></canvas></div>
+      <div class="row" style="justify-content:center"><button class="btn" id="dmUndo">${L('Undo move','悔棋')}</button></div>
+      <p class="hint">${L('Red moves first. Pieces move diagonally forward on the dark squares. If you can jump an enemy piece, you must.','红方先走。棋子在深色格上斜着向前走。能跳吃对方的棋子时，一定要吃。')}</p>`;
+    cv=$('#dmCv');ctx=cv.getContext('2d');cv.addEventListener('pointerdown',tap);
+    bindSeg('dmMode',v=>{if(v==='online'){goOnline('draughts',L('Draughts','跳棋'),m=>{mode=m},start,mode==='online'?prevMode:mode);return}if(mode==='online'){Net.onDrop=null;Net.leave()}mode=prevMode=v;start()});
+    $('#dmUndo').onclick=undoMove;$('#dmUndo').hidden=mode==='online'}
+  function start(fromNet){if(mode==='online'&&fromNet!==true)onlineRestart(()=>{});token++;init();turn=RED;sel=null;part=null;last=null;hist=[];over=false;thinking=false;busy=false;quiet=0;anim=null;flying=[];chips=[];sparks=[];banner=null;
+    build();fitCanvas(cv,ctx,root,LW,LH,620);moves=gen(B,RED);counts();draw();check()}
+  return{mount(el){root=el;ro=()=>{fitCanvas(cv,ctx,root,LW,LH,620);draw()};addEventListener('resize',ro);start()},start,stop(){token++;removeEventListener('resize',ro);if(mode==='online'){Net.onDrop=null;Net.leave();mode=prevMode}},
+    _t:{gen,apply,get B(){return B},set B(v){B=v}}};
+})();
+
+/* ================= REVERSI (8x8, standard rules) ================= */
+const Reversi=(()=>{
+  const BK=1,WH=2,LW=800,LH=800,M=44,S=(LW-2*M)/8,DIRS=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  const W8=[120,-20,20,5,5,20,-20,120,-20,-40,-5,-5,-5,-5,-40,-20,20,-5,15,3,3,15,-5,20,5,-5,3,3,3,3,-5,5,5,-5,3,3,3,3,-5,5,20,-5,15,3,3,15,-5,20,-20,-40,-5,-5,-5,-5,-40,-20,120,-20,20,5,5,20,-20,120];
+  let root,cv,ctx,B,turn,moves=[],last=-1,hist=[],mode='easy',prevMode='easy',over=false,token=0,ro,thinking=false,busy=false,hints=true;
+  let flips={},drop=null,sparks=[],banner=null,looping=false;
+  const opp=s=>3-s,myColor=()=>Net.me===0?BK:WH,remoteTurn=()=>mode==='online'&&turn!==myColor(),aiOn=()=>['easy','normal','hard'].includes(mode);
+  function init(){B=Array(64).fill(0);B[27]=WH;B[36]=WH;B[28]=BK;B[35]=BK}
+  function flipsFor(Bd,i,s){if(Bd[i])return[];const r=i>>3,c=i&7,out=[];
+    for(const[dr,dc]of DIRS){const run=[];let rr=r+dr,cc=c+dc;while(rr>=0&&rr<8&&cc>=0&&cc<8&&Bd[rr*8+cc]===opp(s)){run.push(rr*8+cc);rr+=dr;cc+=dc}
+      if(run.length&&rr>=0&&rr<8&&cc>=0&&cc<8&&Bd[rr*8+cc]===s)out.push(...run)}return out}
+  const gen=(Bd,s)=>{const o=[];for(let i=0;i<64;i++){const f=flipsFor(Bd,i,s);if(f.length)o.push({i,f})}return o};
+  const apply=(Bd,m,s)=>{const n=Bd.slice();n[m.i]=s;m.f.forEach(k=>n[k]=s);return n};
+  const count=(Bd,s)=>Bd.reduce((a,v)=>a+(v===s),0);
+  function evalB(Bd,s){let v=0;for(let i=0;i<64;i++)if(Bd[i])v+=(Bd[i]===s?1:-1)*W8[i];
+    const mob=gen(Bd,s).length-gen(Bd,opp(s)).length;return v+mob*6}
+  let deadline=Infinity;const TIMEUP={};
+  function search(Bd,s,d,a,b,passed){if(performance.now()>deadline)throw TIMEUP;const ms=gen(Bd,s);
+    if(!ms.length){if(passed){const diff=count(Bd,s)-count(Bd,opp(s));return diff*1000}return-search(Bd,opp(s),d,-b,-a,true)}
+    if(d===0)return evalB(Bd,s);ms.sort((x,y)=>W8[y.i]-W8[x.i]);let best=-1e9;
+    for(const m of ms){const sc=-search(apply(Bd,m,s),opp(s),d-1,-b,-a,false);if(sc>best)best=sc;if(best>a)a=best;if(a>=b)break}return best}
+  function aiMove(){const ms=gen(B,turn);if(!ms.length)return null;
+    if(mode==='easy'){shuffle(ms);return ms.reduce((b,m)=>m.f.length+rand(0,3)+(W8[m.i]>100?2:0)>b.f.length+rand(0,3)?m:b,ms[0])}
+    const empties=B.filter(v=>!v).length,maxD=mode==='normal'?2:Math.max(6,empties<=12?empties:6),order=shuffle(ms.slice());if(order.length===1)return order[0];
+    deadline=performance.now()+(mode==='hard'?1100:700);let best=order[0];
+    for(let d=1;d<=maxD;d++){let bs=-1e9,bm=null;try{for(const m of order){const sc=-search(apply(B,m,turn),opp(turn),d-1,-1e9,1e9,false);if(sc>bs){bs=sc;bm=m}}}catch(e){if(e!==TIMEUP)throw e;break}
+      best=bm;order.sort((x,y)=>x===bm?-1:y===bm?1:0)}
+    deadline=Infinity;return best}
+  /* drawing */
+  const X=c=>M+c*S+S/2,Y=r=>M+r*S+S/2,pos=i=>[X(i&7),Y(i>>3)];
+  function board(){const g=ctx.createLinearGradient(0,0,LW,LH);g.addColorStop(0,'#5B3418');g.addColorStop(1,'#33190A');ctx.fillStyle=g;ctx.fillRect(0,0,LW,LH);
+    ctx.strokeStyle='rgba(255,220,160,.25)';ctx.lineWidth=2;ctx.strokeRect(10,10,LW-20,LH-20);
+    const f=ctx.createRadialGradient(LW*.4,LH*.35,60,LW/2,LH/2,LW*.7);f.addColorStop(0,'#3E9A62');f.addColorStop(1,'#25704A');ctx.fillStyle=f;ctx.fillRect(M,M,LW-2*M,LH-2*M);
+    ctx.strokeStyle='rgba(10,40,22,.75)';ctx.lineWidth=2.5;for(let k=0;k<=8;k++){ctx.beginPath();ctx.moveTo(M+k*S,M);ctx.lineTo(M+k*S,LH-M);ctx.stroke();ctx.beginPath();ctx.moveTo(M,M+k*S);ctx.lineTo(LW-M,M+k*S);ctx.stroke()}
+    ctx.fillStyle='rgba(10,40,22,.85)';for(const[r,c]of[[2,2],[2,6],[6,2],[6,6]]){ctx.beginPath();ctx.arc(M+c*S,M+r*S,6,0,7);ctx.fill()}
+    ctx.strokeStyle='#1B0D04';ctx.lineWidth=4;ctx.strokeRect(M,M,LW-2*M,LH-2*M)}
+  function disc(x,y,s,sx=1,lift=0){const R=S*.41;ctx.save();ctx.translate(x,y-lift);
+    ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(3+lift*.2,5+lift*.5,R*Math.max(.2,sx),R*.95,0,0,7);ctx.fill();ctx.scale(Math.max(.04,sx),1);
+    ctx.fillStyle=s===BK?'#0A0A0A':'#BDB6A6';ctx.beginPath();ctx.arc(0,3,R,0,7);ctx.fill();
+    const g=ctx.createRadialGradient(-R*.35,-R*.4,R*.08,0,0,R);if(s===BK){g.addColorStop(0,'#5A5A5A');g.addColorStop(.6,'#1E1E1E');g.addColorStop(1,'#050505')}else{g.addColorStop(0,'#FFFFFF');g.addColorStop(.6,'#F2EDE2');g.addColorStop(1,'#CFC7B5')}
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,R,0,7);ctx.fill();ctx.strokeStyle=s===BK?'rgba(255,255,255,.08)':'rgba(0,0,0,.08)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,R*.72,0,7);ctx.stroke();ctx.restore()}
+  const active=now=>drop||Object.keys(flips).length||sparks.length||banner;
+  function kick(){if(looping)return;looping=true;const step=now=>{for(const k in flips)if(now-flips[k].t0>flips[k].dur+40)delete flips[k];
+      if(drop&&now-drop.t0>drop.dur)drop=null;sparks=sparks.filter(s=>now-s.t0<s.life);if(banner&&now-banner.t0>1500)banner=null;draw(now);
+      if(active(now))requestAnimationFrame(step);else{looping=false;draw()}};requestAnimationFrame(step)}
+  const human=()=>!over&&!thinking&&!busy&&!remoteTurn()&&!(aiOn()&&turn===WH);
+  function draw(now=performance.now()){board();
+    for(let i=0;i<64;i++){const v=B[i];const[x,y]=pos(i);
+      if(drop&&drop.i===i){const t=Math.min(1,(now-drop.t0)/drop.dur),e=1-Math.pow(1-t,3);ctx.globalAlpha=Math.min(1,t*2);disc(x,y,v,1,(1-e)*60);ctx.globalAlpha=1;continue}
+      const f=flips[i];if(f){const t=Math.max(0,Math.min(1,(now-f.t0)/f.dur));disc(x,y,t<.5?f.from:f.to,Math.abs(Math.cos(Math.PI*t)),Math.sin(Math.PI*t)*18);continue}
+      if(v)disc(x,y,v)}
+    if(last>=0&&!drop){const[x,y]=pos(last);ctx.fillStyle='#E0442F';ctx.beginPath();ctx.arc(x,y,7,0,7);ctx.fill();ctx.strokeStyle='#FFF6E6';ctx.lineWidth=2;ctx.stroke()}
+    if(hints&&human())for(const m of moves){const[x,y]=pos(m.i);ctx.fillStyle=turn===BK?'rgba(10,10,10,.32)':'rgba(255,255,255,.5)';ctx.beginPath();ctx.arc(x,y,S*.14,0,7);ctx.fill();ctx.strokeStyle='rgba(255,246,230,.7)';ctx.lineWidth=2;ctx.stroke()}
+    for(const s of sparks){const a=(now-s.t0)/s.life;ctx.globalAlpha=1-a;ctx.fillStyle=s.c;ctx.beginPath();ctx.arc(s.x+s.vx*a,s.y+s.vy*a,s.r,0,7);ctx.fill()}ctx.globalAlpha=1;
+    if(banner){const a=(now-banner.t0)/1500,sc=a<.15?.6+a/.15*.5:1.1-Math.max(0,a-.15)*.1;ctx.save();ctx.globalAlpha=a>.75?Math.max(0,1-(a-.75)/.25):1;ctx.translate(LW/2,LH/2);ctx.scale(sc,sc);
+      ctx.fillStyle='rgba(20,40,25,.85)';ctx.beginPath();ctx.roundRect?ctx.roundRect(-290,-80,580,160,30):ctx.rect(-290,-80,580,160);ctx.fill();
+      ctx.font='900 60px Nunito, sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#F5C542';ctx.fillText(banner.txt,0,-14);ctx.font='800 28px Nunito, sans-serif';ctx.fillStyle='#FFF6E6';ctx.fillText(banner.sub,0,44);ctx.restore()}}
+  const name=s=>mode==='online'?(s===myColor()?(s===BK?L('You (Black)','你（黑子）'):L('You (White)','你（白子）')):(s===BK?L('Friend (Black)','朋友（黑子）'):L('Friend (White)','朋友（白子）'))):s===BK?(mode==='two'?L('Black','黑子'):L('You (Black)','你（黑子）')):(mode==='two'?L('White','白子'):L('Computer (White)','电脑（白子）'));
+  function score(){const el=$('#rvScore');if(!el)return;el.innerHTML=[BK,WH].map(s=>`<div class="dm-side ${turn===s&&!over?'on':''}"><i class="rv-dot ${s===BK?'bk':'wh'}"></i><b>${name(s)}</b><span class="rv-n">${count(B,s)}</span></div>`).join('')}
+  async function play(m,fromHuman){const my=token,s=turn;busy=true;hist.push({B:B.slice(),turn,last});if(fromHuman&&mode==='online')Net.send({t:'mv',i:m.i});
+    B[m.i]=s;last=m.i;drop={i:m.i,t0:performance.now(),dur:sp(260)};tone(300,.06,'triangle',.12);kick();await sleep(sp(240));if(my!==token)return;
+    const[x0,y0]=pos(m.i),order=m.f.slice().sort((a,b)=>{const[ax,ay]=pos(a),[bx,by]=pos(b);return Math.hypot(ax-x0,ay-y0)-Math.hypot(bx-x0,by-y0)});
+    order.forEach((k,n)=>{flips[k]={from:opp(s),to:s,t0:performance.now()+sp(n*70),dur:sp(340)};B[k]=s;tone(520+n*40,.05,'sine',.06,sp(n*70)/1000)});kick();
+    if(W8[m.i]===120){const now=performance.now();for(let k=0;k<22;k++)sparks.push({x:x0,y:y0,vx:rand(-130,130),vy:rand(-130,130),r:rand(3,6),c:k%2?'#F5C542':'#FFF6E6',t0:now,life:rand(600,1000)});
+      banner={txt:L('Corner!','占角！'),sub:L('Corners can never be flipped','角上的棋子永远不会被翻'),t0:now}}
+    if(m.f.length>=6&&W8[m.i]!==120){banner={txt:L(`${m.f.length} flipped!`,`翻了 ${m.f.length} 个！`),sub:name(s),t0:performance.now()}}
+    await sleep(sp(order.length*70+380));if(my!==token)return;busy=false;turn=opp(s);next()}
+  function next(){const my=token;moves=gen(B,turn);score();
+    if(!moves.length){const other=gen(B,opp(turn));
+      if(!other.length){over=true;const b=count(B,BK),w=count(B,WH),winner=b===w?0:b>w?BK:WH;score();draw();
+        setStatus(winner?L(`${name(winner)} wins, ${Math.max(b,w)} to ${Math.min(b,w)}!`,`${name(winner)}胜，${Math.max(b,w)} 比 ${Math.min(b,w)}！`):L(`A draw, ${b} each!`,`和局，各 ${b} 子！`),winner===WH?1:0);
+        const won=!winner||mode==='two'||(mode==='online'?winner===myColor():winner===BK);
+        setTimeout(()=>{if(my===token)finish('reversi',!winner?L("It's a draw",'和局'):mode==='online'?(winner===myColor()?L('You win!','你赢了！'):L('Your friend wins','朋友赢了')):winner===BK?(mode==='two'?L('Black wins!','黑子胜！'):L('You win!','你赢了！')):(mode==='two'?L('White wins!','白子胜！'):L('The computer wins','电脑赢了')),
+          L(`Final score: Black ${b}, White ${w}.`,`最后比分：黑 ${b}，白 ${w}。`),won)},sp(1200));return}
+      setStatus(L(`${name(turn)} has no move and must pass.`,`${name(turn)}无处可下，这一轮要跳过。`),turn===BK?0:1);banner={txt:L('Pass','跳过'),sub:name(turn),t0:performance.now()};kick();
+      setTimeout(()=>{if(my!==token)return;turn=opp(turn);next()},sp(1600));return}
+    if(remoteTurn()){waitFriend();draw();Net.take('mv').then(mm=>{if(my!==token)return;const m=moves.find(x=>x.i===(mm.i|0));if(m)play(m,false)});return}
+    if(aiOn()&&turn===WH){thinking=true;draw();setStatus(L('Computer is thinking…','电脑思考中…'),1);
+      setTimeout(async()=>{if(my!==token)return;const m=aiMove();await sleep(sp(450));if(my!==token||!m)return;thinking=false;play(m,false)},sp(300));return}
+    setStatus(L(`${name(turn)} to play: tap a square${hints?' with a dot':''} to place a disc.`,`${name(turn)}下：点一个${hints?'有圆点的':''}格子放棋子。`),turn===BK?0:1);draw()}
+  function tap(e){if(!human())return;const r0=cv.getBoundingClientRect(),x=(e.clientX-r0.left)/r0.width*LW,y=(e.clientY-r0.top)/r0.height*LH;
+    const c=Math.floor((x-M)/S),r=Math.floor((y-M)/S);if(c<0||c>7||r<0||r>7)return;const i=r*8+c,m=moves.find(q=>q.i===i);
+    if(m){play(m,true);return}tone(200,.06,'sine',.05);
+    setStatus(B[i]?L('That square is taken. Choose an empty square.','这个格子已经有棋子了。'):L('A disc must trap the other colour in a straight line. Try a square with a dot.','必须把对方的棋子夹在中间才行。试试有圆点的格子。'),turn===BK?0:1)}
+  function undoMove(){if(thinking||busy||!hist.length||mode==='online')return;flips={};drop=null;sparks=[];banner=null;let h;
+    do{h=hist.pop()}while(hist.length&&mode!=='two'&&h.turn!==BK);B=h.B;turn=h.turn;last=h.last;over=false;sfx.tap();next()}
+  function build(){
+    root.innerHTML=`<div class="row">${segHTML('rvMode',[['easy',L('Computer · easy','电脑 · 简单')],['normal',L('Computer · normal','电脑 · 普通')],['hard',L('Computer · hard','电脑 · 困难')],['two',L('Same device','同一设备')],ONLINE_OPT()],mode)}</div>
+      <div class="dm-score" id="rvScore"></div>
+      <div class="status" id="status"></div>
+      <div class="board-wrap"><canvas class="play" id="rvCv" aria-label="${L('Reversi board','黑白棋棋盘')}"></canvas></div>
+      <div class="row" style="justify-content:center"><button class="btn" id="rvUndo">${L('Undo move','悔棋')}</button><button class="btn" id="rvHint" aria-pressed="${hints}">${L('Show possible moves','显示可下位置')}</button></div>
+      <p class="hint">${L('Black plays first. Place a disc so that it traps the other colour in a straight line; every trapped disc flips to your colour.','黑子先下。放下棋子时要把对方的棋子夹在一条直线中间，被夹住的棋子都会翻成你的颜色。')}</p>`;
+    cv=$('#rvCv');ctx=cv.getContext('2d');cv.addEventListener('pointerdown',tap);
+    bindSeg('rvMode',v=>{if(v==='online'){goOnline('reversi',L('Reversi','黑白棋'),m=>{mode=m},start,mode==='online'?prevMode:mode);return}if(mode==='online'){Net.onDrop=null;Net.leave()}mode=prevMode=v;start()});
+    $('#rvUndo').onclick=undoMove;$('#rvUndo').hidden=mode==='online';$('#rvHint').onclick=()=>{hints=!hints;$('#rvHint').setAttribute('aria-pressed',hints);sfx.tap();if(human())next();else draw()}}
+  function start(fromNet){if(mode==='online'&&fromNet!==true)onlineRestart(()=>{});token++;init();turn=BK;last=-1;hist=[];over=false;thinking=false;busy=false;flips={};drop=null;sparks=[];banner=null;
+    build();fitCanvas(cv,ctx,root,LW,LH,620);next()}
+  return{mount(el){root=el;ro=()=>{fitCanvas(cv,ctx,root,LW,LH,620);draw()};addEventListener('resize',ro);start()},start,stop(){token++;removeEventListener('resize',ro);if(mode==='online'){Net.onDrop=null;Net.leave();mode=prevMode}},
+    _t:{gen,flipsFor,apply,get B(){return B}}};
+})();
+
+const IMPL={draughts:Draughts,reversi:Reversi,memory:MemoryCards,spot:SpotDiff,rhythm:Rhythm,congkak:Congkak,fivestones:FiveStones,sticks:Sticks,kuti:Kuti,snakes:Snakes,jigsaw:Jigsaw,xiangqi:Xiangqi,goli:Goli,carrom:Carrom};
 
 /* ---------- top bar ---------- */
 $('#backBtn').onclick=()=>{sfx.tap();show('home')};
