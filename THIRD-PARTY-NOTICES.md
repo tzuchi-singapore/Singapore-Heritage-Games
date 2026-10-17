@@ -58,6 +58,7 @@ Licence text: https://openfontlicense.org
 
 ## Pictures and music
 - The illustrations, game pictures and Memory Album paintings were made for this project with **Higgsfield** AI image generation.
+- The Dance Party dance clips were animated for this project with **Higgsfield** AI video generation, starting from an original illustration.
 - The music tracks were made for this project with **Higgsfield** AI audio generation. The "folk" tracks are new arrangements of traditional songs (Rasa Sayang, Chan Mali Chan, Burung Kakak Tua, 茉莉花 Mo Li Hua, 天黑黑 Ti Oh Oh, Dayung Sampan). The "style" tracks are original pieces in the style of old Singapore music, not copies of any recording.
 
 These pictures and music form part of the Work covered by [LICENSE](LICENSE).
