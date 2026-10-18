@@ -2880,9 +2880,13 @@ const Dance=(()=>{
   const GR=[{k:'perfect',en:'PERFECT',zh:'完美',c:'#FFD34E',m:1},{k:'great',en:'GREAT',zh:'很好',c:'#7BE0A0',m:.8},{k:'cool',en:'COOL',zh:'不错',c:'#8EC8FF',m:.5},{k:'bad',en:'BAD',zh:'差一点',c:'#FFB27A',m:.2},{k:'miss',en:'MISS',zh:'错过',c:'#FF8A7A',m:0}];
   const DIRS=['L','U','D','R'],ARW={L:'←',U:'↑',D:'↓',R:'→'},KEYS={ArrowLeft:'L',ArrowUp:'U',ArrowDown:'D',ArrowRight:'R'};
   // couples to dance with; each has the same seven clips
-  const COUPLES=[{id:'agogo',pre:'video/dance-',poster:'img/dance-stage.webp',en:['A-Go-Go Couple','Floral shirt & polka dots'],zh:['阿哥哥舞伴','花衬衫与圆点裙']}];
-  const CLIP_KEYS=['idle','twist','swim','chacha','point','finale','oops'];
-  let couple=0;
+  const COUPLES=[{id:'agogo',pre:'video/dance-',poster:'img/dance-stage.webp',en:['Chinese couple','Floral shirt & polka dots'],zh:['华族舞伴','花衬衫与圆点裙']},
+    {id:'malay',pre:'video/dance-malay-',poster:'img/dance-stage-malay.webp',en:['Malay couple','Batik shirt & kebaya'],zh:['马来族舞伴','峇迪衬衫与可峇雅']},
+    {id:'indian',pre:'video/dance-indian-',poster:'img/dance-stage-indian.webp',en:['Indian couple','Skinny tie & silk sari'],zh:['印度族舞伴','窄领带与丝绸纱丽']},
+    {id:'eurasian',pre:'video/dance-eurasian-',poster:'img/dance-stage-eurasian.webp',en:['Eurasian couple','Dinner jacket & swing dress'],zh:['欧亚裔舞伴','白礼服与蓬裙']}];
+  const MOVES=['twist','swim','chacha','point','mashed','pony','handjive','joget'];
+  const CLIP_KEYS=['idle',...MOVES,'finale','oops'];
+  let couple=0;try{const c=+localStorage.getItem('dp-couple');if(c>0&&c<COUPLES.length)couple=c}catch(e){}
   const VFMT=(()=>{try{const v=document.createElement('video');return v.canPlayType('video/mp4; codecs="avc1.4D401E"')?'mp4':v.canPlayType('video/webm; codecs="vp9"')?'webm':'mp4'}catch(e){return 'mp4'}})();
   const clipURL=(c,k)=>`${COUPLES[c].pre}${k}.${VFMT}`;
   // every clip is downloaded completely before the song starts, so each move is ready the moment it is needed
@@ -2896,7 +2900,9 @@ const Dance=(()=>{
   function progTick(){const p=prog[couple];if(!p)return;const pct=Math.round(p.n/p.t*100),m=$('#dpLoadMsg'),o=$('#dpLoadTxt');
     if(m)m.textContent=p.n<p.t?L(`Getting the dancers ready… ${pct}%`,`舞者准备中… ${pct}%`):L('Dancers ready!','舞者准备好了！');
     if(o)o.textContent=L(`Getting the dancers ready… ${pct}%`,`舞者准备中… ${pct}%`)}
-  const MOVES=['twist','swim','chacha','point'],MOVE_NAME={twist:['The Twist','扭扭舞'],swim:['The Swim','游泳舞'],chacha:['Cha-cha Turn','恰恰转圈'],point:['Point & Clap','指天拍手']};
+  const MOVE_NAME={twist:['The Twist','扭扭舞'],swim:['The Swim','游泳舞'],chacha:['Cha-cha Turn','恰恰转圈'],point:['Point & Clap','指天拍手'],mashed:['Mashed Potato','薯泥舞'],pony:['The Pony','小马舞'],handjive:['Hand Jive','拍手舞'],joget:['Joget Waves','Joget 舞'] };
+  // moves come from a shuffled bag: every move appears before any repeats, never the same twice in a row
+  function nextMove(){if(!G.bag||!G.bag.length){let b;do{b=shuffle(MOVES.slice())}while(b[0]===G.lastMove);G.bag=b}G.lastMove=G.bag.shift();return G.lastMove}
   let root,lv='easy',songIdx=0,token=0,G=null,raf=0,actx=null,ro=null;const bufs={};
   const best=()=>{S.dpBest=S.dpBest||{};return S.dpBest};
   const songTime=()=>G&&actx?actx.currentTime-G.startAt-(actx.outputLatency||actx.baseLatency||0):0;
@@ -2916,7 +2922,7 @@ const Dance=(()=>{
         <p class="hint">${L('Copy the arrows with the arrow buttons, then tap DANCE when the moving marker reaches the gold zone. A perfect round makes the couple dance the whole move!','用箭头按钮照着打出箭头，等移动的标记到达金色区时按“跳舞”。完美的一轮，舞者会跳完整个舞步！')}</p>
       </div></div>`;
     root.querySelectorAll('.dp-song').forEach(b=>b.onclick=()=>{songIdx=+b.dataset.i;sfx.tap();menu()});
-    root.querySelectorAll('.dp-couple').forEach(b=>b.onclick=()=>{couple=+b.dataset.i;sfx.tap();menu()});
+    root.querySelectorAll('.dp-couple').forEach(b=>b.onclick=()=>{couple=+b.dataset.i;try{localStorage.setItem('dp-couple',couple)}catch(e){}sfx.tap();menu()});
     const my=token;const lp=loadClips(couple);progTick();lp.then(()=>{if(my!==token)return;progTick();const pv=$('#dpPrev');if(pv&&blobs[couple+'|idle']&&pv.src!==blobs[couple+'|idle']){pv.src=blobs[couple+'|idle'];pv.play().catch(()=>{})}});
     bindSeg('dpLv',v=>{lv=v;menu()});
     $('#dpPlay').onclick=()=>play();$('#dpTop').onclick=()=>openBoard(null);
@@ -2997,7 +3003,7 @@ const Dance=(()=>{
     const frac=g<=2?1:g===3?.75:full?.6:r.n/r.seq.length;G.danced.push(frac);
     $('#dpScore').textContent=G.score.toLocaleString();$('#dpCombo').textContent=G.combo;$('#dpSeq').classList.remove('ok');
     // dance!
-    const per=r.T-r.t0,move=r.finish?'finale':MOVES[G.cur%MOVES.length],v=vid(move),dur=(v&&v.duration&&isFinite(v.duration))?v.duration:5;
+    const per=r.T-r.t0,move=r.finish?'finale':nextMove(),v=vid(move),dur=(v&&v.duration&&isFinite(v.duration))?v.duration:5;
     const rate=Math.max(.85,Math.min(1.5,dur/(per+.6)));
     if(frac>=1)showClip(move,{rate});else if(frac<=.05)showClip('oops');else showClip(move,{rate,stopAt:dur*frac*.9});
     celebrate(g,pts,frac,r);

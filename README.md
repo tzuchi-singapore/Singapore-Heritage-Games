@@ -13,7 +13,7 @@ Kampong Days brings back the games played on verandahs, void decks and five-foot
 | Category | Game | |
 |---|---|---|
 | Music & rhythm | **Getai Beats** | Tap to the beat of folk songs and heritage-style tunes, with 3 levels, combo celebrations, a selfie frame and a daily Top 20 |
-| | **Dance Party** | Copy the arrows and hit the beat so a 1960s couple dances the Twist, the Swim and the cha-cha; 3 levels, daily Top 20 and a trophy selfie |
+| | **Dance Party** | Copy the arrows and hit the beat so your chosen 1960s couple (Chinese, Malay, Indian or Eurasian) dances 8 moves, from the Twist to the joget; 3 levels, daily Top 20 and a trophy selfie |
 | Board games | **Congkak** | The Malay seed-sowing game |
 | | **Snakes & Ladders** | Kampong edition: climb the ladders, dodge the snakes, hear the stories |
 | | **Chinese Chess 象棋** | Play the computer or a friend |
