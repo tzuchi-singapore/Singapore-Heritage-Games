@@ -24,6 +24,7 @@ Kampong Days brings back the games played on verandahs, void decks and five-foot
 | | **Kuti Kuti** | Flick the plastic animals with a swipe |
 | | **Goli** | Marbles: knock them out of the ring |
 | | **Carrom** | The board turns to face each player |
+| | **Table Tennis** | 3D ping pong at a void deck with real spin, curve, bounce and net physics; play Auntie Mei, Uncle Rahman or Champion Priya, or a friend online |
 | Puzzles & memories | **Memory Cards** | Flip and match old-school toys and treats (6, 8 or 12 pairs) |
 | | **Spot the Difference** | Four heritage scenes with new changes every game (3, 5 or 7 to find) |
 | | **Jigsaw Puzzle** | Scenes of old Singapore |
@@ -32,7 +33,7 @@ Kampong Days brings back the games played on verandahs, void decks and five-foot
 ## Features
 - **For seniors:** large text with A− / A+ (up to 170%), English and 中文, a slow-pace setting, and sound on or off.
 - **Jump to bar:** category shortcuts at the top of the home page.
-- **Play together:** the versus games (Congkak, Snakes & Ladders, Chinese Chess, Draughts, Reversi, Goli and Carrom) can be played against the computer (Chinese Chess, Draughts and Reversi have easy to hard levels), on one device, or online on two devices with a 4-digit code (the host taps Accept to start).
+- **Play together:** the versus games (Congkak, Snakes & Ladders, Chinese Chess, Draughts, Reversi, Goli and Carrom) can be played against the computer (Chinese Chess, Draughts and Reversi have easy to hard levels), on one device, or online on two devices with a 4-digit code (the host taps Accept to start). Table Tennis is played against the computer (3 levels) or online.
 - **Works anywhere:** phones, tablets and computers, in any modern browser.
 
 ## Privacy
@@ -47,7 +48,7 @@ index.html               the whole app (code, styles and the online-play library
 img/                     illustrations, game pictures and Memory Album paintings
 music/                   music tracks for Getai Beats and Dance Party
 video/                   dance clips for Dance Party (MP4 with WebM backup)
-vendor/                  an older library no longer used (see notices)
+vendor/                  three.js for the 3D table tennis, plus an older library no longer used (see notices)
 LICENSE                  licence terms
 THIRD-PARTY-NOTICES.md   credits for software, fonts, services, pictures and music
 ```
@@ -57,7 +58,7 @@ The site is published with **GitHub Pages** from the `main` branch. Any change p
 ## Credits
 - Made for Tzu Chi Foundation (Singapore) senior wellness programmes.
 - Pictures and music made with Higgsfield AI. The folk tracks are new arrangements of traditional songs.
-- Online play uses MQTT.js (MIT). Fonts are from Google Fonts (SIL Open Font License).
+- Online play uses MQTT.js (MIT). The 3D table tennis uses three.js (MIT). Fonts are from Google Fonts (SIL Open Font License).
 
 See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) for details.
 

@@ -232,6 +232,41 @@ p{margin:0}
 .dp-hit b{font-size:calc(22px * var(--fs,1));font-weight:900;letter-spacing:1px}
 .dp-hit small{font-size:calc(11px * var(--fs,1));font-weight:800;opacity:.75}
 @media(max-width:400px){.dp-cross{grid-template-columns:repeat(3,60px);grid-template-rows:repeat(3,60px)}.dp-hit{width:104px;height:104px}.dp-pad{gap:14px}}
+.tt-menu{display:grid;gap:16px;max-width:860px;margin:0 auto}
+.tt-opps{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.tt-opp{display:grid;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:12px;padding:10px;border-radius:16px;border:2px solid var(--ink);background:var(--paper-2);font:inherit;color:var(--ink);text-align:left;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+.tt-opp img{width:72px;height:72px;border-radius:12px;object-fit:cover;border:2px solid var(--ink);background:#FFF6E6}
+.tt-opp b{display:block;font-size:calc(17px * var(--fs,1));line-height:1.2}
+.tt-opp small{display:block;color:var(--ink-soft);font-size:calc(14px * var(--fs,1))}
+.tt-opp[aria-pressed="true"]{background:#FFE58A;box-shadow:0 0 0 4px var(--sun),0 3px 0 var(--ink)}
+.tt-globe{width:72px;height:72px;border-radius:12px;border:2px solid var(--ink);background:#1E5B3C;color:#FFF6E6;display:grid;place-items:center;font-size:34px;font-weight:900}
+.tt-how{background:var(--paper-2);border:2px dashed var(--ink-soft);border-radius:16px;padding:12px 16px}
+.tt-how b{font-size:calc(17px * var(--fs,1))}.tt-how ul{margin:6px 0 0;padding-left:20px;display:grid;gap:4px}
+.tt-how li{font-size:calc(15px * var(--fs,1));line-height:1.45}
+.tt-menu #ttGo{justify-self:center;min-width:240px}
+.tt-wrap{max-width:1100px;margin:0 auto;width:100%}
+.tt-stage{position:relative;width:100%;height:min(78vh,760px);min-height:420px;border-radius:20px;overflow:hidden;border:4px solid #1E5B3C;background:#D9CFBE;box-shadow:0 6px 0 #0F2E1E;touch-action:none;user-select:none;-webkit-user-select:none}
+.tt-stage canvas{width:100%;height:100%;display:block;touch-action:none}
+.tt-hud{position:absolute;left:8px;right:8px;top:8px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}
+.tt-card{display:flex;align-items:center;gap:8px;background:rgba(16,40,28,.86);color:#FFF6E6;border:2px solid #F4F1E8;border-radius:14px;padding:4px 10px;min-width:0}
+.tt-card img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #F4F1E8;background:#FFF6E6}
+.tt-card b{font-family:'Alfa Slab One',serif;font-size:calc(30px * var(--fs,1));line-height:1;min-width:1.3em;text-align:center;background:#0B1F15;border-radius:8px;padding:3px 6px;font-variant-numeric:tabular-nums;color:#FFE27A}
+.tt-card b.flip{animation:ttFlip .45s}
+@keyframes ttFlip{0%{transform:rotateX(90deg)}60%{transform:rotateX(-15deg)}100%{transform:none}}
+.tt-nm{display:flex;align-items:center;gap:6px;font-weight:900;font-size:calc(14px * var(--fs,1));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt-srv{width:12px;height:12px;border-radius:50%;background:transparent;border:2px solid rgba(255,255,255,.35);flex:none}
+.tt-srv.on{background:#FBF8EF;border-color:#FFE27A;box-shadow:0 0 8px #FFE27A}
+.tt-banner{position:absolute;left:50%;top:24%;transform:translate(-50%,0);text-align:center;opacity:0;pointer-events:none;background:rgba(16,40,28,.9);border:2px solid #F4F1E8;border-radius:16px;padding:10px 20px;max-width:88%}
+.tt-banner b{display:block;font-family:'Alfa Slab One',serif;font-weight:400;font-size:calc(26px * var(--fs,1));letter-spacing:.5px}
+.tt-banner small{display:block;color:#FFF6E6;font-weight:800;font-size:calc(14px * var(--fs,1));margin-top:2px}
+.tt-banner.show{animation:ttBan 1.6s forwards}
+@keyframes ttBan{0%{opacity:0;transform:translate(-50%,12px) scale(.9)}12%{opacity:1;transform:translate(-50%,0) scale(1.04)}20%,82%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-8px)}}
+.tt-hint{position:absolute;left:50%;top:92px;transform:translateX(-50%);margin:0;background:rgba(16,40,28,.88);color:#FFF6E6;font-weight:800;padding:8px 14px;border-radius:12px;max-width:calc(100% - 90px);text-align:center;font-size:calc(15px * var(--fs,1));pointer-events:none}
+.tt-spin{position:absolute;left:50%;top:58px;transform:translateX(-50%);padding:4px 12px;border-radius:99px;font-weight:900;font-size:calc(14px * var(--fs,1));color:#22142E;opacity:0;pointer-events:none}
+.tt-spin.top{background:#FFD34E}.tt-spin.back{background:#8EC8FF}.tt-spin.side{background:#FF9EC4}
+.tt-spin.show{animation:dpTip 1.4s}
+.tt-pause{border-color:#F4F1E8;background:rgba(16,40,28,.86);color:#F4F1E8}
+@media(max-width:600px){.tt-stage{height:calc(100svh - 150px);min-height:440px;border-radius:14px}.tt-card{padding:3px 6px;gap:5px}.tt-card img{display:none}.tt-card b{font-size:calc(24px * var(--fs,1))}}
 .dp-over{position:absolute;inset:0;display:grid;align-content:center;justify-items:center;gap:14px;background:rgba(18,10,30,.85);color:#FFF6E6;text-align:center;padding:16px}
 .dp-res{position:relative;inset:auto;grid-column:1/-1;grid-template-columns:minmax(0,1fr);border-radius:20px;border:3px solid #E3A630;background:#22142E;padding:20px 14px}
 .dp-res .rg-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -650,7 +685,8 @@ canvas.play{width:min(100%,560px);border-radius:16px;border:3px solid var(--ink)
 safe-buffer/index.js:
   (*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> *)
 */
-</script><script>
+</script>
+<script>
 /* ---------- state & helpers ---------- */
 const S={lang:'en',sound:true,slow:false,album:[]};
 try{Object.assign(S,JSON.parse(localStorage.getItem('kampong-days-v1')||'{}'))}catch(e){}
@@ -664,7 +700,7 @@ const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()
 
 const D={
   brand:['Kampong Days','甘榜童年'],
-  kicker:['15 heritage games · 1 village','十五种传统游戏 · 一个甘榜'],
+  kicker:['16 heritage games · 1 village','十六种传统游戏 · 一个甘榜'],
   presented:['Singapore · Senior Wellness','新加坡 · 乐龄健康'],
   lede:['The games we played on verandahs, void decks and five-foot ways, with the real rules. Finish a game to collect a picture memory of old Singapore.','我们小时候在走廊、组屋楼下和五脚基玩的游戏，规则原汁原味。每玩完一局，就能收集一张老新加坡回忆卡。'],
   note:['Tip: tap A+ for bigger text, “中文” for Chinese, and the gear for a slower pace.','小贴士：按 A+ 放大字体，按“EN”切换英文，按齿轮可放慢速度。'],
@@ -813,6 +849,9 @@ const GAMES=[
  {id:'carrom',cat:'skill',img:'img/carrom.webp',en:['Carrom','Strike and pocket','Pocket your coins, and cover the red Queen.'],zh:['康乐棋','Carrom','把棋子打进洞，别忘了跟进皇后。'],
   rules:{en:['You play the white coins; your opponent plays black. The red coin is the Queen.','Slide the striker along your baseline, then pull back and let go to shoot it forward.','Pocket one of your own coins and you shoot again. Your opponent’s coins that go in count for them.','The Queen is worth 3 points, but you must cover her by pocketing one of your own coins straight after. Otherwise she goes back to the centre.','Pocketing the striker is a foul: one of your coins goes back to the centre.','The first to pocket all their coins wins.'],
    zh:['你打白子，对手打黑子，红色的是皇后。','沿底线移动母子，往后拉再放开，把它往前打。','打进自己的棋子可以再打一杆，打进对方的棋子算对方的。','皇后值3分，但打进后要马上再进一粒自己的棋子跟进，否则皇后放回中间。','母子进洞是犯规：你的一粒棋子要放回中间。','先把自己所有棋子打进洞的赢。']}},
+ {id:'tabletennis',cat:'skill',img:'img/tabletennis.webp',en:['Table Tennis','3D ping pong at the void deck','Rally against Auntie Mei, Uncle Rahman or Champion Priya, with real spin and bounce.'],zh:['乒乓球','组屋楼下3D乒乓','和美姨、拉曼叔或冠军普丽亚对打，球的旋转和弹跳都很真实。'],
+  rules:{en:['Move your bat with your finger or the mouse. Your bat is drawn a little above your finger so you can see it.','Let the ball bounce once on your side, then meet it with your bat. The yellow ring (Easy and Normal) shows where the ball will reach you.','Flick faster to hit harder. Flick upwards for topspin (the ball dips and jumps forward), downwards for backspin (it floats and stops short), and sideways to make it curve.','Spin works like the real thing: a ball with heavy spin will kick off your bat, so flick up through a topspin ball to keep it on the table.','To serve, flick upwards or just tap. The serve must bounce on your side first, then on your opponent\'s side. If it clips the net and lands in, it is a let: serve again.','The serve changes every 2 points. First to 11 points wins, but you must be 2 points clear (at 10–10, the serve changes every point).','Play a friend online on two devices with a 4-digit code.'],
+   zh:['用手指或鼠标移动球拍。球拍会显示在手指上方一点，方便你看清楚。','让球在你这边弹一下，再用球拍迎上去。黄色圆圈（简单和普通）会告诉你球会到哪里。','挥得越快打得越重。向上挥是上旋（球会下坠并向前冲），向下挥是下旋（球会飘并停得短），横着挥球会拐弯。','旋转和真的一样：强烈旋转的球碰到球拍会弹偏，所以对上旋球要向上挥拍，把球压在桌上。','发球时向上一挥或轻点一下。发球要先在自己这边弹一下，再落到对方那边。擦网后落在对方台上算重发。','每2分换一次发球。先得11分者胜，但要领先2分（10平后每1分换发球）。','也可以用两台设备和朋友联机，输入4位代码即可。']}},
  {id:'memory',cat:'puzzle',img:'img/memory.webp',en:['Memory Cards','Old-school toys & treats','Turn over the cards and find the matching pairs.'],zh:['记忆翻牌','童年玩具和零食','翻开卡片，找出一样的一对。'],
   rules:{en:['All the cards start face down.','Tap two cards to turn them over. If they show the same picture, they stay face up.','If they are different, they turn back over. Try to remember where each picture was!','Easy has 6 pairs, Medium 8 pairs and Hard 12 pairs. Find every pair to win, in as few turns as you can.'],
    zh:['所有卡片一开始都是背面朝上。','每次点两张卡翻开。如果图案一样，就保持翻开。','如果不一样，会翻回去。记住每个图案的位置！','简单6对，中等8对，困难12对。找出所有配对就赢了，次数越少越好。']}},
@@ -3094,7 +3133,354 @@ const Dance=(()=>{
     stop(){stopPlay();Rhythm.share.closeBoard();Rhythm.share.closeStudio();removeEventListener('resize',ro);document.removeEventListener('visibilitychange',vis)},_dbg:{get G(){return G},plan,songTime}};
 })();
 
-const IMPL={dance:Dance,draughts:Draughts,reversi:Reversi,memory:MemoryCards,spot:SpotDiff,rhythm:Rhythm,congkak:Congkak,fivestones:FiveStones,sticks:Sticks,kuti:Kuti,snakes:Snakes,jigsaw:Jigsaw,xiangqi:Xiangqi,goli:Goli,carrom:Carrom};
+/* ================= TABLE TENNIS (3D, real ball physics) ================= */
+const TableTennis=(()=>{
+  // real sizes in metres: table 2.74 x 1.525, top 0.76 high, net 15.25 cm, ball 40 mm / 2.7 g
+  const TL=2.74,W=1.525,TOP=0.76,NETH=0.1525,NETX=0.915,R=0.02,HL=TL/2,HW=W/2;
+  // drag and Magnus for a 40 mm, 2.7 g ball; restitution and friction for a match table
+  const G=9.81,KD=0.13,KM=0.0048,E_T=0.89,MU=0.35,E_F=0.55,SPIN_DECAY=0.1,DT=1/240;
+  const ZP=HL+0.14;   // the plane where each player meets the ball
+  const OPP={
+    easy:{name:['Auntie Mei','美姨'],img:'img/tt-op1.webp',body:'img/tt-body1.webp',hand:.08,tag:['Easy · friendly rallies','简单 · 轻松对打'],
+      speed:1.6,react:.32,aim:.14,pace:[4.4,6],spin:45,err:.06,reach:.14,read:.12,slip:.14,tscale:.8},
+    normal:{name:['Uncle Rahman','拉曼叔'],img:'img/tt-op2.webp',body:'img/tt-body2.webp',hand:.07,tag:['Normal · steady, with spin','普通 · 稳定带旋转'],
+      speed:2.6,react:.22,aim:.09,pace:[5.4,8.6],spin:110,err:.04,reach:.15,read:.07,slip:.07,tscale:.9},
+    hard:{name:['Champion Priya','冠军普丽亚'],img:'img/tt-op3.webp',body:'img/tt-body3.webp',hand:.06,tag:['Hard · fast and tricky','困难 · 又快又刁钻'],
+      speed:3.8,react:.13,aim:.05,pace:[6.8,12],spin:190,err:.028,reach:.16,read:.03,slip:.03,tscale:1}};
+  const FRIEND={img:'img/tt-op4.webp',body:'img/tt-body4.webp',hand:.08};
+  const ME={easy:{hitR:.22,assist:true,pace:[4.4,8],read:.03},normal:{hitR:.16,assist:false,pace:[5,11.5],read:.05},hard:{hitR:.13,assist:false,pace:[5,12.5],read:.1},online:{hitR:.16,assist:false,pace:[5,12],read:.08}};
+  let root,level='easy',mode='cpu',prevMode='cpu',token=0,raf=0,three=null,ro=null,vis=null;
+  const lv=()=>OPP[level],me=()=>ME[mode==='online'?'online':level];
+  /* ---------- physics ---------- */
+  const V=(x=0,y=0,z=0)=>({x,y,z}),cp=a=>({x:a.x,y:a.y,z:a.z});
+  // spin vector for a ball travelling along (dx,dz): top>0 is topspin (the top of the ball rolls forwards); side is spin about the vertical
+  const spinFor=(dx,dz,top,side)=>{const d=Math.hypot(dx,dz)||1,ux=dx/d,uz=dz/d;return V(uz*top,side,-ux*top)};
+  function step(b,dt,ev,noTable){const v=b.v,w=b.w,p=b.p,sp=Math.hypot(v.x,v.y,v.z);
+    const ax=-KD*sp*v.x+KM*(w.y*v.z-w.z*v.y),ay=-G-KD*sp*v.y+KM*(w.z*v.x-w.x*v.z),az=-KD*sp*v.z+KM*(w.x*v.y-w.y*v.x);
+    v.x+=ax*dt;v.y+=ay*dt;v.z+=az*dt;const oz=p.z;p.x+=v.x*dt;p.y+=v.y*dt;p.z+=v.z*dt;
+    const d=Math.exp(-SPIN_DECAY*dt);w.x*=d;w.y*=d;w.z*=d;
+    // the net: a soft mesh across z=0, with a firm white tape along the top
+    if((oz>0)!==(p.z>0)&&Math.abs(p.x)<NETX+R&&p.y>TOP&&p.y<TOP+NETH+R){const s=oz>0?1:-1;
+      if(p.y<TOP+NETH-R*.4){p.z=s*R*1.1;v.z=-v.z*.12;v.x*=.45;v.y*=.4;w.x*=.3;w.y*=.3;w.z*=.3;ev&&ev.push({k:'net',x:p.x,y:p.y,cord:false})}
+      else{v.z*=.55;v.y=Math.abs(v.y)*.35+.5;v.x+=(b.rnd?b.rnd():Math.random()-.5)*.25;w.x*=.5;w.z*=.5;ev&&ev.push({k:'net',x:p.x,y:p.y,cord:true})}}
+    // the table: the bounce, with friction between the spinning ball and the surface
+    if(!noTable&&p.y-R<=TOP&&v.y<0&&Math.abs(p.x)<=HW&&Math.abs(p.z)<=HL&&p.y>TOP-.03){p.y=TOP+R;
+      const ux=v.x+w.z*R,uz=v.z-w.x*R,jn=(1+E_T)*(-v.y);v.y=-v.y*E_T;const us=Math.hypot(ux,uz);
+      // a thin-shelled ball (I = 2/3 m r²) stops slipping after losing 40% of its slip speed
+      if(us>1e-6){const dv=Math.min(MU*jn,.4*us),dvx=-ux/us*dv,dvz=-uz/us*dv;v.x+=dvx;v.z+=dvz;w.x+=-dvz*1.5/R;w.z+=dvx*1.5/R}
+      ev&&ev.push({k:'table',side:p.z>0?'P':'A',x:p.x,z:p.z,spd:jn})}
+    // the floor
+    if(p.y-R<=0&&v.y<0){p.y=R;v.y=-v.y*E_F;v.x*=.7;v.z*=.7;w.x*=.5;w.y*=.5;w.z*=.5;ev&&ev.push({k:'floor',x:p.x,z:p.z,spd:-v.y})}}
+  // where a shot first comes down to table height (ignoring the table itself)
+  function flight(p,v,w,maxT=2.2){const b={p:cp(p),v:cp(v),w:cp(w),rnd:()=>0},ev=[];
+    for(let t=0;t<maxT;t+=DT){const py=b.p.y;step(b,DT,ev,true);const n=ev[ev.length-1];if(n&&n.k==='net'&&!n.cord)return{net:true,x:b.p.x,z:b.p.z,t};
+      if(py>TOP+R&&b.p.y<=TOP+R&&b.v.y<0)return{x:b.p.x,z:b.p.z,t}}
+    return{lost:true}}
+  // find the launch velocity that lands on (tx,tz) at this pace with this spin (spin and drag included)
+  function solve(p,tx,tz,vh,w){const dx0=tx-p.x,dz0=tz-p.z,dd=Math.hypot(dx0,dz0)||1;let vx=dx0/dd*vh,vz=dz0/dd*vh,lo=-5,hi=9,best=null;
+    for(let it=0;it<16;it++){const vy=(lo+hi)/2,f=flight(p,V(vx,vy,vz),w);if(f.lost){hi=vy;continue}
+      const along=Math.abs(f.z-p.z);if(f.net||along<Math.abs(dz0))lo=vy;else hi=vy;
+      if(f.t>0&&!f.net)vx-=(f.x-tx)/f.t*.8;best=V(vx,vy,vz)}
+    return best||V(vx,2,vz)}
+  // like solve, but if that shot would clip the net, aim deeper, then play it slower (as a real player would)
+  function safeSolve(p,tx,tz,vh,w){const sg=tz<0?-1:1;let v;
+    for(let k=0;k<8;k++){const z=k<4?tz+sg*k*.12:tz+sg*.36,pc=k<4?vh:vh*Math.pow(.86,k-3);const zz=Math.sign(z)*Math.min(HL-.12,Math.abs(z));
+      v=solve(p,tx,zz,pc,w);const f=flight(p,v,w);if(!f.net&&!f.lost)return v}
+    return v}
+  /* ---------- match state ---------- */
+  let M=null;
+  const other=s=>s==='P'?'A':'P';
+  const tscale=()=>(mode==='online'?1:lv().tscale)*(S.slow?.85:1);
+  const gauss=()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+  const firstServer=()=>mode==='online'?(Net.me===0?'P':'A'):'P';
+  function newMatch(){M={score:{P:0,A:0},state:'serve',server:firstServer(),ball:{p:V(0,1,HL),v:V(),w:V()},last:null,bounce:{P:0,A:0},serve:null,rally:0,best:0,
+      pad:{P:{x:0,y:.95,tx:0,ty:.95,vx:0,vy:0},A:{x:0,y:.95,tx:0,ty:.95}},ai:{plan:null,t:0,react:0},netWave:[],trail:[],over:false,wait:0,swing:{P:0,A:0},paused:false};
+    placeForServe()}
+  function serverNow(){const n=M.score.P+M.score.A,f=firstServer();const swaps=M.score.P>=10&&M.score.A>=10?10+(n-20):Math.floor(n/2);return swaps%2===0?f:other(f)}
+  function placeForServe(){const s=M.server,b=M.ball;b.v=V();b.w=V();b.p=V(M.pad[s].x,TOP+.2,(s==='P'?1:-1)*(HL+.1));
+    M.state='serve';M.serve={stage:0,net:false};M.last=null;M.bounce={P:0,A:0};M.rally=0;M.trail=[];M.ai.plan=null;M.wait=0;
+    hint(s==='P'?L('Your serve: flick upwards, or just tap the table.','你发球：向上一挥，或轻点球桌。'):mode==='online'?L('Your friend is serving…','朋友发球中…'):L(`${lv().name[0]} is serving…`,`${lv().name[1]}发球中…`));updateHUD()}
+  /* ---------- shots ---------- */
+  // what the incoming spin does to a return: topspin kicks it up, backspin drags it down, sidespin pushes it sideways
+  function kick(w,toward,k){const s=toward==='P'?1:-1;return{dx:-s*w.y*R*k*2.7,dy:s*w.x*R*k*2.7}}
+  function playerHit(dist){const b=M.ball,P=M.pad.P,m=me();M.inTop=b.w.x;
+    const q=Math.max(0,1-dist/m.hitR),sx=P.vx,sy=P.vy,sp=Math.hypot(sx,sy);
+    const top=Math.max(-180,Math.min(240,sy*65)),side=Math.max(-220,Math.min(220,sx*60));
+    // a chop (backspin) is a slower, floating stroke
+    const pace=(m.pace[0]+(m.pace[1]-m.pace[0])*Math.min(1,sp/3.2))*(top<0?1-Math.min(.45,-top/330):1);
+    const tx=Math.max(-.55,Math.min(.55,b.p.x*.3+sx*.16));
+    const tz=-(.45+.75*Math.min(1,(pace-4.4)/7.5))-(top<-20?.25:0);
+    const w=spinFor(tx-b.p.x,tz-b.p.z,top,side);
+    const err=(m.assist?.012:.035)+(1-q)*.12+Math.max(0,pace-10)*.012;
+    const v=safeSolve(b.p,tx+gauss()*err*.5,tz+gauss()*err*.6,pace,w);
+    // reading the opponent's spin: brushing up with topspin of your own cancels much of it
+    let rk=m.read;if(top>40)rk*=Math.max(.3,1-top/260);const kk=kick(b.w,'P',rk);v.x+=kk.dx;v.y+=kk.dy;
+    v.x+=gauss()*err*.5;v.y+=gauss()*err*.45;
+    hitBall('P',v,w,pace);
+    if(q<.3&&!m.assist&&mode!=='online')hint(L('Off the edge! Meet the ball with the middle of the bat.','打到拍边了！用拍子中间迎球。'));
+    else if(M.rally===3&&mode!=='online'&&level==='easy')hint(L('Nice! Flick faster to hit harder, flick up for topspin.','很好！挥得快打得重，向上挥是上旋。'));
+    else hint('')}
+  function aiHit(){const o=lv(),b=M.ball,P=M.pad.P;
+    const pace=o.pace[0]+Math.random()*(o.pace[1]-o.pace[0]);
+    let tx=(Math.random()*2-1)*.55;if(level!=='easy'&&Math.random()<.65)tx=(P.x>0?-1:1)*(.22+Math.random()*.4);
+    const tz=HL-(.3+Math.random()*.8)*(level==='easy'?.85:1);
+    const r=Math.random(),top=r<.55?o.spin*(.45+Math.random()*.55):r<.82?-o.spin*(.3+.5*Math.random()):o.spin*.1,side=(Math.random()*2-1)*o.spin*.8;
+    const w=spinFor(tx-b.p.x,tz-b.p.z,top,side);
+    const inc=Math.hypot(b.w.x,b.w.y,b.w.z),e=o.err+inc*o.read*.0009;
+    // now and then the computer makes a mistake: long, wide or into the net
+    let gx=tx,gz=tz,dip=0;if(Math.random()<o.slip+Math.min(.12,M.rally*.004)){const k=Math.random();if(k<.4)gz=HL+.06+Math.random()*.2;else if(k<.75)gx=(tx>=0?1:-1)*(HW+.05+Math.random()*.15);else dip=.5+Math.random()*.5}
+    const v=safeSolve(b.p,gx+gauss()*e*.5,gz+gauss()*e*.6,pace,w);v.y-=dip;
+    const kk=kick(b.w,'A',o.read);v.x+=kk.dx;v.y+=kk.dy;v.x+=gauss()*e*.5;v.y+=gauss()*e*.45;
+    hitBall('A',v,w,pace);if(level!=='hard')spinTag(top,side)}
+  function spinTag(top,side){const el=$('#ttSpin');if(!el)return;let t='';
+    if(top>55)t=L('Topspin','上旋球');else if(top<-45)t=L('Backspin','下旋球');else if(Math.abs(side)>70)t=L('Sidespin','侧旋球');
+    if(!t)return;el.textContent=t;el.className='tt-spin '+(top>55?'top':top<-45?'back':'side');void el.offsetWidth;el.classList.add('show')}
+  function hitBall(who,v,w,pace,remote){const b=M.ball;b.v=v;b.w=w;M.last=who;M.bounce={P:0,A:0};M.rally++;M.best=Math.max(M.best,M.rally);M.swing[who]=performance.now();
+    const wasServe=M.state==='serve';if(wasServe)M.state='rally';sndHit(pace,who==='P');
+    if(mode==='online'&&!remote&&who==='P')Net.send({t:'hit',p:[-b.p.x,b.p.y,-b.p.z],v:[-v.x,v.y,-v.z],w:[-w.x,w.y,-w.z],srv:wasServe?1:0})}
+  function serve(who,sw){const b=M.ball,sg=who==='P'?1:-1,o=lv(),m=me();
+    const sx=sw?sw.x:0,sy=sw?sw.y:0,sp=Math.hypot(sx,sy);
+    let pace=who==='P'?3.5+Math.min(1,sp/3)*2.6:(level==='hard'?4.2+Math.random()*2:3.4+Math.random()*1.3);
+    const top=who==='P'?Math.max(-160,Math.min(160,sy*50)):(Math.random()*2-1)*o.spin*.8,side=who==='P'?Math.max(-200,Math.min(200,sx*55)):(Math.random()*2-1)*o.spin*.9;
+    b.p=V(b.p.x,TOP+.22,sg*(HL+.1));
+    const aimX=who==='P'?Math.max(-.5,Math.min(.5,b.p.x*.4+sx*.15)):(Math.random()*2-1)*.45;
+    // try a range of speeds and first-bounce spots; keep the legal serve closest to the speed asked for
+    let best=null,bestD=1e9,fallback=null;const w=spinFor(0,-sg,top,side);
+    for(const zf of[.32,.45,.24])for(let pc=3;pc<=8.5;pc+=.25){const v=solve(b.p,b.p.x+(aimX-b.p.x)*.4,sg*(HL-zf),pc,w);
+      const t={p:cp(b.p),v:cp(v),w:cp(w),rnd:()=>0},ev=[];let land=null;
+      let clear=9;for(let i=0;i<900&&!land;i++){const oz=t.p.z;step(t,DT,ev);if((oz>0)!==(t.p.z>0))clear=t.p.y-(TOP+NETH+R);const tb=ev.filter(e=>e.k==='table');if(tb.length>=2)land=tb[1];if(ev.some(e=>e.k==='floor'||e.k==='net'))break}
+      fallback=fallback||{v,w};const first=ev.find(e=>e.k==='table');
+      if(land&&first&&first.side===(who==='P'?'P':'A')&&land.side!==first.side&&Math.abs(land.z)<HL-.1&&Math.abs(land.x)<HW-.06&&!ev.some(e=>e.k==='net')&&clear>.035){const d=Math.abs(pc-pace);if(d<bestD){bestD=d;best={v,w}}}
+      if(best&&bestD<.2)break}
+    best=best||fallback;
+    const err=who==='P'?(m.assist?.006:.015):o.err*.3;best.v.x+=gauss()*err;best.v.y+=gauss()*err;
+    hitBall(who,best.v,best.w,pace);hint('')}
+  /* ---------- rules ---------- */
+  function onEvent(e){const sv=M.serve;
+    if(e.k==='net'){sndNet(e.cord);netHit(e.x,e.cord);if(sv&&sv.stage<2)sv.net=true;if(e.cord&&M.state==='rally')banner(L('Net cord!','擦网！'),'#FFE27A',650);return}
+    if(e.k==='table'){sndTable(e.spd);mark(e.x,e.z);
+      const hitter=M.last;if(!hitter)return;
+      if(sv.stage<2){if(sv.stage===0){if(e.side===hitter){sv.stage=1;return}return fault(other(hitter),L('A serve must bounce on your own side first','发球要先在自己这边弹一下'))}
+        if(e.side===other(hitter)){sv.stage=2;M.bounce[e.side]=1;if(sv.net)return let_();return}
+        return fault(other(hitter),L('The serve did not cross the net','发球没有过网'))}
+      if(e.side===hitter)return fault(other(hitter),M.bounce[other(hitter)]?L('Bounced twice','弹了两次'):L('Into the net','下网了'));
+      if(++M.bounce[e.side]>=2)return fault(hitter,L('Bounced twice','弹了两次'))}
+    if(e.k==='floor'){sndFloor();const hitter=M.last;if(!hitter)return;
+      if(sv.stage<2)return fault(other(hitter),L('The serve went out','发球出界'));
+      if(M.bounce[other(hitter)]>=1)return fault(hitter,L('Could not return it','没接回去'));
+      return fault(other(hitter),L('Out!','出界！'))}}
+  // online: the player who has to answer the shot rules on it
+  const amJudge=()=>mode!=='online'||M.last!=='P';
+  function fault(winner,why){if(M.state!=='rally')return;if(!amJudge()){M.state='pending';M.pendT=performance.now();return}
+    if(mode==='online')Net.send({t:'pt',w:winner==='P'?'A':'P',why});point(winner,why)}
+  function let_(){if(!amJudge()){M.state='pending';M.pendT=performance.now();return}if(mode==='online')Net.send({t:'let'});doLet()}
+  function doLet(){M.state='dead';banner(L('Let! Serve again','擦网重发'),'#8EC8FF',1300,L('The serve touched the net','发球擦网'));setTimeout(()=>{if(M&&!M.over)placeForServe()},sp(1400))}
+  function point(winner,why){if(!M||M.over)return;M.state='dead';M.score[winner]++;const mine=winner==='P';
+    // a word of coaching when the opponent's spin beat you
+    if(!mine&&M.last==='P'&&mode!=='online'&&level!=='hard'&&Math.abs(M.inTop||0)>40)why+=' · '+(M.inTop<0?L('it had backspin: flick upwards to lift it','对方是下旋：向上挥拍把球提起来'):L('it had topspin: flick up and over the ball','对方是上旋：向上挥拍压住球'));
+    banner(mine?L('Your point!','你得分！'):L('Point to '+oppName()[0],oppName()[1]+'得分'),mine?'#7BE0A0':'#FF8A7A',1500,why);mine?sfx.good():tone(220,.14,'sine',.08);updateHUD(true);
+    const a=M.score.P,b=M.score.A;
+    if((a>=11||b>=11)&&Math.abs(a-b)>=2){M.over=true;setTimeout(endMatch,sp(1700));return}
+    setTimeout(()=>{if(!M||M.over)return;M.server=serverNow();
+      if(a===b&&a>=10)banner(L('Deuce!','平分！'),'#FFE27A',1200,L('Win by 2 clear points','要领先2分才赢'));
+      else if(a>=10&&a>b)banner(L('Game point!','局点！'),'#FFD34E',1200);else if(b>=10&&b>a)banner(L('Game point to '+oppName()[0],oppName()[1]+'局点'),'#FFD34E',1200);
+      placeForServe()},sp(1700))}
+  const oppName=()=>mode==='online'?['your friend','朋友']:lv().name;
+  /* ---------- 3D scene ---------- */
+  function loadThree(){if(window.THREE)return Promise.resolve(true);if(loadThree.p)return loadThree.p;
+    const add=src=>new Promise(r=>{const s=document.createElement('script');s.src=src;s.onload=()=>r(!!window.THREE);s.onerror=()=>r(false);document.head.appendChild(s)});
+    loadThree.p=add('vendor/three.min.js').then(ok=>ok||add('https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js')).then(ok=>{if(!ok)loadThree.p=null;return ok});return loadThree.p}
+  function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.anisotropy=4;t.encoding=THREE.sRGBEncoding;return t}
+  function buildScene(cv){const T=THREE;const r=new T.WebGLRenderer({canvas:cv,antialias:true,powerPreference:'high-performance'});r.setPixelRatio(Math.min(devicePixelRatio||1,2));r.outputEncoding=T.sRGBEncoding;
+    const sc=new T.Scene();sc.background=new T.Color('#D9CFBE');sc.fog=new T.Fog('#D9CFBE',10,24);
+    const cam=new T.PerspectiveCamera(55,1,.05,60);
+    sc.add(new T.HemisphereLight('#FFF6E6','#7A6852',.9));const sun=new T.DirectionalLight('#FFF1D6',.7);sun.position.set(2,6,3);sc.add(sun);
+    const ld=new T.TextureLoader(),tx=src=>{const t=ld.load(src);t.encoding=T.sRGBEncoding;t.anisotropy=4;return t};
+    // the void deck: painted backdrop, terrazzo floor, ceiling and pillars
+    const bd=new T.Mesh(new T.PlaneGeometry(21,8.9),new T.MeshBasicMaterial({map:tx('img/tt-backdrop.webp'),fog:false}));bd.position.set(0,3.2,-9);sc.add(bd);
+    const ft=tx('img/tt-floor.webp');ft.wrapS=ft.wrapT=T.RepeatWrapping;ft.repeat.set(14,14);
+    const floor=new T.Mesh(new T.PlaneGeometry(26,26),new T.MeshLambertMaterial({map:ft}));floor.rotation.x=-Math.PI/2;floor.position.z=-3;sc.add(floor);
+    const ceil=new T.Mesh(new T.PlaneGeometry(26,26),new T.MeshLambertMaterial({color:'#CFC7B8'}));ceil.rotation.x=Math.PI/2;ceil.position.set(0,3.4,-3);sc.add(ceil);
+    const pm=new T.MeshLambertMaterial({color:'#E3DCCD'});for(const x of[-3.4,3.4])for(const z of[-4.6,-.6]){const pl=new T.Mesh(new T.BoxGeometry(.5,3.4,.5),pm);pl.position.set(x,1.7,z);sc.add(pl)}
+    const tube=new T.Mesh(new T.BoxGeometry(1.2,.04,.1),new T.MeshBasicMaterial({color:'#FFFBEF'}));tube.position.set(0,3.37,-1.2);sc.add(tube);
+    // the table: classic green with white lines and a little grain
+    const tt=canvasTex(512,920,(c,w,h)=>{const n=c.createImageData(w,h);for(let i=0;i<n.data.length;i+=4){const k=Math.random()*12;n.data[i]=28+k;n.data[i+1]=88+k;n.data[i+2]=58+k;n.data[i+3]=255}c.putImageData(n,0,0);
+      c.fillStyle='#F4F1E8';const e=Math.max(6,Math.round(w*.02/1.525));c.fillRect(0,0,w,e);c.fillRect(0,h-e,w,e);c.fillRect(0,0,e,h);c.fillRect(w-e,0,e,h);c.fillRect(w/2-2,0,4,h)});
+    const edge=new T.MeshLambertMaterial({color:'#F4F1E8'});
+    const top=new T.Mesh(new T.BoxGeometry(W,.03,TL),[edge,edge,new T.MeshPhongMaterial({map:tt,shininess:26,specular:'#3A5C48'}),new T.MeshLambertMaterial({color:'#143A27'}),edge,edge]);
+    top.position.set(0,TOP-.015,0);sc.add(top);
+    const legM=new T.MeshLambertMaterial({color:'#2A2A2A'});for(const x of[-.62,.62])for(const z of[-1.1,1.1]){const lg=new T.Mesh(new T.BoxGeometry(.05,TOP-.03,.05),legM);lg.position.set(x,(TOP-.03)/2,z);sc.add(lg)}
+    const under=new T.Mesh(new T.BoxGeometry(1.3,.05,2.3),legM);under.position.set(0,TOP-.07,0);sc.add(under);
+    const tsh=new T.Mesh(new T.PlaneGeometry(W+.3,TL+.3),new T.MeshBasicMaterial({color:'#000',transparent:true,opacity:.22,depthWrite:false}));tsh.rotation.x=-Math.PI/2;tsh.position.y=.004;sc.add(tsh);
+    // the net: a mesh that ripples where the ball hits it
+    const nt=canvasTex(512,64,(c,w,h)=>{c.clearRect(0,0,w,h);c.strokeStyle='rgba(18,22,30,.9)';c.lineWidth=1.3;for(let x=0;x<=w;x+=7){c.beginPath();c.moveTo(x,8);c.lineTo(x,h);c.stroke()}for(let y=8;y<=h;y+=7){c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke()}c.fillStyle='#F4F1E8';c.fillRect(0,0,w,8)});
+    const ng=new T.PlaneGeometry(NETX*2,NETH,60,8);const net=new T.Mesh(ng,new T.MeshLambertMaterial({map:nt,transparent:true,side:T.DoubleSide,alphaTest:.05}));net.position.set(0,TOP+NETH/2,0);sc.add(net);
+    const postM=new T.MeshLambertMaterial({color:'#2F2F33'});for(const x of[-NETX,NETX]){const po=new T.Mesh(new T.CylinderGeometry(.012,.012,NETH+.02,10),postM);po.position.set(x,TOP+NETH/2,0);sc.add(po);const cl=new T.Mesh(new T.BoxGeometry(.05,.04,.08),postM);cl.position.set(x,TOP+.01,0);sc.add(cl)}
+    // the ball, with a seam and two stars so you can see which way it spins
+    const bt=canvasTex(256,128,(c,w,h)=>{c.fillStyle='#FBF8EF';c.fillRect(0,0,w,h);c.strokeStyle='rgba(200,186,160,.95)';c.lineWidth=3;c.beginPath();c.moveTo(0,h/2);c.lineTo(w,h/2);c.stroke();
+      c.fillStyle='#E0442F';const st=(x,y,rr)=>{c.beginPath();for(let k=0;k<10;k++){const a=k*Math.PI/5-Math.PI/2,q=k%2?rr*.45:rr;c.lineTo(x+Math.cos(a)*q,y+Math.sin(a)*q)}c.closePath();c.fill()};st(w*.25,h*.3,15);st(w*.75,h*.7,15)});
+    const ball=new T.Mesh(new T.SphereGeometry(R,24,16),new T.MeshPhongMaterial({map:bt,shininess:70,specular:'#999',emissive:'#2A2620'}));sc.add(ball);
+    const shTex=canvasTex(64,64,(c,w,h)=>{const g=c.createRadialGradient(32,32,2,32,32,30);g.addColorStop(0,'rgba(0,0,0,.65)');g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fillRect(0,0,w,h)});
+    const shadow=new T.Mesh(new T.PlaneGeometry(.09,.09),new T.MeshBasicMaterial({map:shTex,transparent:true,depthWrite:false}));shadow.rotation.x=-Math.PI/2;sc.add(shadow);
+    const trail=[];for(let i=0;i<12;i++){const m=new T.Mesh(new T.SphereGeometry(R*(1-i*.06),10,8),new T.MeshBasicMaterial({color:'#FFFFFF',transparent:true,opacity:.2*(1-i/12),depthWrite:false}));sc.add(m);trail.push(m)}
+    const ring=new T.Mesh(new T.RingGeometry(.04,.055,36),new T.MeshBasicMaterial({color:'#FFD34E',transparent:true,opacity:.7,side:T.DoubleSide,depthWrite:false}));sc.add(ring);ring.visible=false;
+    const marks=[];for(let i=0;i<3;i++){const mk=new T.Mesh(new T.RingGeometry(.012,.03,24),new T.MeshBasicMaterial({color:'#FFFFFF',transparent:true,opacity:0,depthWrite:false}));mk.rotation.x=-Math.PI/2;sc.add(mk);marks.push({m:mk,t:0})}
+    // bats: wooden blade, red and black rubbers
+    const bat=(face)=>{const g=new T.Group();const blade=new T.Mesh(new T.CylinderGeometry(.078,.078,.007,40),new T.MeshLambertMaterial({color:'#C89A5E'}));blade.rotation.x=Math.PI/2;g.add(blade);
+      const f=new T.Mesh(new T.CylinderGeometry(.075,.075,.003,40),new T.MeshPhongMaterial({color:face,shininess:35}));f.rotation.x=Math.PI/2;f.position.z=-.005;g.add(f);
+      const b2=new T.Mesh(new T.CylinderGeometry(.075,.075,.003,40),new T.MeshPhongMaterial({color:'#1B1B1B',shininess:35}));b2.rotation.x=Math.PI/2;b2.position.z=.005;g.add(b2);
+      const h=new T.Mesh(new T.BoxGeometry(.026,.1,.024),new T.MeshLambertMaterial({color:'#8B5A2B'}));h.position.y=-.12;g.add(h);return g};
+    const padP=bat('#C62828'),padA=bat('#C62828');padP.children.forEach(o=>{if(o.position.z)o.position.z*=-1});sc.add(padP);sc.add(padA);
+    padP.traverse(o=>{if(o.material){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.9}});
+    // the opponent, standing at the far end
+    let body=null;{const o=mode==='online'?FRIEND:lv(),bm=new T.MeshBasicMaterial({map:tx(o.body),transparent:true,alphaTest:.4});
+      body=new T.Mesh(new T.PlaneGeometry(1,1),bm);const h=mode!=='online'&&level==='easy'?1.5:1.62;body.userData={hand:o.hand,h,w:h*.5};body.scale.set(h*.5,h,1);sc.add(body);
+      const img=new Image();img.onload=()=>{const a=img.width/img.height;body.userData.w=h*a;body.scale.set(h*a,h,1)};img.src=o.body}
+    return{r,sc,cam,ball,shadow,trail,ring,marks,padP,padA,body,ng,base:ng.attributes.position.array.slice()}}
+  function size(){if(!three)return;const st=$('#ttStage');if(!st)return;const w=st.clientWidth,h=st.clientHeight;if(!w||!h)return;three.r.setSize(w,h,false);const a=w/h;three.cam.aspect=a;
+    // keep the whole table in view on tall phones and on wide screens
+    const c=three.cam;if(a<.8){c.fov=Math.min(80,66*Math.pow(Math.max(1,.55/a),.6));c.position.set(0,1.95,HL+1.23);c.lookAt(0,.5,-.45)}
+    else{c.fov=a>=1.2?46:54;c.position.set(0,1.6,HL+1.4);c.lookAt(0,TOP-.02,-.5)}c.updateProjectionMatrix()}
+  function netHit(x,cord){const s=Math.hypot(M.ball.v.x,M.ball.v.z);M.netWave.push({x,a:cord?.008:Math.min(.05,.014+s*.08),t0:performance.now()})}
+  function drawNet(now){if(!M.netWave.length&&!M._netDirty)return;M._netDirty=M.netWave.length>0;const pos=three.ng.attributes.position,base=three.base;
+    for(let i=0;i<pos.count;i++){const x=base[i*3],y=base[i*3+1];let dz=0;
+      for(const w of M.netWave){const t=(now-w.t0)/1000;if(t>1.6)continue;const spread=.12+t*.5,fall=Math.exp(-Math.pow((x-w.x)/spread,2))*Math.exp(-t*3);dz+=w.a*fall*Math.cos(t*24-Math.abs(x-w.x)*18)*(.3+.7*(.5-y/NETH))}
+      pos.array[i*3+2]=dz}
+    M.netWave=M.netWave.filter(w=>now-w.t0<1600);pos.needsUpdate=true}
+  function mark(x,z){if(!three)return;const m=three.marks.shift();m.m.position.set(x,TOP+.002,z);m.t=performance.now();three.marks.push(m)}
+  /* ---------- sound: short filtered knocks, like celluloid on wood ---------- */
+  function knock(f,q,dur,vol){if(!S.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();
+    const n=Math.floor(AC.sampleRate*dur),b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,4);
+    const s=AC.createBufferSource(),bp=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;bp.type='bandpass';bp.frequency.value=f;bp.Q.value=q;g.gain.value=vol;s.connect(bp).connect(g).connect(AC.destination);s.start()}catch(e){}}
+  function sndHit(p,mine){const v=Math.min(1,p/12);knock(mine?2600:2300,2.5,.05,.5+.6*v);tone(mine?520:470,.04,'sine',.05+.05*v)}
+  function sndTable(s){const v=Math.min(1,(s||3)/6);knock(3300,3,.035,.35+.5*v);tone(1150,.03,'sine',.04+.05*v)}
+  function sndNet(cord){knock(cord?2000:700,cord?4:1.2,cord?.03:.09,.35);if(!cord)tone(160,.08,'triangle',.04)}
+  function sndFloor(){knock(1800,2,.04,.25)}
+  /* ---------- HUD ---------- */
+  let bannerT=0;
+  function banner(t,c,ms,sub){const el=$('#ttBanner');if(!el)return;el.innerHTML=`<b style="color:${c}">${t}</b>${sub?`<small>${sub}</small>`:''}`;el.classList.remove('show');void el.offsetWidth;el.classList.add('show');clearTimeout(bannerT);bannerT=setTimeout(()=>el.classList.remove('show'),sp(ms))}
+  function hint(t){const el=$('#ttHint');if(el){el.textContent=t;el.hidden=!t}}
+  function updateHUD(flip){if(!M||!root)return;const a=$('#ttSP'),b=$('#ttSA');
+    [[a,M.score.P],[b,M.score.A]].forEach(([el,v])=>{if(el&&el.textContent!==String(v)){el.textContent=v;if(flip){el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip')}}});
+    root.querySelectorAll('.tt-srv').forEach(x=>x.classList.toggle('on',x.dataset.s===M.server))}
+  /* ---------- input: your bat follows your finger (drawn a little above it so your finger does not hide it) ---------- */
+  const ptr={on:false,hist:[]};
+  function toWorld(cx,cy,touch){const cv=three.r.domElement,r=cv.getBoundingClientRect();const sy=cy-(touch?Math.min(70,r.height*.09):0);
+    const nx=(cx-r.left)/r.width*2-1,ny=-((sy-r.top)/r.height*2-1);const rc=new THREE.Raycaster();rc.setFromCamera(new THREE.Vector2(nx,ny),three.cam);
+    const o=rc.ray.origin,d=rc.ray.direction,t=(ZP-o.z)/d.z;if(!(t>0))return null;return{x:o.x+d.x*t,y:o.y+d.y*t}}
+  function bindInput(cv){const move=e=>{if(!M||!three)return;const w=toWorld(e.clientX,e.clientY,e.pointerType!=='mouse');if(!w)return;const P=M.pad.P;
+      P.tx=Math.max(-1.1,Math.min(1.1,w.x));P.ty=Math.max(TOP+.03,Math.min(TOP+.9,w.y));ptr.hist.push({t:performance.now(),x:P.tx,y:P.ty});if(ptr.hist.length>24)ptr.hist.shift()};
+    cv.addEventListener('pointerdown',e=>{e.preventDefault();ptr.on=true;ptr.hist=[];try{cv.setPointerCapture(e.pointerId)}catch(_){}move(e)});
+    cv.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||ptr.on)move(e)});
+    cv.addEventListener('pointerup',()=>{if(!ptr.on)return;ptr.on=false;if(M&&M.state==='serve'&&M.server==='P'&&!M.paused)serve('P',swipeVel())});
+    cv.addEventListener('pointercancel',()=>{ptr.on=false})}
+  function swipeVel(){const h=ptr.hist,now=performance.now(),rec=h.filter(q=>now-q.t<130);if(rec.length<2)return{x:0,y:0};const a=rec[0],b=rec[rec.length-1],dt=Math.max(.016,(b.t-a.t)/1000);return{x:(b.x-a.x)/dt,y:(b.y-a.y)/dt}}
+  /* ---------- the loop ---------- */
+  let lastT=0;
+  function loop(){const my=token;const frame=now=>{if(my!==token)return;raf=requestAnimationFrame(frame);if(!M||M.paused||!three){lastT=now;return}
+      const dt=Math.min(.05,(now-(lastT||now))/1000)*tscale();lastT=now;update(dt,now);render(dt,now)};lastT=0;raf=requestAnimationFrame(frame)}
+  // where the ball will reach a player: crossing their plane, or (for a short ball) just before it would bounce a second time
+  function predict(side){const b=M.ball,t={p:cp(b.p),v:cp(b.v),w:cp(b.w),rnd:()=>0},ev=[],s=side==='P'?1:-1,zp=s*ZP;let bounced=M.bounce[side];
+    for(let i=0;i<520;i++){const pz=t.p.z;step(t,DT,ev);for(const e of ev.splice(0)){if(e.k==='table'&&e.side===side)bounced++;if(e.k==='floor')return null}
+      if(bounced>=2)return null;
+      if(bounced>=1&&(s>0?pz<zp&&t.p.z>=zp:pz>zp&&t.p.z<=zp))return{x:t.p.x,y:t.p.y,z:zp,t:i*DT};
+      if(bounced>=1&&t.v.y<0&&t.p.y<TOP+.07&&Math.abs(t.p.z)>.25)return{x:t.p.x,y:t.p.y,z:t.p.z,t:i*DT,short:true}}return null}
+  let crossC={t:0,v:null,r:-1};const cross=()=>{const n=performance.now();if(n-crossC.t>70||crossC.r!==M.rally){crossC={t:n,v:predict('P'),r:M.rally}}return crossC.v};
+  function update(dt,now){const P=M.pad.P,A=M.pad.A,b=M.ball,o=lv(),m=me();
+    const k=1-Math.exp(-dt*30);
+    // easy level: the bat is gently drawn to the ball when you are close
+    if(m.assist&&M.state==='rally'&&M.last==='A'){const c=cross();if(c&&Math.abs(c.x-P.tx)<.34&&Math.abs(c.y-P.ty)<.32){P.tx+=(c.x-P.tx)*.5;P.ty+=(c.y-P.ty)*.5}}
+    P.x+=(P.tx-P.x)*k;P.y+=(P.ty-P.y)*k;const sv=swipeVel();P.vx=P.vx*.55+sv.x*.45;P.vy=P.vy*.55+sv.y*.45;
+    if(M.state==='serve'){const s=M.server,pd=M.pad[s],bob=Math.sin(now/260)*.025;b.p.x=pd.x+(s==='P'?-.05:.05);b.p.y=TOP+.22+bob;b.p.z=(s==='P'?1:-1)*(HL+.1);
+      if(s==='A'&&mode!=='online'){M.wait+=dt;if(M.wait>1.2)serve('A')}}
+    if(M.state==='rally'||M.state==='pending'){let t=dt;while(t>1e-6){const h=Math.min(DT,t);t-=h;const pz=b.p.z,ev=[];step(b,h,ev);
+        if(M.state==='rally')for(const e of ev){onEvent(e);if(M.state!=='rally')break}
+        if(M.state!=='rally')continue;
+        // your bat meets the ball (at your plane, or reaching in for a short ball)
+        if(M.last==='A'&&M.bounce.P===1&&b.v.z>0){const atPlane=pz<ZP&&b.p.z>=ZP,short=b.v.y<0&&b.p.y<TOP+.07&&b.p.z>.25&&b.p.z<ZP;
+          if(atPlane||short){const d=Math.hypot(b.p.x-P.x,b.p.y-P.y);if(d<=m.hitR+R)playerHit(d)}}
+        // the computer's bat
+        if(mode!=='online'&&M.last==='P'&&M.bounce.A===1&&b.v.z<0){const atPlane=pz>-ZP&&b.p.z<=-ZP,short=b.v.y<0&&b.p.y<TOP+.07&&b.p.z<-.25&&b.p.z>-ZP;
+          if(atPlane||short){const d=Math.hypot(b.p.x-A.x,b.p.y-A.y);if(d<=o.reach+R)aiHit()}}}
+      if(M.state==='rally'&&b.p.y<.05&&Math.hypot(b.v.x,b.v.y,b.v.z)<.3)onEvent({k:'floor'});
+      if(M.state==='pending'&&now-M.pendT>6000){M.state='rally';point(M.last?other(M.last):'P','')}
+      M.trail.unshift(cp(b.p));if(M.trail.length>12)M.trail.pop()}
+    // the computer moves towards where the ball will reach it
+    if(mode!=='online'){const ai=M.ai;ai.t-=dt;
+      if(M.state==='rally'&&M.last==='P'){if(ai.t<=0){ai.t=.1;const c=predict('A');if(c){if(!ai.plan||!ai.plan.ok)ai.react=o.react;ai.plan={x:c.x+gauss()*o.aim*.4,y:c.y+gauss()*o.aim*.25,ok:true}}}}
+      else if(M.state!=='serve'||M.server!=='A')ai.plan={x:M.state==='rally'?b.p.x*.3:0,y:.95,ok:false};
+      if(ai.react>0)ai.react-=dt;else if(ai.plan){const dx=ai.plan.x-A.x,dy=ai.plan.y-A.y,dd=Math.hypot(dx,dy),mv=Math.min(dd,o.speed*dt);if(dd>1e-4){A.x+=dx/dd*mv;A.y+=dy/dd*mv}}}
+    else{A.x+=(A.tx-A.x)*k;A.y+=(A.ty-A.y)*k;Net.send({t:'pos',x:+(-P.x).toFixed(3),y:+P.y.toFixed(3)})}}
+  function render(dt,now){const T=THREE,b=M.ball,P=M.pad.P,A=M.pad.A;three.ball.position.set(b.p.x,b.p.y,b.p.z);
+    // show the spin (slowed down so the eye can follow it)
+    const wm=Math.hypot(b.w.x,b.w.y,b.w.z);if(wm>.5){const ang=Math.min(.6,wm*dt*.12);three.ball.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(b.w.x/wm,b.w.y/wm,b.w.z/wm),ang))}
+    const onTable=Math.abs(b.p.x)<=HW&&Math.abs(b.p.z)<=HL,gy=onTable?TOP+.001:.003,hgt=Math.max(0,b.p.y-gy);three.shadow.position.set(b.p.x,gy,b.p.z);const ss=1+hgt*2;three.shadow.scale.set(ss,ss,1);three.shadow.material.opacity=Math.max(.12,1-hgt*1.2);
+    three.trail.forEach((m,i)=>{const q=M.trail[i+1];m.visible=!!q&&M.state==='rally'&&Math.hypot(b.v.x,b.v.z)>5;if(q)m.position.set(q.x,q.y,q.z)});
+    three.marks.forEach(mk=>{const a=(now-mk.t)/600;mk.m.material.opacity=a<1?.6*(1-a):0;mk.m.scale.setScalar(1+a*1.2)});
+    const sw=t0=>{const a=(now-t0)/240;return a<1?Math.sin(a*Math.PI):0};
+    three.padP.position.set(P.x,P.y,ZP+.02);
+    three.padP.rotation.set(-.2-sw(M.swing.P)*.6+Math.max(-.4,Math.min(.4,P.vy*.08)),Math.max(-.5,Math.min(.5,-P.vx*.1)),Math.max(-.7,Math.min(.7,-P.x*.6)));
+    three.padA.position.set(A.x,A.y,-ZP-.02);three.padA.rotation.set(.2+sw(M.swing.A)*.6,Math.PI,Math.max(-.7,Math.min(.7,A.x*.6)));
+    if(three.body){const bd=three.body,u=bd.userData;bd.position.set(A.x+(.5-u.hand)*u.w*.85,u.h/2+Math.sin(now/380)*.008-Math.min(.06,sw(M.swing.A)*.05),-ZP-.42);
+      const vx=(A.x-(u.px??A.x))/Math.max(dt,1e-3);u.px=A.x;u.tilt=(u.tilt||0)*.85+Math.max(-.08,Math.min(.08,-vx*.03))*.15;bd.rotation.z=u.tilt}
+    const c=mode!=='online'&&level!=='hard'&&M.state==='rally'&&M.last==='A'?cross():null;three.ring.visible=!!c;if(c){three.ring.position.set(c.x,c.y,Math.min(ZP,c.z));three.ring.material.opacity=level==='easy'?.8:.4}
+    drawNet(now);three.r.render(three.sc,three.cam)}
+  /* ---------- online ---------- */
+  function netSetup(){Net.setLive('pos',d=>{if(!M)return;M.pad.A.tx=+d.x||0;M.pad.A.ty=+d.y||.95});
+    Net.setLive('hit',d=>{if(!M||M.over)return;const b=M.ball;b.p=V(...d.p);b.v=V(...d.v);b.w=V(...d.w);if(d.srv)M.serve={stage:0,net:false};
+      M.state='rally';M.last='A';M.bounce={P:0,A:0};M.rally++;M.best=Math.max(M.best,M.rally);M.swing.A=performance.now();sndHit(Math.hypot(b.v.x,b.v.z),false);hint('');
+      // catch up on the time the message spent on the way
+      const ev=[];for(let i=0;i<20;i++){step(b,DT,ev)}for(const e of ev)if(M.state==='rally')onEvent(e)});
+    Net.setLive('pt',d=>{if(!M||M.over||M.state==='dead'||M.state==='serve')return;M.state='rally';point(d.w==='P'?'P':'A',d.why||'')});
+    Net.setLive('let',()=>{if(!M||M.over)return;doLet()})}
+  /* ---------- screens ---------- */
+  function menu(){stopGame();root.innerHTML=`<div class="tt-menu">
+      <h3 class="dp-h">${L('Choose your opponent','选择对手')}</h3>
+      <div class="tt-opps">${Object.entries(OPP).map(([k,o])=>`<button class="tt-opp" data-k="${k}" aria-pressed="${k===level&&mode!=='online'}"><img src="${o.img}" alt=""><span><b>${L(o.name[0],o.name[1])}</b><small>${L(o.tag[0],o.tag[1])}</small></span></button>`).join('')}
+        <button class="tt-opp tt-online" data-k="online" aria-pressed="${mode==='online'}"><span class="tt-globe" aria-hidden="true">⇄</span><span><b>${L('Play a friend online','和朋友联机')}</b><small>${L('Two devices, 4-digit code','两台设备，4位代码')}</small></span></button></div>
+      <div class="tt-how"><b>${L('How to play','玩法')}</b><ul>
+        <li>${L('Move your bat with your finger (or the mouse). Meet the ball after it bounces on your side.','用手指（或鼠标）移动球拍，球在你这边弹起后迎上去。')}</li>
+        <li>${L('Flick faster to hit harder. Flick up for topspin, down for backspin, sideways to curve the ball.','挥得越快打得越重。向上挥是上旋，向下挥是下旋，横着挥球会拐弯。')}</li>
+        <li>${L('To serve, flick upwards or simply tap. First to 11 points, 2 clear, wins.','发球时向上一挥，或轻点一下。先得11分并领先2分者胜。')}</li></ul></div>
+      <button class="btn primary big" id="ttGo">▶ ${L('Start match','开始比赛')}</button></div>`;
+    root.querySelectorAll('.tt-opp').forEach(b=>b.onclick=()=>{sfx.tap();const k=b.dataset.k;
+      if(k==='online'){openOnline();return}
+      if(mode==='online'){Net.onDrop=null;Net.leave()}mode=prevMode='cpu';level=k;
+      root.querySelectorAll('.tt-opp').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+    $('#ttGo').onclick=()=>{sfx.tap();if(mode==='online'){if(Net.on)onlineRestart(()=>play(true));else openOnline();return}play()}}
+  function openOnline(){goOnline('tabletennis',L('Table Tennis','乒乓球'),m=>{mode=m},fromNet=>{if(fromNet===true)play(true);else menu()},'cpu')}
+  async function play(fromNet){stopGame();token++;const my=token;const o=lv(),on=mode==='online';
+    root.innerHTML=`<div class="tt-wrap"><div class="tt-stage" id="ttStage"><canvas id="ttCv" aria-label="${L('Table tennis table','乒乓球桌')}"></canvas>
+      <div class="tt-hud"><div class="tt-card"><span class="tt-nm"><i class="tt-srv" data-s="P" title="${L('Serving','发球')}"></i>${L('You','你')}</span><b id="ttSP">0</b></div>
+        <div class="tt-card right"><img src="${on?FRIEND.img:o.img}" alt=""><span class="tt-nm"><i class="tt-srv" data-s="A"></i>${on?L('Friend','朋友'):L(o.name[0],o.name[1])}</span><b id="ttSA">0</b></div></div>
+      <div class="tt-banner" id="ttBanner"></div><span class="tt-spin" id="ttSpin"></span><p class="tt-hint" id="ttHint" hidden></p>
+      <button class="dp-pause tt-pause" id="ttPause" aria-label="${on?L('Leave','离开'):L('Pause','暂停')}">${on?'✕':'❚❚'}</button>
+      <div class="dp-load" id="ttLoad"><span class="rg-spin sm"></span><span>${L('Setting up the table…','正在摆好球桌…')}</span></div></div></div>`;
+    $('#ttPause').onclick=pause;
+    const ok=await loadThree();if(my!==token)return;if(!ok){$('#ttLoad').innerHTML=`<span>${L('The 3D table could not load. Check the internet and try again.','3D球桌无法加载，请检查网络后再试。')}</span>`;return}
+    const cv=$('#ttCv');try{newMatch();three=buildScene(cv)}catch(e){M=null;$('#ttLoad').innerHTML=`<span>${L('This device cannot show the 3D table.','这台设备无法显示3D球桌。')}</span>`;return}
+    size();bindInput(cv);updateHUD();if(on)netSetup();
+    setTimeout(()=>{const l=$('#ttLoad');if(l)l.hidden=true},300);loop();
+    const st=$('#ttStage'),top=(document.querySelector('.top')?.offsetHeight||0);if(st){const y=st.getBoundingClientRect().top+scrollY-top-8;if(Math.abs(y-scrollY)>20)scrollTo({top:y,behavior:'smooth'})}
+    vis=()=>{if(document.hidden&&M&&!M.over&&mode!=='online')pause()};document.addEventListener('visibilitychange',vis)}
+  function pause(){if(!M||M.paused||M.over)return;sfx.tap();
+    if(mode==='online'){openModal({eyebrow:L('Online game','联机游戏'),title:L('Leave this match?','离开这场比赛？'),html:`<p>${L('Your friend will be told you left.','朋友会收到你离开的通知。')}</p>`,buttons:[{label:L('Leave','离开'),onClick:()=>{Net.onDrop=null;Net.leave();mode=prevMode='cpu';menu()}},{label:L('Keep playing','继续比赛'),primary:true}]});return}
+    M.paused=true;const ov=document.createElement('div');ov.className='dp-over';ov.id='ttOv';
+    ov.innerHTML=`<h3>${L('Paused','暂停')}</h3><p>${L(`You ${M.score.P} – ${M.score.A} ${lv().name[0]}`,`你 ${M.score.P} : ${M.score.A} ${lv().name[1]}`)}</p><div class="row" style="justify-content:center"><button class="btn primary big" id="ttRes">${L('Resume','继续')}</button><button class="btn big" id="ttQuit">${L('Change opponent','换对手')}</button></div>`;
+    $('#ttStage').appendChild(ov);$('#ttRes').onclick=()=>{sfx.tap();ov.remove();M.paused=false};$('#ttQuit').onclick=()=>{sfx.tap();menu()}}
+  function endMatch(){const won=M.score.P>M.score.A,a=M.score.P,b=M.score.A,best=M.best;
+    finish('tabletennis',won?L('You win the match!','你赢了比赛！'):mode==='online'?L('Your friend wins this time','这次朋友赢了'):L(`${lv().name[0]} wins this time`,`这次${lv().name[1]}赢了`),
+      L(`Final score ${a} – ${b} · longest rally ${best} shots`,`最终比分 ${a} : ${b} · 最长连续对打 ${best} 板`),won)}
+  function stopGame(){token++;cancelAnimationFrame(raf);if(three){try{three.r.dispose();three.r.forceContextLoss()}catch(e){}three=null}M=null;
+    if(vis){document.removeEventListener('visibilitychange',vis);vis=null}}
+  function start(fromNet){if(mode==='online'){if(fromNet!==true){if(!Net.on){mode=prevMode='cpu';menu();return}onlineRestart(()=>{})}play(true);return}
+    if(root.querySelector('.tt-wrap'))play();else menu()}
+  return{mount(el){root=el;ro=()=>size();addEventListener('resize',ro);menu()},start,
+    stop(){stopGame();removeEventListener('resize',ro);if(mode==='online'){Net.onDrop=null;Net.leave();mode=prevMode='cpu'}},
+    _t:{step,flight,solve,spinFor,predict,get M(){return M},V,C:{TL,W,TOP,NETH,R,HL,ZP},set level(v){level=v},get level(){return level},serve,playerHit,aiHit,get three(){return three},ptr}};
+})();
+
+const IMPL={tabletennis:TableTennis,dance:Dance,draughts:Draughts,reversi:Reversi,memory:MemoryCards,spot:SpotDiff,rhythm:Rhythm,congkak:Congkak,fivestones:FiveStones,sticks:Sticks,kuti:Kuti,snakes:Snakes,jigsaw:Jigsaw,xiangqi:Xiangqi,goli:Goli,carrom:Carrom};
 
 /* ---------- top bar ---------- */
 $('#backBtn').onclick=()=>{sfx.tap();show('home')};

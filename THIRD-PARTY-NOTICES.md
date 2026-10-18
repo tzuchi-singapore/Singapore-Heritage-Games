@@ -35,6 +35,34 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
+### three.js 0.149.0
+Draws the 3D table, ball and void deck in Table Tennis. Included as `vendor/three.min.js` (loaded from the jsDelivr CDN only if that file cannot be reached).
+Source: https://threejs.org · Licence: MIT
+
+```
+The MIT License
+
+Copyright © 2010-2023 three.js authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+```
+
 ### PeerJS
 `vendor/peerjs.min.js` is left over from an earlier version of online play and is no longer used by the app.
 Source: https://peerjs.com · Licence: MIT, Copyright (c) 2015 Michelle Bu and Eric Zhang.
@@ -58,6 +86,7 @@ Licence text: https://openfontlicense.org
 
 ## Pictures and music
 - The illustrations, game pictures and Memory Album paintings were made for this project with **Higgsfield** AI image generation.
+- The Table Tennis players, void deck backdrop and terrazzo floor are Higgsfield pictures; the table, net, ball and bats are drawn in 3D by the game itself.
 - The Dance Party dance clips were animated for this project with **Higgsfield** AI video generation, starting from an original illustration.
 - The music tracks were made for this project with **Higgsfield** AI audio generation. The "folk" tracks are new arrangements of traditional songs (Rasa Sayang, Chan Mali Chan, Burung Kakak Tua, 茉莉花 Mo Li Hua, 天黑黑 Ti Oh Oh, Dayung Sampan). The "style" tracks are original pieces in the style of old Singapore music, not copies of any recording.
 
