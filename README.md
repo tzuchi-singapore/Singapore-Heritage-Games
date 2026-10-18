@@ -24,7 +24,7 @@ Kampong Days brings back the games played on verandahs, void decks and five-foot
 | | **Kuti Kuti** | Flick the plastic animals with a swipe |
 | | **Goli** | Marbles: knock them out of the ring |
 | | **Carrom** | The board turns to face each player |
-| | **Table Tennis** | 3D ping pong at a void deck with real spin, curve, bounce and net physics; play Auntie Mei, Uncle Rahman or Champion Priya, or a friend online |
+| | **Table Tennis** | 3D ping pong at a void deck with real spin, curve, bounce and net physics; you step to the ball (or tilt the phone to move); play Auntie Mei, Uncle Rahman or Champion Priya, or a friend online |
 | Puzzles & memories | **Memory Cards** | Flip and match old-school toys and treats (6, 8 or 12 pairs) |
 | | **Spot the Difference** | Four heritage scenes with new changes every game (3, 5 or 7 to find) |
 | | **Jigsaw Puzzle** | Scenes of old Singapore |

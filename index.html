@@ -265,6 +265,10 @@ p{margin:0}
 .tt-spin{position:absolute;left:50%;top:58px;transform:translateX(-50%);padding:4px 12px;border-radius:99px;font-weight:900;font-size:calc(14px * var(--fs,1));color:#22142E;opacity:0;pointer-events:none}
 .tt-spin.top{background:#FFD34E}.tt-spin.back{background:#8EC8FF}.tt-spin.side{background:#FF9EC4}
 .tt-spin.show{animation:dpTip 1.4s}
+.tt-tilt{display:flex;gap:10px;align-items:flex-start;margin-top:10px;font-weight:800;font-size:calc(15px * var(--fs,1));line-height:1.4;cursor:pointer}
+.tt-tilt input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#1E5B3C}
+.tt-centre{position:absolute;left:10px;bottom:10px;height:44px;padding:0 14px;border-radius:99px;border:2px solid #F4F1E8;background:rgba(16,40,28,.86);color:#F4F1E8;font-weight:900;font-size:calc(14px * var(--fs,1));cursor:pointer}
+.tt-centre[hidden]{display:none}
 .tt-pause{border-color:#F4F1E8;background:rgba(16,40,28,.86);color:#F4F1E8}
 @media(max-width:600px){.tt-stage{height:calc(100svh - 150px);min-height:440px;border-radius:14px}.tt-card{padding:3px 6px;gap:5px}.tt-card img{display:none}.tt-card b{font-size:calc(24px * var(--fs,1))}}
 .dp-over{position:absolute;inset:0;display:grid;align-content:center;justify-items:center;gap:14px;background:rgba(18,10,30,.85);color:#FFF6E6;text-align:center;padding:16px}
@@ -850,8 +854,8 @@ const GAMES=[
   rules:{en:['You play the white coins; your opponent plays black. The red coin is the Queen.','Slide the striker along your baseline, then pull back and let go to shoot it forward.','Pocket one of your own coins and you shoot again. Your opponent’s coins that go in count for them.','The Queen is worth 3 points, but you must cover her by pocketing one of your own coins straight after. Otherwise she goes back to the centre.','Pocketing the striker is a foul: one of your coins goes back to the centre.','The first to pocket all their coins wins.'],
    zh:['你打白子，对手打黑子，红色的是皇后。','沿底线移动母子，往后拉再放开，把它往前打。','打进自己的棋子可以再打一杆，打进对方的棋子算对方的。','皇后值3分，但打进后要马上再进一粒自己的棋子跟进，否则皇后放回中间。','母子进洞是犯规：你的一粒棋子要放回中间。','先把自己所有棋子打进洞的赢。']}},
  {id:'tabletennis',cat:'skill',img:'img/tabletennis.webp',en:['Table Tennis','3D ping pong at the void deck','Rally against Auntie Mei, Uncle Rahman or Champion Priya, with real spin and bounce.'],zh:['乒乓球','组屋楼下3D乒乓','和美姨、拉曼叔或冠军普丽亚对打，球的旋转和弹跳都很真实。'],
-  rules:{en:['Move your bat with your finger or the mouse. Your bat is drawn a little above your finger so you can see it.','Let the ball bounce once on your side, then meet it with your bat. The yellow ring (Easy and Normal) shows where the ball will reach you.','Flick faster to hit harder. Flick upwards for topspin (the ball dips and jumps forward), downwards for backspin (it floats and stops short), and sideways to make it curve.','Spin works like the real thing: a ball with heavy spin will kick off your bat, so flick up through a topspin ball to keep it on the table.','To serve, flick upwards or just tap. The serve must bounce on your side first, then on your opponent\'s side. If it clips the net and lands in, it is a let: serve again.','The serve changes every 2 points. First to 11 points wins, but you must be 2 points clear (at 10–10, the serve changes every point).','Play a friend online on two devices with a 4-digit code.'],
-   zh:['用手指或鼠标移动球拍。球拍会显示在手指上方一点，方便你看清楚。','让球在你这边弹一下，再用球拍迎上去。黄色圆圈（简单和普通）会告诉你球会到哪里。','挥得越快打得越重。向上挥是上旋（球会下坠并向前冲），向下挥是下旋（球会飘并停得短），横着挥球会拐弯。','旋转和真的一样：强烈旋转的球碰到球拍会弹偏，所以对上旋球要向上挥拍，把球压在桌上。','发球时向上一挥或轻点一下。发球要先在自己这边弹一下，再落到对方那边。擦网后落在对方台上算重发。','每2分换一次发球。先得11分者胜，但要领先2分（10平后每1分换发球）。','也可以用两台设备和朋友联机，输入4位代码即可。']}},
+  rules:{en:['Move your bat with your finger or the mouse. Your bat is drawn a little above your finger so you can see it.','Let the ball bounce once on your side, then meet it with your bat. You step to the ball by yourself, even in over the table for a short ball. The yellow ring (Easy and Normal) shows where to put your bat.','On a phone you can also tilt it to step around the table: tilt left or right to move sideways, forward or back to move in or out. Tap ◎ Centre to reset.','Flick faster to hit harder. Flick upwards for topspin (the ball dips and jumps forward), downwards for backspin (it floats and stops short), and sideways to make it curve.','Spin works like the real thing: a ball with heavy spin will kick off your bat, so flick up through a topspin ball to keep it on the table.','To serve, flick upwards or just tap. The serve must bounce on your side first, then on your opponent\'s side. If it clips the net and lands in, it is a let: serve again.','The serve changes every 2 points. First to 11 points wins, but you must be 2 points clear (at 10–10, the serve changes every point).','Play a friend online on two devices with a 4-digit code.'],
+   zh:['用手指或鼠标移动球拍。球拍会显示在手指上方一点，方便你看清楚。','让球在你这边弹一下，再用球拍迎上去。你会自动跟着球走位，短球时还会靠近球桌。黄色圆圈（简单和普通）告诉你球拍要放在哪里。','用手机时也可以倾斜手机在球桌旁走动：左右倾斜横移，前后倾斜靠近或后退。按 ◎ 回中 重新设定。','挥得越快打得越重。向上挥是上旋（球会下坠并向前冲），向下挥是下旋（球会飘并停得短），横着挥球会拐弯。','旋转和真的一样：强烈旋转的球碰到球拍会弹偏，所以对上旋球要向上挥拍，把球压在桌上。','发球时向上一挥或轻点一下。发球要先在自己这边弹一下，再落到对方那边。擦网后落在对方台上算重发。','每2分换一次发球。先得11分者胜，但要领先2分（10平后每1分换发球）。','也可以用两台设备和朋友联机，输入4位代码即可。']}},
  {id:'memory',cat:'puzzle',img:'img/memory.webp',en:['Memory Cards','Old-school toys & treats','Turn over the cards and find the matching pairs.'],zh:['记忆翻牌','童年玩具和零食','翻开卡片，找出一样的一对。'],
   rules:{en:['All the cards start face down.','Tap two cards to turn them over. If they show the same picture, they stay face up.','If they are different, they turn back over. Try to remember where each picture was!','Easy has 6 pairs, Medium 8 pairs and Hard 12 pairs. Find every pair to win, in as few turns as you can.'],
    zh:['所有卡片一开始都是背面朝上。','每次点两张卡翻开。如果图案一样，就保持翻开。','如果不一样，会翻回去。记住每个图案的位置！','简单6对，中等8对，困难12对。找出所有配对就赢了，次数越少越好。']}},
@@ -3148,7 +3152,7 @@ const TableTennis=(()=>{
     hard:{name:['Champion Priya','冠军普丽亚'],img:'img/tt-op3.webp',body:'img/tt-body3.webp',hand:.06,tag:['Hard · fast and tricky','困难 · 又快又刁钻'],
       speed:3.8,react:.13,aim:.05,pace:[6.8,12],spin:190,err:.028,reach:.16,read:.03,slip:.03,tscale:1}};
   const FRIEND={img:'img/tt-op4.webp',body:'img/tt-body4.webp',hand:.08};
-  const ME={easy:{hitR:.22,assist:true,pace:[4.4,8],read:.03},normal:{hitR:.16,assist:false,pace:[5,11.5],read:.05},hard:{hitR:.13,assist:false,pace:[5,12.5],read:.1},online:{hitR:.16,assist:false,pace:[5,12],read:.08}};
+  const ME={easy:{hitR:.24,assist:true,pace:[4.4,8],read:.03},normal:{hitR:.18,assist:false,pace:[5,11.5],read:.05},hard:{hitR:.15,assist:false,pace:[5,12.5],read:.1},online:{hitR:.18,assist:false,pace:[5,12],read:.08}};
   let root,level='easy',mode='cpu',prevMode='cpu',token=0,raf=0,three=null,ro=null,vis=null;
   const lv=()=>OPP[level],me=()=>ME[mode==='online'?'online':level];
   /* ---------- physics ---------- */
@@ -3194,7 +3198,7 @@ const TableTennis=(()=>{
   const gauss=()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
   const firstServer=()=>mode==='online'?(Net.me===0?'P':'A'):'P';
   function newMatch(){M={score:{P:0,A:0},state:'serve',server:firstServer(),ball:{p:V(0,1,HL),v:V(),w:V()},last:null,bounce:{P:0,A:0},serve:null,rally:0,best:0,
-      pad:{P:{x:0,y:.95,tx:0,ty:.95,vx:0,vy:0},A:{x:0,y:.95,tx:0,ty:.95}},ai:{plan:null,t:0,react:0},netWave:[],trail:[],over:false,wait:0,swing:{P:0,A:0},paused:false};
+      pad:{P:{x:0,y:.95,z:ZP,tx:0,ty:.95,vx:0,vy:0},A:{x:0,y:.95,z:-ZP,tx:0,ty:.95}},body:{x:0,z:0},rel:null,ai:{plan:null,t:0,react:0},netWave:[],trail:[],over:false,wait:0,swing:{P:0,A:0},paused:false};
     placeForServe()}
   function serverNow(){const n=M.score.P+M.score.A,f=firstServer();const swaps=M.score.P>=10&&M.score.A>=10?10+(n-20):Math.floor(n/2);return swaps%2===0?f:other(f)}
   function placeForServe(){const s=M.server,b=M.ball;b.v=V();b.w=V();b.p=V(M.pad[s].x,TOP+.2,(s==='P'?1:-1)*(HL+.1));
@@ -3337,10 +3341,13 @@ const TableTennis=(()=>{
       body=new T.Mesh(new T.PlaneGeometry(1,1),bm);const h=mode!=='online'&&level==='easy'?1.5:1.62;body.userData={hand:o.hand,h,w:h*.5};body.scale.set(h*.5,h,1);sc.add(body);
       const img=new Image();img.onload=()=>{const a=img.width/img.height;body.userData.w=h*a;body.scale.set(h*a,h,1)};img.src=o.body}
     return{r,sc,cam,ball,shadow,trail,ring,marks,padP,padA,body,ng,base:ng.attributes.position.array.slice()}}
-  function size(){if(!three)return;const st=$('#ttStage');if(!st)return;const w=st.clientWidth,h=st.clientHeight;if(!w||!h)return;three.r.setSize(w,h,false);const a=w/h;three.cam.aspect=a;
+  function size(){if(!three)return;const st=$('#ttStage');if(!st)return;const w=st.clientWidth,h=st.clientHeight;if(!w||!h)return;three.r.setSize(w,h,false);const a=w/h,c=three.cam;c.aspect=a;
     // keep the whole table in view on tall phones and on wide screens
-    const c=three.cam;if(a<.8){c.fov=Math.min(80,66*Math.pow(Math.max(1,.55/a),.6));c.position.set(0,1.95,HL+1.23);c.lookAt(0,.5,-.45)}
-    else{c.fov=a>=1.2?46:54;c.position.set(0,1.6,HL+1.4);c.lookAt(0,TOP-.02,-.5)}c.updateProjectionMatrix()}
+    if(a<.8){c.fov=Math.min(80,66*Math.pow(Math.max(1,.55/a),.6));three.view={p:[0,1.95,HL+1.23],l:[0,.5,-.45]}}
+    else{c.fov=a>=1.2?46:54;three.view={p:[0,1.6,HL+1.4],l:[0,TOP-.02,-.5]}}c.updateProjectionMatrix();applyCam()}
+  // the camera is your head: it steps left, right, in and out with you
+  function applyCam(){if(!three||!three.view)return;const v=three.view,c=three.cam,bx=M?M.body.x:0,bz=M?M.body.z:0;
+    c.position.set(v.p[0]+bx,v.p[1]-Math.min(0,bz)*.15,v.p[2]+bz);c.lookAt(v.l[0]+bx*.7,v.l[1],v.l[2]+bz*.55)}
   function netHit(x,cord){const s=Math.hypot(M.ball.v.x,M.ball.v.z);M.netWave.push({x,a:cord?.008:Math.min(.05,.014+s*.08),t0:performance.now()})}
   function drawNet(now){if(!M.netWave.length&&!M._netDirty)return;M._netDirty=M.netWave.length>0;const pos=three.ng.attributes.position,base=three.base;
     for(let i=0;i<pos.count;i++){const x=base[i*3],y=base[i*3+1];let dz=0;
@@ -3364,17 +3371,34 @@ const TableTennis=(()=>{
     [[a,M.score.P],[b,M.score.A]].forEach(([el,v])=>{if(el&&el.textContent!==String(v)){el.textContent=v;if(flip){el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip')}}});
     root.querySelectorAll('.tt-srv').forEach(x=>x.classList.toggle('on',x.dataset.s===M.server))}
   /* ---------- input: your bat follows your finger (drawn a little above it so your finger does not hide it) ---------- */
-  const ptr={on:false,hist:[]};
-  function toWorld(cx,cy,touch){const cv=three.r.domElement,r=cv.getBoundingClientRect();const sy=cy-(touch?Math.min(70,r.height*.09):0);
+  const ptr={on:false,hist:[],cx:null,cy:null,touch:false};
+  function toWorld(cx,cy,touch,z){const cv=three.r.domElement,r=cv.getBoundingClientRect();const sy=cy-(touch?Math.min(70,r.height*.09):0);
     const nx=(cx-r.left)/r.width*2-1,ny=-((sy-r.top)/r.height*2-1);const rc=new THREE.Raycaster();rc.setFromCamera(new THREE.Vector2(nx,ny),three.cam);
-    const o=rc.ray.origin,d=rc.ray.direction,t=(ZP-o.z)/d.z;if(!(t>0))return null;return{x:o.x+d.x*t,y:o.y+d.y*t}}
-  function bindInput(cv){const move=e=>{if(!M||!three)return;const w=toWorld(e.clientX,e.clientY,e.pointerType!=='mouse');if(!w)return;const P=M.pad.P;
-      P.tx=Math.max(-1.1,Math.min(1.1,w.x));P.ty=Math.max(TOP+.03,Math.min(TOP+.9,w.y));ptr.hist.push({t:performance.now(),x:P.tx,y:P.ty});if(ptr.hist.length>24)ptr.hist.shift()};
+    const o=rc.ray.origin,d=rc.ray.direction,t=((z??ZP)-o.z)/d.z;if(!(t>0))return null;return{x:o.x+d.x*t,y:o.y+d.y*t}}
+  // the bat sits under your finger, at the depth where you will meet the ball
+  function aimBat(){if(!M||!three||ptr.cx==null)return;const P=M.pad.P,w=toWorld(ptr.cx,ptr.cy,ptr.touch,P.z);if(!w)return;
+    P.tx=Math.max(-1.6,Math.min(1.6,w.x));P.ty=Math.max(TOP+.02,Math.min(TOP+1,w.y))}
+  function bindInput(cv){const move=e=>{ptr.cx=e.clientX;ptr.cy=e.clientY;ptr.touch=e.pointerType!=='mouse';ptr.hist.push({t:performance.now(),x:e.clientX,y:e.clientY});if(ptr.hist.length>24)ptr.hist.shift();aimBat()};
     cv.addEventListener('pointerdown',e=>{e.preventDefault();ptr.on=true;ptr.hist=[];try{cv.setPointerCapture(e.pointerId)}catch(_){}move(e)});
     cv.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||ptr.on)move(e)});
     cv.addEventListener('pointerup',()=>{if(!ptr.on)return;ptr.on=false;if(M&&M.state==='serve'&&M.server==='P'&&!M.paused)serve('P',swipeVel())});
     cv.addEventListener('pointercancel',()=>{ptr.on=false})}
-  function swipeVel(){const h=ptr.hist,now=performance.now(),rec=h.filter(q=>now-q.t<130);if(rec.length<2)return{x:0,y:0};const a=rec[0],b=rec[rec.length-1],dt=Math.max(.016,(b.t-a.t)/1000);return{x:(b.x-a.x)/dt,y:(b.y-a.y)/dt}}
+  // how fast your finger is flicking, in metres per second at the bat (screen-based, so stepping about does not count as a swing)
+  function swipeVel(){const h=ptr.hist,now=performance.now(),rec=h.filter(q=>now-q.t<130);if(rec.length<2||!three||!M)return{x:0,y:0};const a=rec[0],b=rec[rec.length-1],dt=Math.max(.016,(b.t-a.t)/1000);
+    const p0=toWorld(b.x,b.y,false,M.pad.P.z),p1=toWorld(b.x+60,b.y,false,M.pad.P.z),mpp=p0&&p1?Math.abs(p1.x-p0.x)/60:.004;
+    return{x:(b.x-a.x)/dt*mpp,y:-(b.y-a.y)/dt*mpp}}
+  /* ---------- tilt the phone to step around the table ---------- */
+  const tilt={on:(()=>{try{return localStorage.getItem('tt-tilt')!=='off'}catch(e){return true}})(),ok:false,lr:0,fb:0,z0:null,raw:null,fn:null};
+  function tiltAngles(e){const a=(screen.orientation&&screen.orientation.angle)||(+window.orientation||0),g=e.gamma||0,b=e.beta||0;
+    return a===90?{lr:b,fb:-g}:(a===-90||a===270)?{lr:-b,fb:g}:a===180?{lr:-g,fb:-b}:{lr:g,fb:b}}
+  function tiltStart(){tiltStop();if(!tilt.on||!('DeviceOrientationEvent' in window))return;tilt.z0=null;
+    tilt.fn=e=>{if(e.gamma==null&&e.beta==null)return;const t=tiltAngles(e);tilt.raw=t;if(!tilt.z0)tilt.z0={...t};tilt.ok=true;
+      const dz=v=>Math.abs(v)<3?0:v-Math.sign(v)*3;tilt.lr=Math.max(-1,Math.min(1,dz(t.lr-tilt.z0.lr)/20));tilt.fb=Math.max(-1,Math.min(1,dz(t.fb-tilt.z0.fb)/20));
+      const btn=$('#ttCentre');if(btn)btn.hidden=false};
+    addEventListener('deviceorientation',tilt.fn)}
+  function tiltStop(){if(tilt.fn)removeEventListener('deviceorientation',tilt.fn);tilt.fn=null;tilt.ok=false;tilt.lr=tilt.fb=0}
+  function tiltAsk(){// iPhone and iPad ask permission for motion sensors (must come from a tap)
+    if(!tilt.on)return Promise.resolve();const D=window.DeviceOrientationEvent;if(D&&typeof D.requestPermission==='function')return D.requestPermission().then(r=>{if(r!=='granted'){tilt.on=false}}).catch(()=>{});return Promise.resolve()}
   /* ---------- the loop ---------- */
   let lastT=0;
   function loop(){const my=token;const frame=now=>{if(my!==token)return;raf=requestAnimationFrame(frame);if(!M||M.paused||!three){lastT=now;return}
@@ -3385,32 +3409,46 @@ const TableTennis=(()=>{
       if(bounced>=2)return null;
       if(bounced>=1&&(s>0?pz<zp&&t.p.z>=zp:pz>zp&&t.p.z<=zp))return{x:t.p.x,y:t.p.y,z:zp,t:i*DT};
       if(bounced>=1&&t.v.y<0&&t.p.y<TOP+.07&&Math.abs(t.p.z)>.25)return{x:t.p.x,y:t.p.y,z:t.p.z,t:i*DT,short:true}}return null}
-  let crossC={t:0,v:null,r:-1};const cross=()=>{const n=performance.now();if(n-crossC.t>70||crossC.r!==M.rally){crossC={t:n,v:predict('P'),r:M.rally}}return crossC.v};
+  // your best place to meet the ball: at the top of its bounce for a short ball, or where it reaches your end for a long one
+  function predictP(){const b=M.ball,t={p:cp(b.p),v:cp(b.v),w:cp(b.w),rnd:()=>0},ev=[];let bounced=M.bounce.P;
+    for(let i=0;i<560;i++){const pz=t.p.z,vy=t.v.y;step(t,DT,ev);for(const e of ev.splice(0)){if(e.k==='table'&&e.side==='P')bounced++;if(e.k==='floor')return null}
+      if(bounced>=2)return null;if(bounced<1)continue;
+      if(pz<ZP&&t.p.z>=ZP)return{x:t.p.x,y:t.p.y,z:ZP,t:i*DT};
+      if(vy>0&&t.v.y<=0&&t.p.z<ZP-.12)return{x:t.p.x,y:t.p.y,z:Math.max(.12,t.p.z),t:i*DT,short:true}}return null}
+  let crossC={t:0,v:null,r:-1};const cross=()=>{const n=performance.now();if(n-crossC.t>70||crossC.r!==M.rally){crossC={t:n,v:predictP(),r:M.rally}}return crossC.v};
   function update(dt,now){const P=M.pad.P,A=M.pad.A,b=M.ball,o=lv(),m=me();
     const k=1-Math.exp(-dt*30);
+    // step around the table: your feet follow the ball, and tilting the phone moves you further
+    const inc=M.state==='rally'&&M.last==='A'&&M.bounce.P<2?cross():null;
+    let bxT=inc?Math.max(-1.1,Math.min(1.1,inc.x*.85)):M.state==='serve'?0:M.body.x*.98,bzT=inc?Math.max(-1,Math.min(0,(inc.z-ZP)*.9)):0;
+    bxT+=tilt.lr*.8;bzT+=tilt.fb*.5;const kb=1-Math.exp(-dt*(inc?5:3.5));M.body.x+=(Math.max(-1.6,Math.min(1.6,bxT))-M.body.x)*kb;M.body.z+=(Math.max(-1.2,Math.min(.5,bzT))-M.body.z)*kb;applyCam();
+    // the bat goes to the depth where you will meet the ball
+    const pzT=M.state==='serve'?HL+.12:inc?inc.z:ZP;P.z+=(pzT-P.z)*(1-Math.exp(-dt*14));
+    aimBat();
     // easy level: the bat is gently drawn to the ball when you are close
-    if(m.assist&&M.state==='rally'&&M.last==='A'){const c=cross();if(c&&Math.abs(c.x-P.tx)<.34&&Math.abs(c.y-P.ty)<.32){P.tx+=(c.x-P.tx)*.5;P.ty+=(c.y-P.ty)*.5}}
+    if(m.assist&&inc&&Math.abs(inc.x-P.tx)<.36&&Math.abs(inc.y-P.ty)<.34){P.tx+=(inc.x-P.tx)*.5;P.ty+=(inc.y-P.ty)*.5}
     P.x+=(P.tx-P.x)*k;P.y+=(P.ty-P.y)*k;const sv=swipeVel();P.vx=P.vx*.55+sv.x*.45;P.vy=P.vy*.55+sv.y*.45;
     if(M.state==='serve'){const s=M.server,pd=M.pad[s],bob=Math.sin(now/260)*.025;b.p.x=pd.x+(s==='P'?-.05:.05);b.p.y=TOP+.22+bob;b.p.z=(s==='P'?1:-1)*(HL+.1);
       if(s==='A'&&mode!=='online'){M.wait+=dt;if(M.wait>1.2)serve('A')}}
-    if(M.state==='rally'||M.state==='pending'){let t=dt;while(t>1e-6){const h=Math.min(DT,t);t-=h;const pz=b.p.z,ev=[];step(b,h,ev);
+    if(M.state==='rally'||M.state==='pending'){let t=dt;while(t>1e-6){const h=Math.min(DT,t);t-=h;const ev=[];step(b,h,ev);
         if(M.state==='rally')for(const e of ev){onEvent(e);if(M.state!=='rally')break}
+        const rel=b.p.z-P.z,relPrev=M.rel;M.rel=rel;
         if(M.state!=='rally')continue;
-        // your bat meets the ball (at your plane, or reaching in for a short ball)
-        if(M.last==='A'&&M.bounce.P===1&&b.v.z>0){const atPlane=pz<ZP&&b.p.z>=ZP,short=b.v.y<0&&b.p.y<TOP+.07&&b.p.z>.25&&b.p.z<ZP;
-          if(atPlane||short){const d=Math.hypot(b.p.x-P.x,b.p.y-P.y);if(d<=m.hitR+R)playerHit(d)}}
+        // your bat meets the ball where it crosses the bat, or as you reach in for a ball about to bounce twice
+        if(M.last==='A'&&M.bounce.P===1){const crossed=relPrev!=null&&relPrev<0&&rel>=0,dying=b.v.y<0&&b.p.y<TOP+.06&&Math.abs(rel)<.3;
+          if(crossed||dying){const d=Math.hypot(b.p.x-P.x,b.p.y-P.y);if(d<=m.hitR+R){playerHit(d);M.rel=null}}}
         // the computer's bat
-        if(mode!=='online'&&M.last==='P'&&M.bounce.A===1&&b.v.z<0){const atPlane=pz>-ZP&&b.p.z<=-ZP,short=b.v.y<0&&b.p.y<TOP+.07&&b.p.z<-.25&&b.p.z>-ZP;
+        if(mode!=='online'&&M.last==='P'&&M.bounce.A===1&&b.v.z<0){const pz=b.p.z-b.v.z*h,atPlane=pz>-ZP&&b.p.z<=-ZP,short=b.v.y<0&&b.p.y<TOP+.07&&b.p.z<-.25&&b.p.z>-ZP;
           if(atPlane||short){const d=Math.hypot(b.p.x-A.x,b.p.y-A.y);if(d<=o.reach+R)aiHit()}}}
       if(M.state==='rally'&&b.p.y<.05&&Math.hypot(b.v.x,b.v.y,b.v.z)<.3)onEvent({k:'floor'});
       if(M.state==='pending'&&now-M.pendT>6000){M.state='rally';point(M.last?other(M.last):'P','')}
-      M.trail.unshift(cp(b.p));if(M.trail.length>12)M.trail.pop()}
+      M.trail.unshift(cp(b.p));if(M.trail.length>12)M.trail.pop()}else M.rel=null;
     // the computer moves towards where the ball will reach it
     if(mode!=='online'){const ai=M.ai;ai.t-=dt;
       if(M.state==='rally'&&M.last==='P'){if(ai.t<=0){ai.t=.1;const c=predict('A');if(c){if(!ai.plan||!ai.plan.ok)ai.react=o.react;ai.plan={x:c.x+gauss()*o.aim*.4,y:c.y+gauss()*o.aim*.25,ok:true}}}}
       else if(M.state!=='serve'||M.server!=='A')ai.plan={x:M.state==='rally'?b.p.x*.3:0,y:.95,ok:false};
       if(ai.react>0)ai.react-=dt;else if(ai.plan){const dx=ai.plan.x-A.x,dy=ai.plan.y-A.y,dd=Math.hypot(dx,dy),mv=Math.min(dd,o.speed*dt);if(dd>1e-4){A.x+=dx/dd*mv;A.y+=dy/dd*mv}}}
-    else{A.x+=(A.tx-A.x)*k;A.y+=(A.ty-A.y)*k;Net.send({t:'pos',x:+(-P.x).toFixed(3),y:+P.y.toFixed(3)})}}
+    else{A.x+=(A.tx-A.x)*k;A.y+=(A.ty-A.y)*k;A.z+=((A.tz??-ZP)-A.z)*k;Net.send({t:'pos',x:+(-P.x).toFixed(3),y:+P.y.toFixed(3),z:+(-P.z).toFixed(3)})}}
   function render(dt,now){const T=THREE,b=M.ball,P=M.pad.P,A=M.pad.A;three.ball.position.set(b.p.x,b.p.y,b.p.z);
     // show the spin (slowed down so the eye can follow it)
     const wm=Math.hypot(b.w.x,b.w.y,b.w.z);if(wm>.5){const ang=Math.min(.6,wm*dt*.12);three.ball.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(b.w.x/wm,b.w.y/wm,b.w.z/wm),ang))}
@@ -3418,15 +3456,15 @@ const TableTennis=(()=>{
     three.trail.forEach((m,i)=>{const q=M.trail[i+1];m.visible=!!q&&M.state==='rally'&&Math.hypot(b.v.x,b.v.z)>5;if(q)m.position.set(q.x,q.y,q.z)});
     three.marks.forEach(mk=>{const a=(now-mk.t)/600;mk.m.material.opacity=a<1?.6*(1-a):0;mk.m.scale.setScalar(1+a*1.2)});
     const sw=t0=>{const a=(now-t0)/240;return a<1?Math.sin(a*Math.PI):0};
-    three.padP.position.set(P.x,P.y,ZP+.02);
-    three.padP.rotation.set(-.2-sw(M.swing.P)*.6+Math.max(-.4,Math.min(.4,P.vy*.08)),Math.max(-.5,Math.min(.5,-P.vx*.1)),Math.max(-.7,Math.min(.7,-P.x*.6)));
-    three.padA.position.set(A.x,A.y,-ZP-.02);three.padA.rotation.set(.2+sw(M.swing.A)*.6,Math.PI,Math.max(-.7,Math.min(.7,A.x*.6)));
-    if(three.body){const bd=three.body,u=bd.userData;bd.position.set(A.x+(.5-u.hand)*u.w*.85,u.h/2+Math.sin(now/380)*.008-Math.min(.06,sw(M.swing.A)*.05),-ZP-.42);
+    three.padP.position.set(P.x,P.y,P.z+.02);
+    three.padP.rotation.set(-.2-sw(M.swing.P)*.6+Math.max(-.4,Math.min(.4,P.vy*.08)),Math.max(-.5,Math.min(.5,-P.vx*.1)),Math.max(-.7,Math.min(.7,-(P.x-M.body.x)*.6)));
+    const az=mode==='online'?A.z:-ZP;three.padA.position.set(A.x,A.y,az-.02);three.padA.rotation.set(.2+sw(M.swing.A)*.6,Math.PI,Math.max(-.7,Math.min(.7,A.x*.6)));
+    if(three.body){const bd=three.body,u=bd.userData;bd.position.set(A.x+(.5-u.hand)*u.w*.85,u.h/2+Math.sin(now/380)*.008-Math.min(.06,sw(M.swing.A)*.05),az-.42);
       const vx=(A.x-(u.px??A.x))/Math.max(dt,1e-3);u.px=A.x;u.tilt=(u.tilt||0)*.85+Math.max(-.08,Math.min(.08,-vx*.03))*.15;bd.rotation.z=u.tilt}
-    const c=mode!=='online'&&level!=='hard'&&M.state==='rally'&&M.last==='A'?cross():null;three.ring.visible=!!c;if(c){three.ring.position.set(c.x,c.y,Math.min(ZP,c.z));three.ring.material.opacity=level==='easy'?.8:.4}
+    const c=mode!=='online'&&level!=='hard'&&M.state==='rally'&&M.last==='A'?cross():null;three.ring.visible=!!c;if(c){three.ring.position.set(c.x,c.y,c.z);three.ring.material.opacity=level==='easy'?.8:.4}
     drawNet(now);three.r.render(three.sc,three.cam)}
   /* ---------- online ---------- */
-  function netSetup(){Net.setLive('pos',d=>{if(!M)return;M.pad.A.tx=+d.x||0;M.pad.A.ty=+d.y||.95});
+  function netSetup(){Net.setLive('pos',d=>{if(!M)return;M.pad.A.tx=+d.x||0;M.pad.A.ty=+d.y||.95;if(d.z!=null)M.pad.A.tz=Math.max(-HL-.6,Math.min(-.1,+d.z))});
     Net.setLive('hit',d=>{if(!M||M.over)return;const b=M.ball;b.p=V(...d.p);b.v=V(...d.v);b.w=V(...d.w);if(d.srv)M.serve={stage:0,net:false};
       M.state='rally';M.last='A';M.bounce={P:0,A:0};M.rally++;M.best=Math.max(M.best,M.rally);M.swing.A=performance.now();sndHit(Math.hypot(b.v.x,b.v.z),false);hint('');
       // catch up on the time the message spent on the way
@@ -3441,25 +3479,29 @@ const TableTennis=(()=>{
       <div class="tt-how"><b>${L('How to play','玩法')}</b><ul>
         <li>${L('Move your bat with your finger (or the mouse). Meet the ball after it bounces on your side.','用手指（或鼠标）移动球拍，球在你这边弹起后迎上去。')}</li>
         <li>${L('Flick faster to hit harder. Flick up for topspin, down for backspin, sideways to curve the ball.','挥得越快打得越重。向上挥是上旋，向下挥是下旋，横着挥球会拐弯。')}</li>
-        <li>${L('To serve, flick upwards or simply tap. First to 11 points, 2 clear, wins.','发球时向上一挥，或轻点一下。先得11分并领先2分者胜。')}</li></ul></div>
+        <li>${L('You step to the ball by yourself: left, right, and in over the table for short balls. Put your bat on the yellow ring.','你会自动跟着球走位：向左、向右，短球时向前靠近球桌。把球拍放在黄色圆圈上。')}</li>
+        <li>${L('To serve, flick upwards or simply tap. First to 11 points, 2 clear, wins.','发球时向上一挥，或轻点一下。先得11分并领先2分者胜。')}</li></ul>
+        <label class="tt-tilt"><input type="checkbox" id="ttTilt" ${tilt.on?'checked':''}> <span>${L('Tilt the phone to step around the table (tilt left or right to move sideways, forward or back to move in or out)','倾斜手机在球桌旁走动（左右倾斜横移，前后倾斜靠近或后退）')}</span></label></div>
       <button class="btn primary big" id="ttGo">▶ ${L('Start match','开始比赛')}</button></div>`;
     root.querySelectorAll('.tt-opp').forEach(b=>b.onclick=()=>{sfx.tap();const k=b.dataset.k;
       if(k==='online'){openOnline();return}
       if(mode==='online'){Net.onDrop=null;Net.leave()}mode=prevMode='cpu';level=k;
       root.querySelectorAll('.tt-opp').forEach(x=>x.setAttribute('aria-pressed',x===b))});
-    $('#ttGo').onclick=()=>{sfx.tap();if(mode==='online'){if(Net.on)onlineRestart(()=>play(true));else openOnline();return}play()}}
+    $('#ttTilt').onchange=e=>{tilt.on=e.target.checked;try{localStorage.setItem('tt-tilt',tilt.on?'on':'off')}catch(_){}};
+    $('#ttGo').onclick=()=>{sfx.tap();tiltAsk().then(()=>{if(mode==='online'){if(Net.on)onlineRestart(()=>play(true));else openOnline();return}play()})}}
   function openOnline(){goOnline('tabletennis',L('Table Tennis','乒乓球'),m=>{mode=m},fromNet=>{if(fromNet===true)play(true);else menu()},'cpu')}
   async function play(fromNet){stopGame();token++;const my=token;const o=lv(),on=mode==='online';
     root.innerHTML=`<div class="tt-wrap"><div class="tt-stage" id="ttStage"><canvas id="ttCv" aria-label="${L('Table tennis table','乒乓球桌')}"></canvas>
       <div class="tt-hud"><div class="tt-card"><span class="tt-nm"><i class="tt-srv" data-s="P" title="${L('Serving','发球')}"></i>${L('You','你')}</span><b id="ttSP">0</b></div>
         <div class="tt-card right"><img src="${on?FRIEND.img:o.img}" alt=""><span class="tt-nm"><i class="tt-srv" data-s="A"></i>${on?L('Friend','朋友'):L(o.name[0],o.name[1])}</span><b id="ttSA">0</b></div></div>
       <div class="tt-banner" id="ttBanner"></div><span class="tt-spin" id="ttSpin"></span><p class="tt-hint" id="ttHint" hidden></p>
+      <button class="tt-centre" id="ttCentre" hidden aria-label="${L('Centre the tilt','重设倾斜中心')}">◎ ${L('Centre','回中')}</button>
       <button class="dp-pause tt-pause" id="ttPause" aria-label="${on?L('Leave','离开'):L('Pause','暂停')}">${on?'✕':'❚❚'}</button>
       <div class="dp-load" id="ttLoad"><span class="rg-spin sm"></span><span>${L('Setting up the table…','正在摆好球桌…')}</span></div></div></div>`;
-    $('#ttPause').onclick=pause;
+    $('#ttPause').onclick=pause;$('#ttCentre').onclick=()=>{sfx.tap();if(tilt.raw)tilt.z0={...tilt.raw};tilt.lr=tilt.fb=0};
     const ok=await loadThree();if(my!==token)return;if(!ok){$('#ttLoad').innerHTML=`<span>${L('The 3D table could not load. Check the internet and try again.','3D球桌无法加载，请检查网络后再试。')}</span>`;return}
     const cv=$('#ttCv');try{newMatch();three=buildScene(cv)}catch(e){M=null;$('#ttLoad').innerHTML=`<span>${L('This device cannot show the 3D table.','这台设备无法显示3D球桌。')}</span>`;return}
-    size();bindInput(cv);updateHUD();if(on)netSetup();
+    size();bindInput(cv);updateHUD();if(on)netSetup();tiltStart();
     setTimeout(()=>{const l=$('#ttLoad');if(l)l.hidden=true},300);loop();
     const st=$('#ttStage'),top=(document.querySelector('.top')?.offsetHeight||0);if(st){const y=st.getBoundingClientRect().top+scrollY-top-8;if(Math.abs(y-scrollY)>20)scrollTo({top:y,behavior:'smooth'})}
     vis=()=>{if(document.hidden&&M&&!M.over&&mode!=='online')pause()};document.addEventListener('visibilitychange',vis)}
@@ -3471,13 +3513,13 @@ const TableTennis=(()=>{
   function endMatch(){const won=M.score.P>M.score.A,a=M.score.P,b=M.score.A,best=M.best;
     finish('tabletennis',won?L('You win the match!','你赢了比赛！'):mode==='online'?L('Your friend wins this time','这次朋友赢了'):L(`${lv().name[0]} wins this time`,`这次${lv().name[1]}赢了`),
       L(`Final score ${a} – ${b} · longest rally ${best} shots`,`最终比分 ${a} : ${b} · 最长连续对打 ${best} 板`),won)}
-  function stopGame(){token++;cancelAnimationFrame(raf);if(three){try{three.r.dispose();three.r.forceContextLoss()}catch(e){}three=null}M=null;
+  function stopGame(){token++;cancelAnimationFrame(raf);tiltStop();if(three){try{three.r.dispose();three.r.forceContextLoss()}catch(e){}three=null}M=null;
     if(vis){document.removeEventListener('visibilitychange',vis);vis=null}}
   function start(fromNet){if(mode==='online'){if(fromNet!==true){if(!Net.on){mode=prevMode='cpu';menu();return}onlineRestart(()=>{})}play(true);return}
     if(root.querySelector('.tt-wrap'))play();else menu()}
   return{mount(el){root=el;ro=()=>size();addEventListener('resize',ro);menu()},start,
     stop(){stopGame();removeEventListener('resize',ro);if(mode==='online'){Net.onDrop=null;Net.leave();mode=prevMode='cpu'}},
-    _t:{step,flight,solve,spinFor,predict,get M(){return M},V,C:{TL,W,TOP,NETH,R,HL,ZP},set level(v){level=v},get level(){return level},serve,playerHit,aiHit,get three(){return three},ptr}};
+    _t:{step,flight,solve,spinFor,predict,predictP,tilt,get M(){return M},V,C:{TL,W,TOP,NETH,R,HL,ZP},set level(v){level=v},get level(){return level},serve,playerHit,aiHit,get three(){return three},ptr}};
 })();
 
 const IMPL={tabletennis:TableTennis,dance:Dance,draughts:Draughts,reversi:Reversi,memory:MemoryCards,spot:SpotDiff,rhythm:Rhythm,congkak:Congkak,fivestones:FiveStones,sticks:Sticks,kuti:Kuti,snakes:Snakes,jigsaw:Jigsaw,xiangqi:Xiangqi,goli:Goli,carrom:Carrom};
