@@ -3152,6 +3152,7 @@ const TableTennis=(()=>{
     hard:{name:['Champion Priya','冠军普丽亚'],img:'img/tt-op3.webp',body:'img/tt-body3.webp',hand:.06,tag:['Hard · fast and tricky','困难 · 又快又刁钻'],
       speed:3.8,react:.13,aim:.05,pace:[6.8,12],spin:190,err:.028,reach:.16,read:.03,slip:.03,tscale:1}};
   const FRIEND={img:'img/tt-op4.webp',body:'img/tt-body4.webp',hand:.08};
+  const BATSIZE={easy:1.9,normal:1.6,hard:1.35,online:1.5},ZOOM={easy:1,normal:.85,hard:.65,online:.8};
   const ME={easy:{hitR:.24,assist:true,pace:[4.4,8],read:.03},normal:{hitR:.18,assist:false,pace:[5,11.5],read:.05},hard:{hitR:.15,assist:false,pace:[5,12.5],read:.1},online:{hitR:.18,assist:false,pace:[5,12],read:.08}};
   let root,level='easy',mode='cpu',prevMode='cpu',token=0,raf=0,three=null,ro=null,vis=null;
   const lv=()=>OPP[level],me=()=>ME[mode==='online'?'online':level];
@@ -3335,7 +3336,10 @@ const TableTennis=(()=>{
       const b2=new T.Mesh(new T.CylinderGeometry(.075,.075,.003,40),new T.MeshPhongMaterial({color:'#1B1B1B',shininess:35}));b2.rotation.x=Math.PI/2;b2.position.z=.005;g.add(b2);
       const h=new T.Mesh(new T.BoxGeometry(.026,.1,.024),new T.MeshLambertMaterial({color:'#8B5A2B'}));h.position.y=-.12;g.add(h);return g};
     const padP=bat('#C62828'),padA=bat('#C62828');padP.children.forEach(o=>{if(o.position.z)o.position.z*=-1});sc.add(padP);sc.add(padA);
-    padP.traverse(o=>{if(o.material){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.9}});
+    padP.traverse(o=>{if(o.material){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.8;o.material.depthWrite=false}});
+    // a bigger bat for easier aiming, with a soft halo showing how far it reaches
+    const bs=BATSIZE[mode==='online'?'online':level];padP.children.forEach(o=>o.scale.multiplyScalar(bs));padP.children.forEach(o=>{o.position.y*=bs});
+    const halo=new T.Mesh(new T.RingGeometry(me().hitR*.9,me().hitR,48),new T.MeshBasicMaterial({color:'#FFF6E6',transparent:true,opacity:.35,side:T.DoubleSide,depthWrite:false}));halo.position.z=.012;padP.add(halo);
     // the opponent, standing at the far end
     let body=null;{const o=mode==='online'?FRIEND:lv(),bm=new T.MeshBasicMaterial({map:tx(o.body),transparent:true,alphaTest:.4});
       body=new T.Mesh(new T.PlaneGeometry(1,1),bm);const h=mode!=='online'&&level==='easy'?1.5:1.62;body.userData={hand:o.hand,h,w:h*.5};body.scale.set(h*.5,h,1);sc.add(body);
@@ -3343,11 +3347,14 @@ const TableTennis=(()=>{
     return{r,sc,cam,ball,shadow,trail,ring,marks,padP,padA,body,ng,base:ng.attributes.position.array.slice()}}
   function size(){if(!three)return;const st=$('#ttStage');if(!st)return;const w=st.clientWidth,h=st.clientHeight;if(!w||!h)return;three.r.setSize(w,h,false);const a=w/h,c=three.cam;c.aspect=a;
     // keep the whole table in view on tall phones and on wide screens
-    if(a<.8){c.fov=Math.min(80,66*Math.pow(Math.max(1,.55/a),.6));three.view={p:[0,1.95,HL+1.23],l:[0,.5,-.45]}}
-    else{c.fov=a>=1.2?46:54;three.view={p:[0,1.6,HL+1.4],l:[0,TOP-.02,-.5]}}c.updateProjectionMatrix();applyCam()}
+    if(a<.8){c.fov=Math.min(80,66*Math.pow(Math.max(1,.55/a),.6));three.view={p:[0,1.95,HL+1.23],l:[0,.5,-.45],fov:c.fov}}
+    else{c.fov=a>=1.2?46:54;three.view={p:[0,1.6,HL+1.4],l:[0,TOP-.02,-.5],fov:c.fov}}c.updateProjectionMatrix();applyCam()}
   // the camera is your head: it steps left, right, in and out with you
   function applyCam(){if(!three||!three.view)return;const v=three.view,c=three.cam,bx=M?M.body.x:0,bz=M?M.body.z:0;
-    c.position.set(v.p[0]+bx,v.p[1]-Math.min(0,bz)*.15,v.p[2]+bz);c.lookAt(v.l[0]+bx*.7,v.l[1],v.l[2]+bz*.55)}
+    let px=v.p[0]+bx,py=v.p[1]-Math.min(0,bz)*.15,pz=v.p[2]+bz,lx=v.l[0]+bx*.7,ly=v.l[1],lz=v.l[2]+bz*.55;
+    // auto zoom: as the ball comes to you, the camera leans in towards where you will hit it
+    const zm=M?M.zoom||0:0,f=M&&M.focus;if(zm>.001&&f){const a=zm*.4,b=zm*.45;px+=(f.x-px)*a*.6;py+=(f.y+.5-py)*a;pz+=(f.z+1.05-pz)*a;lx+=(f.x-lx)*b;ly+=(f.y-.1-ly)*b;lz+=(f.z-.6-lz)*b}
+    c.position.set(px,py,pz);c.lookAt(lx,ly,lz);const fv=v.fov*(1-.14*zm);if(Math.abs(c.fov-fv)>.05){c.fov=fv;c.updateProjectionMatrix()}}
   function netHit(x,cord){const s=Math.hypot(M.ball.v.x,M.ball.v.z);M.netWave.push({x,a:cord?.008:Math.min(.05,.014+s*.08),t0:performance.now()})}
   function drawNet(now){if(!M.netWave.length&&!M._netDirty)return;M._netDirty=M.netWave.length>0;const pos=three.ng.attributes.position,base=three.base;
     for(let i=0;i<pos.count;i++){const x=base[i*3],y=base[i*3+1];let dz=0;
@@ -3421,9 +3428,12 @@ const TableTennis=(()=>{
     // step around the table: your feet follow the ball, and tilting the phone moves you further
     const inc=M.state==='rally'&&M.last==='A'&&M.bounce.P<2?cross():null;
     let bxT=inc?Math.max(-1.1,Math.min(1.1,inc.x*.85)):M.state==='serve'?0:M.body.x*.98,bzT=inc?Math.max(-1,Math.min(0,(inc.z-ZP)*.9)):0;
+    if(inc){M.focus=M.focus?{x:M.focus.x+(inc.x-M.focus.x)*.2,y:M.focus.y+(inc.y-M.focus.y)*.2,z:M.focus.z+(inc.z-M.focus.z)*.2}:{...inc}}
+    const zT=(inc||M.holdZ!=null)&&b.p.z>-.6?ZOOM[mode==='online'?'online':level]:0;M.zoom=(M.zoom||0)+(zT-(M.zoom||0))*(1-Math.exp(-dt*(zT>M.zoom?3.2:1.6)));
     bxT+=tilt.lr*.8;bzT+=tilt.fb*.5;const kb=1-Math.exp(-dt*(inc?5:3.5));M.body.x+=(Math.max(-1.6,Math.min(1.6,bxT))-M.body.x)*kb;M.body.z+=(Math.max(-1.2,Math.min(.5,bzT))-M.body.z)*kb;applyCam();
     // the bat goes to the depth where you will meet the ball
-    const pzT=M.state==='serve'?HL+.12:inc?inc.z:ZP;P.z+=(pzT-P.z)*(1-Math.exp(-dt*14));
+    if(inc)M.holdZ=inc.z;else if(!(M.state==='rally'&&M.last==='A'&&M.bounce.P===1))M.holdZ=null;
+    const pzT=M.state==='serve'?HL+.12:inc?inc.z:M.holdZ!=null?M.holdZ:ZP;P.z+=(pzT-P.z)*(1-Math.exp(-dt*14));
     aimBat();
     // easy level: the bat is gently drawn to the ball when you are close
     if(m.assist&&inc&&Math.abs(inc.x-P.tx)<.36&&Math.abs(inc.y-P.ty)<.34){P.tx+=(inc.x-P.tx)*.5;P.ty+=(inc.y-P.ty)*.5}
@@ -3436,7 +3446,8 @@ const TableTennis=(()=>{
         if(M.state!=='rally')continue;
         // your bat meets the ball where it crosses the bat, or as you reach in for a ball about to bounce twice
         if(M.last==='A'&&M.bounce.P===1){const crossed=relPrev!=null&&relPrev<0&&rel>=0,dying=b.v.y<0&&b.p.y<TOP+.06&&Math.abs(rel)<.3;
-          if(crossed||dying){const d=Math.hypot(b.p.x-P.x,b.p.y-P.y);if(d<=m.hitR+R){playerHit(d);M.rel=null}}}
+          const near=Math.abs(rel)<.06&&Math.hypot(b.p.x-P.x,b.p.y-P.y)<=m.hitR*.85;
+          if(crossed||dying||near){const d=Math.hypot(b.p.x-P.x,b.p.y-P.y);if(d<=m.hitR+R){playerHit(d);M.rel=null}}}
         // the computer's bat
         if(mode!=='online'&&M.last==='P'&&M.bounce.A===1&&b.v.z<0){const pz=b.p.z-b.v.z*h,atPlane=pz>-ZP&&b.p.z<=-ZP,short=b.v.y<0&&b.p.y<TOP+.07&&b.p.z<-.25&&b.p.z>-ZP;
           if(atPlane||short){const d=Math.hypot(b.p.x-A.x,b.p.y-A.y);if(d<=o.reach+R)aiHit()}}}
