@@ -14,6 +14,7 @@ Kampong Days brings back the games played on verandahs, void decks and five-foot
 |---|---|---|
 | Music & rhythm | **Getai Beats** | Tap to the beat of folk songs and heritage-style tunes, with 3 levels, combo celebrations, a selfie frame and a daily Top 20 |
 | | **Dance Party** | Copy the arrows and hit the beat so your chosen 1960s couple (Chinese, Malay, Indian or Eurasian) dances 8 moves, from the Twist to the joget; 3 levels, daily Top 20 and a trophy selfie |
+| | **Memory Lanterns** | Watch Mid-Autumn lanterns light up and sing, then repeat the order (3, 4 or 5 lanterns); daily Top 20 and a photo certificate with a gold medal |
 | Board games | **Congkak** | The Malay seed-sowing game |
 | | **Snakes & Ladders** | Kampong edition: climb the ladders, dodge the snakes, hear the stories |
 | | **Chinese Chess 象棋** | Play the computer or a friend |
@@ -39,7 +40,7 @@ Kampong Days brings back the games played on verandahs, void decks and five-foot
 ## Privacy
 - There are no accounts, no tracking and no adverts.
 - Progress, the Memory Album, settings and the daily Top 20 are saved only in the browser on each device.
-- The camera is used only for the Getai Beats and Dance Party selfies. The photo stays on the device unless the player chooses to save it.
+- The camera is used only for the Getai Beats and Dance Party selfies and the Memory Lanterns certificate. The photo stays on the device unless the player chooses to save it.
 - Online play sends only game moves, through free public relays. No names or photos are sent.
 
 ## Project files
