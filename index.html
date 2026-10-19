@@ -760,6 +760,16 @@ function applyLang(){
 
 /* sound */
 let AC=null;
+/* phones (iPhone and iPad most of all) only allow sound after a real tap, and Safari mutes web sound when the ring switch is on silent:
+   unlock the sound on every tap, ask for "playback" sound, and keep a silent track playing while a sound game is open */
+function audioUnlock(){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state!=='running')AC.resume();
+  const b=AC.createBuffer(1,1,22050),s=AC.createBufferSource();s.buffer=b;s.connect(AC.destination);s.start(0)}catch(e){}}
+['touchend','click','keydown','pointerup'].forEach(ev=>addEventListener(ev,audioUnlock,{capture:true,passive:true}));
+try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+const audioKeep=(()=>{let el=null;const wav=()=>{const n=8000,b=new ArrayBuffer(44+n),v=new DataView(b),w=(o,t)=>[...t].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
+    w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);for(let i=0;i<n;i++)v.setUint8(44+i,128);
+    return URL.createObjectURL(new Blob([b],{type:'audio/wav'}))};
+  return{on(){try{if(!el){el=new Audio(wav());el.loop=true;el.setAttribute('playsinline','');el.volume=.01}const p=el.play();p&&p.catch(()=>{})}catch(e){}},off(){try{el&&el.pause()}catch(e){}}}})();
 function tone(f,d=.08,type='sine',vol=.14,when=0){
   if(!S.sound)return;
   try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();
@@ -3627,7 +3637,7 @@ const Lights=(()=>{
   const best=()=>{try{return JSON.parse(localStorage.getItem('ml-best')||'{}')}catch(e){return{}}};
   const saveBest=b=>{try{localStorage.setItem('ml-best',JSON.stringify(b))}catch(e){}};
   /* ---------- sound: a soft bell-like pluck for each lantern ---------- */
-  function pluck(f,type,dur=.55,vol=.22){if(!S.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();
+  function pluck(f,type,dur=.55,vol=.3){if(!S.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state!=='running')AC.resume();
     const t=AC.currentTime,g=AC.createGain(),o=AC.createOscillator(),o2=AC.createOscillator(),g2=AC.createGain(),lp=AC.createBiquadFilter();
     o.type=type;o.frequency.value=f;o2.type='sine';o2.frequency.value=f*2.01;g2.gain.value=.25;lp.type='lowpass';lp.frequency.value=f*6;
     g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
@@ -3646,7 +3656,7 @@ const Lights=(()=>{
     root.querySelectorAll('.ml-lv').forEach(x=>x.onclick=()=>{sfx.tap();lv=x.dataset.k;root.querySelectorAll('.ml-lv').forEach(y=>y.setAttribute('aria-pressed',y===x))});
     $('#mlGo').onclick=()=>{sfx.tap();play()};$('#mlTop').onclick=()=>openBoard(null)}
   /* ---------- the game ---------- */
-  function play(){stop();const my=++token,cfg=LV[lv];
+  function play(){stop();audioUnlock();audioKeep.on();const my=++token,cfg=LV[lv];
     G={seq:[],pos:0,lives:3,score:0,maxLen:0,state:'watch',perfect:true,cfg,my,lostThis:false};
     root.innerHTML=`<div class="ml-play"><div class="ml-hud"><span><small>${L('Score','分数')}</small><b id="mlScore">0</b></span><span><small>${L('Lights','灯数')}</small><b id="mlLen">1</b></span><span><small>${L('Chances','机会')}</small><b id="mlLives" class="ml-hearts">♥♥♥</b></span></div>
       <div class="ml-stage" id="mlStage"><div class="ml-grid n${cfg.n}">${cfg.dirs.map((d,i)=>`<button class="ml-lan" data-i="${i}" style="grid-area:${DIRS[d].area};--c:${LANT[i].c}" aria-label="${L(LANT[i].en,LANT[i].zh)} (${L(DIRS[d].en,DIRS[d].zh)})" disabled><img src="${LANT[i].img}" alt=""><span class="ml-arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ARROW[d]}"/></svg></span></button>`).join('')}
@@ -3718,7 +3728,7 @@ const Lights=(()=>{
     $('#mlMem').onclick=()=>{finish('lights',grade==='S'?L('Memory master!','记忆大师！'):stars>=2?L('What a memory!','好记性！'):L('Well played','玩得好'),L(`${g.score.toLocaleString()} points · longest sequence ${L0}`,`${g.score.toLocaleString()} 分 · 最长顺序 ${L0}`),stars>=1)}}
   function openBoard(hiId){Rhythm.share.openBoard('ml-'+lv,hiId,{title:L('Memory Lanterns · Top 20','记忆灯笼 · 前20名'),icon:'img/ml-medal.webp',
     tabs:Object.fromEntries(Object.entries(LV).map(([k,v])=>['ml-'+k,{en:v.en,zh:v.zh}])),songName:e=>{const n=String(e.song||'').split('-')[1];return n?L(`${n} lights`,`${n} 盏灯`):L('Memory Lanterns','记忆灯笼')}})}
-  function stop(){token++;if(kd){removeEventListener('keydown',kd);kd=null}G=null}
+  function stop(){token++;audioKeep.off();if(kd){removeEventListener('keydown',kd);kd=null}G=null}
   return{mount(el){root=el;menu()},start(){if(root&&root.querySelector('.ml-play'))play();else menu()},stop(){stop();Rhythm.share.closeBoard();Rhythm.share.closeStudio()},
     _t:{get G(){return G},press,LV,set lv(v){lv=v}}};
 })();
