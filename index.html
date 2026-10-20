@@ -308,18 +308,19 @@ p{margin:0}
 .ml-mid b{font-size:calc(26px * var(--fs,1));font-variant-numeric:tabular-nums}
 .ml-msg{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:rgba(22,12,42,.9);color:#FFF6E6;font-weight:900;padding:9px 18px;border-radius:99px;font-size:calc(17px * var(--fs,1));white-space:nowrap;max-width:calc(100% - 90px);overflow:hidden;text-overflow:ellipsis;border:2px solid rgba(255,246,230,.25)}
 .ml-msg.turn{border-color:#7BE0A0;color:#7BE0A0}.ml-msg.good{border-color:#FFD34E;color:#FFD34E}.ml-msg.bad{border-color:#FF8A7A;color:#FFB3A8;white-space:normal}
-.ml-cele{position:absolute;inset:0;z-index:5;display:grid;place-items:center;pointer-events:none;background:radial-gradient(circle,rgba(22,12,42,.25),rgba(22,12,42,.7));animation:mlCin .35s both}
+.ml-cele{position:absolute;inset:0;z-index:5;display:grid;align-items:start;justify-items:center;padding-top:8px;pointer-events:none;animation:mlCin .3s both}
 .ml-cele.out{animation:mlCout .6s forwards}
 @keyframes mlCin{from{opacity:0}}@keyframes mlCout{to{opacity:0}}
-.ml-fxv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen}
+.ml-fxv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;opacity:.32}
 .ml-fxcss{background:radial-gradient(circle at 30% 30%,rgba(255,211,78,.7) 0 2px,transparent 3px) 0 0/40px 40px,radial-gradient(circle at 70% 60%,rgba(255,158,196,.7) 0 2px,transparent 3px) 0 0/56px 56px;animation:mlRise 3s linear infinite}
 @keyframes mlRise{to{background-position:0 -240px,0 -320px}}
-.ml-ctext{position:relative;display:grid;justify-items:center;gap:6px;text-align:center;padding:16px 22px;border-radius:24px;background:rgba(22,12,42,.55);backdrop-filter:blur(2px);animation:mlPop .7s cubic-bezier(.2,1.6,.4,1) both .15s}
-.ml-cnum{display:grid;place-items:center;width:96px;height:96px;border-radius:50%;font-family:'Alfa Slab One',serif;font-size:calc(46px * var(--fs,1));color:#22142E;background:radial-gradient(circle at 35% 30%,#FFF6D0,var(--k) 55%,#C98A10);border:4px solid #FFF6E6;box-shadow:0 0 30px var(--k),0 0 80px var(--k);animation:mlSpin 1.2s ease-out both .2s}
+.ml-ctext{position:relative;display:grid;grid-template-columns:auto auto;align-items:center;column-gap:10px;text-align:left;padding:6px 14px 6px 6px;border-radius:99px;background:rgba(22,12,42,.6);animation:mlPop .5s cubic-bezier(.2,1.6,.4,1) both}
+.ml-ctext .ml-cnum{grid-row:span 2}
+.ml-cnum{display:grid;place-items:center;width:54px;height:54px;border-radius:50%;font-family:'Alfa Slab One',serif;font-size:calc(24px * var(--fs,1));color:#22142E;background:radial-gradient(circle at 35% 30%,#FFF6D0,var(--k) 55%,#C98A10);border:4px solid #FFF6E6;box-shadow:0 0 16px var(--k);border-width:3px;animation:mlSpin .8s ease-out both .1s}
 @keyframes mlSpin{from{transform:rotateY(540deg) scale(.3)}to{transform:none}}
 @keyframes mlPop{from{transform:scale(.3);opacity:0}}
-.ml-ctext b{font-family:'Alfa Slab One',serif;font-weight:400;font-size:calc(30px * var(--fs,1));text-shadow:0 2px 0 #22142E,0 0 18px currentColor}
-.ml-ctext small{color:#FFF6E6;font-weight:800;font-size:calc(15px * var(--fs,1))}
+.ml-ctext b{font-family:'Alfa Slab One',serif;font-weight:400;font-size:calc(20px * var(--fs,1));text-shadow:0 2px 0 #22142E,0 0 18px currentColor}
+.ml-ctext small{color:#FFF6E6;font-weight:800;font-size:calc(13px * var(--fs,1))}
 .ml-res{position:relative;inset:auto;border-radius:20px;border:3px solid #E3A630;background:#22142E;padding:20px 14px}
 @media(max-width:420px){.ml-grid{gap:8px}.ml-stage{padding:14px 10px 70px}.ml-msg{font-size:calc(15px * var(--fs,1))}}
 .dp-over{position:absolute;inset:0;display:grid;align-content:center;justify-items:center;gap:14px;background:rgba(18,10,30,.85);color:#FFF6E6;text-align:center;padding:16px}
@@ -3701,7 +3702,7 @@ const Lights=(()=>{
     const big=len%5===0;const st=$('#mlStage');if(st){st.classList.remove('glow');void st.offsetWidth;st.classList.add('glow')}
     if(big){const extra=Math.round(len*30*G.cfg.mult);G.score+=extra;hud();celebrate(len,bonus+extra)}
     else{msg(L(`Well done! +${bonus}`,`很好！+${bonus}`),'good');mid('✓');setTimeout(()=>chord(),220)}
-    setTimeout(()=>{if(my!==token||!G)return;addLight();showSeq()},sp(big?4200:1100))}
+    setTimeout(()=>{if(my!==token||!G)return;addLight();showSeq()},sp(big?2500:1100))}
   /* ---------- every 5 lights: a burst of lanterns or fireworks with a festive fanfare ---------- */
   const FX={clips:['video/ml-fx-lanterns','video/ml-fx-fireworks'],jingles:['music/ml-win1.mp3','music/ml-win2.mp3','music/ml-win3.mp3']};
   const VF=(()=>{try{const v=document.createElement('video');return v.canPlayType('video/mp4; codecs="avc1.4D401E"')?'mp4':v.canPlayType('video/webm; codecs="vp9"')?'webm':'mp4'}catch(e){return 'mp4'}})();
@@ -3710,16 +3711,14 @@ const Lights=(()=>{
     FX.clips.forEach(c=>{const u=c+'.'+VF;if(fxUrl[u])return;fxUrl[u]='loading';fetch(u).then(r=>r.ok?r.blob():null).then(b=>{if(b)fxUrl[u]=URL.createObjectURL(b);else delete fxUrl[u]}).catch(()=>{delete fxUrl[u]})})}
   function jingle(k){if(!S.sound)return;const b=fxBuf[FX.jingles[k]];
     if(!(b&&b.duration)){[523.25,659.25,783.99,1046.5].forEach((f,i)=>setTimeout(()=>pluck(f,'sine',.8,.2),i*110));return}
-    try{audioUnlock();const src=AC.createBufferSource(),g=AC.createGain();g.gain.value=.85;src.buffer=b;src.connect(g).connect(AC.destination);src.start()}catch(e){}}
+    try{audioUnlock();const src=AC.createBufferSource(),g=AC.createGain(),t=AC.currentTime;g.gain.setValueAtTime(.8,t);g.gain.setValueAtTime(.8,t+1.6);g.gain.linearRampToValueAtTime(0,t+2.2);src.buffer=b;src.connect(g).connect(AC.destination);src.start(t);src.stop(t+2.3)}catch(e){}}
   function celebrate(len,pts){const st=$('#mlStage');if(!st)return;const tier=len>=15?2:len>=10?1:0,t=[[L('Great memory!','记性真好！'),'#FFD34E'],[L('Amazing!','太厉害了！'),'#FF9EC4'],[len>=20?L('Legendary!','传奇记忆！'):L('Memory master!','记忆大师！'),'#7BE0A0']][tier];
     jingle(tier);msg(L(`${len} lights in a row!`,`连续记住${len}盏灯！`),'good');mid('★');
     const u=fxUrl[FX.clips[(len/5-1)%2]+'.'+VF],ov=document.createElement('div');ov.className='ml-cele';
     ov.innerHTML=`${u&&u!=='loading'?`<video class="ml-fxv" src="${u}" muted playsinline autoplay></video>`:'<div class="ml-fxv ml-fxcss"></div>'}
       <div class="ml-ctext"><span class="ml-cnum" style="--k:${t[1]}">${len}</span><b style="color:${t[1]}">${t[0]}</b><small>${L(`${len} lanterns in a row · +${pts} points`,`连续${len}盏灯 · +${pts}分`)}</small></div>`;
     st.appendChild(ov);const v=ov.querySelector('video');if(v){v.play().catch(()=>{})}
-    // the lanterns light up one after another, all the way round
-    const lans=[...root.querySelectorAll('.ml-lan')];lans.forEach((el,i)=>setTimeout(()=>{el.classList.remove('on');void el.offsetWidth;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),420)},300+i*160));
-    setTimeout(()=>ov.classList.add('out'),sp(3500));setTimeout(()=>ov.remove(),sp(4100))}
+    setTimeout(()=>ov.classList.add('out'),sp(1800));setTimeout(()=>ov.remove(),sp(2300))}
   function wrong(i,want){const my=G.my;G.state='wait';setBtns(false);G.lives--;G.lostThis=true;G.perfect=false;hud();sfx.bad();
     const st=$('#mlStage');if(st){st.classList.remove('shake');void st.offsetWidth;st.classList.add('shake')}
     // show which lantern was the right one
