@@ -1605,7 +1605,7 @@ const Net=(()=>{
     mqLib=add('vendor/mqtt.min.js').then(ok=>ok||add('https://cdn.jsdelivr.net/npm/mqtt@5.10.4/dist/mqtt.min.js')).then(ok=>ok||add('https://unpkg.com/mqtt@5.10.4/dist/mqtt.min.js'));return mqLib}
   function mqConnect(b,topic,onMsg){return new Promise(res=>{let done=false,c=null;
     try{c=mqtt.connect(b.u,{clientId:'kd_'+uid+'_'+Math.random().toString(36).slice(2,6),clean:true,connectTimeout:6000,reconnectPeriod:3000,keepalive:30,
-      will:{topic,payload:JSON.stringify({t:'bye',_u:uid}),qos:0,retain:false},...(b.o||{})})}catch(e){res(null);return}
+      will:{topic,payload:JSON.stringify({t:'lost',_u:uid}),qos:0,retain:false},...(b.o||{})})}catch(e){res(null);return}
     const fail=()=>{if(!done){done=true;try{c.end(true)}catch(e){}res(null)}};
     c.on('connect',()=>{if(done)return;c.subscribe(topic,{qos:0},err=>{if(done)return;if(err){fail();return}done=true;c._kdName=b.n;res(c)})});
     c.on('message',(t,p)=>{let d=null;try{d=JSON.parse(p.toString())}catch(e){}if(d&&typeof d==='object')onMsg(d,c)});
@@ -1629,7 +1629,8 @@ const Net=(()=>{
   async function transport(code,role,ready){const bc=viaBC(code);if(bc){ready&&ready(['test']);bc.relays=()=>['test'];return bc}const r=await viaRoom(code);if(r){ready&&ready(['Claude']);r.relays=()=>['Claude'];return r}
     return viaMqtt(code,role,ready)}
   /* messages during a game */
-  function route(d){if(!d||typeof d!=='object'||typeof d.t!=='string')return;if(partnerU&&d._u&&d._u!==partnerU)return;if(!partnerHeard&&d.t!=='hello'&&d.t!=='seen'){partnerHeard=true;clearInterval(welcomeT)}
+  let lastHeard=0;
+  function route(d){if(!d||typeof d!=='object'||typeof d.t!=='string')return;if(partnerU&&d._u&&d._u!==partnerU)return;lastHeard=Date.now();if(d.t==='lost')return;if(!partnerHeard&&d.t!=='hello'&&d.t!=='seen'){partnerHeard=true;clearInterval(welcomeT)}
     if(d.t==='bye'){drop(true);return}if(['ping','hello','welcome','seen','decline','ready'].includes(d.t))return;
     if(live[d.t]){live[d.t](d);return}queue.push(d);pump()}
   function pump(){for(let i=0;i<waiters.length;i++){const w=waiters[i],k=queue.findIndex(m=>w.types.includes(m.t));if(k>=0){const[m]=queue.splice(k,1);waiters.splice(i,1);i--;w.res(m)}}}
@@ -1656,7 +1657,10 @@ const Net=(()=>{
     const cancel=()=>{clearT();closeLobby();try{pending&&pending.close&&pending.close()}catch(e){}onCancel&&onCancel()};
     ov.querySelector('.rg-x').onclick=cancel;
     const connected=(t,role)=>{clearT();pending=null;tr=t;me=role==='host'?0:1;active=true;queue=[];waiters=[];
-      t.listen(route);t.onLeave(()=>drop(true));hb=setInterval(()=>send({t:'ping'}),15000);closeLobby();sfx.good();onConnected(me)};
+      t.listen(route);lastHeard=Date.now();
+      // a relay hiccup is not a goodbye: only drop after a long silence (or an explicit goodbye)
+      t.onLeave(()=>{const at=Date.now();setTimeout(()=>{if(active&&lastHeard<at)drop(true)},20000)});
+      hb=setInterval(()=>{send({t:'ping'});if(active&&Date.now()-lastHeard>30000)drop(true)},4000);closeLobby();sfx.good();onConnected(me)};
     const spin=txt=>`<span class="rg-spin sm"></span><span>${txt}</span>`;
     /* HOST */
     ov.querySelector('#netHost').onclick=async()=>{btns.hidden=true;const code=newCode();msg.innerHTML=spin(L('Going online…','正在联机…'));
@@ -3300,7 +3304,7 @@ const TableTennis=(()=>{
   const gauss=()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
   const firstServer=()=>mode==='online'?(Net.me===0?'P':'A'):'P';
   function newMatch(){M={score:{P:0,A:0},state:'serve',server:firstServer(),ball:{p:V(0,1,HL),v:V(),w:V()},last:null,bounce:{P:0,A:0},serve:null,rally:0,best:0,
-      pad:{P:{x:0,y:.95,z:ZP,tx:0,ty:.95,vx:0,vy:0},A:{x:0,y:.95,z:-ZP,tx:0,ty:.95}},body:{x:0,z:0},rel:null,ai:{plan:null,t:0,react:0},netWave:[],trail:[],over:false,wait:0,swing:{P:0,A:0},paused:false};
+      hitN:0,gotH:0,deadN:0,pad:{P:{x:0,y:.95,z:ZP,tx:0,ty:.95,vx:0,vy:0},A:{x:0,y:.95,z:-ZP,tx:0,ty:.95}},body:{x:0,z:0},rel:null,ai:{plan:null,t:0,react:0},netWave:[],trail:[],over:false,wait:0,swing:{P:0,A:0},paused:false};
     placeForServe()}
   function serverNow(){const n=M.score.P+M.score.A,f=firstServer();const swaps=M.score.P>=10&&M.score.A>=10?10+(n-20):Math.floor(n/2);return swaps%2===0?f:other(f)}
   function placeForServe(){const s=M.server,b=M.ball;b.v=V();b.w=V();b.p=V(M.pad[s].x,TOP+.2,(s==='P'?1:-1)*(HL+.1));
@@ -3343,7 +3347,9 @@ const TableTennis=(()=>{
     if(!t)return;el.textContent=t;el.className='tt-spin '+(top>55?'top':top<-45?'back':'side');void el.offsetWidth;el.classList.add('show')}
   function hitBall(who,v,w,pace,remote){const b=M.ball;b.v=v;b.w=w;M.last=who;M.bounce={P:0,A:0};M.rally++;M.best=Math.max(M.best,M.rally);M.swing[who]=performance.now();
     const wasServe=M.state==='serve';if(wasServe)M.state='rally';sndHit(pace,who==='P');
-    if(mode==='online'&&!remote&&who==='P')Net.send({t:'hit',p:[-b.p.x,b.p.y,-b.p.z],v:[-v.x,v.y,-v.z],w:[-w.x,w.y,-w.z],srv:wasServe?1:0})}
+    if(mode==='online'&&!remote&&who==='P'){const m={t:'hit',p:[-b.p.x,b.p.y,-b.p.z],v:[-v.x,v.y,-v.z],w:[-w.x,w.y,-w.z],srv:wasServe?1:0,h:++M.hitN,s:[M.score.A,M.score.P],age:0};
+      // sent twice, in case one copy goes missing on the way
+      Net.send(m);setTimeout(()=>{if(M&&mode==='online')Net.send({...m,age:150})},150)}}
   function serve(who,sw){const b=M.ball,sg=who==='P'?1:-1,o=lv(),m=me();
     const sx=sw?sw.x:0,sy=sw?sw.y:0,sp=Math.hypot(sx,sy);
     let pace=who==='P'?3.5+Math.min(1,sp/3)*2.6:(level==='hard'?4.2+Math.random()*2:3.4+Math.random()*1.3);
@@ -3378,16 +3384,18 @@ const TableTennis=(()=>{
   // online: the player who has to answer the shot rules on it
   const amJudge=()=>mode!=='online'||M.last!=='P';
   function fault(winner,why){if(M.state!=='rally')return;if(!amJudge()){M.state='pending';M.pendT=performance.now();return}
-    if(mode==='online')Net.send({t:'pt',w:winner==='P'?'A':'P',why});point(winner,why)}
-  function let_(){if(!amJudge()){M.state='pending';M.pendT=performance.now();return}if(mode==='online')Net.send({t:'let'});doLet()}
-  function doLet(){M.state='dead';banner(L('Let! Serve again','擦网重发'),'#8EC8FF',1300,L('The serve touched the net','发球擦网'));setTimeout(()=>{if(M&&!M.over)placeForServe()},sp(1400))}
+    point(winner,why);if(mode==='online')sendPt(why)}
+  // the score is sent whole (not "add one"), twice, so both phones always agree
+  function sendPt(why){const m={t:'pt',s:[M.score.A,M.score.P],why};Net.send(m);setTimeout(()=>{if(M&&mode==='online')Net.send(m)},300)}
+  function let_(){if(!amJudge()){M.state='pending';M.pendT=performance.now();return}if(mode==='online'){const n=M.score.P+M.score.A;Net.send({t:'let',n});setTimeout(()=>Net.send({t:'let',n}),300)}doLet()}
+  function doLet(){M.state='dead';banner(L('Let! Serve again','擦网重发'),'#8EC8FF',1300,L('The serve touched the net','发球擦网'));const ld=++M.deadN;setTimeout(()=>{if(M&&!M.over&&M.state==='dead'&&M.deadN===ld)placeForServe()},sp(1400))}
   function point(winner,why){if(!M||M.over)return;M.state='dead';M.score[winner]++;const mine=winner==='P';
     // a word of coaching when the opponent's spin beat you
     if(!mine&&M.last==='P'&&mode!=='online'&&level!=='hard'&&Math.abs(M.inTop||0)>40)why+=' · '+(M.inTop<0?L('it had backspin: flick upwards to lift it','对方是下旋：向上挥拍把球提起来'):L('it had topspin: flick up and over the ball','对方是上旋：向上挥拍压住球'));
     banner(mine?L('Your point!','你得分！'):L('Point to '+oppName()[0],oppName()[1]+'得分'),mine?'#7BE0A0':'#FF8A7A',1500,why);mine?sfx.good():tone(220,.14,'sine',.08);updateHUD(true);
     const a=M.score.P,b=M.score.A;
     if((a>=11||b>=11)&&Math.abs(a-b)>=2){M.over=true;setTimeout(endMatch,sp(1700));return}
-    setTimeout(()=>{if(!M||M.over)return;M.server=serverNow();
+    const pd=++M.deadN;setTimeout(()=>{if(!M||M.over)return;M.server=serverNow();updateHUD();if(M.state!=='dead'||M.deadN!==pd)return;
       if(a===b&&a>=10)banner(L('Deuce!','平分！'),'#FFE27A',1200,L('Win by 2 clear points','要领先2分才赢'));
       else if(a>=10&&a>b)banner(L('Game point!','局点！'),'#FFD34E',1200);else if(b>=10&&b>a)banner(L('Game point to '+oppName()[0],oppName()[1]+'局点'),'#FFD34E',1200);
       placeForServe()},sp(1700))}
@@ -3554,14 +3562,15 @@ const TableTennis=(()=>{
         if(mode!=='online'&&M.last==='P'&&M.bounce.A===1&&b.v.z<0){const pz=b.p.z-b.v.z*h,atPlane=pz>-ZP&&b.p.z<=-ZP,short=b.v.y<0&&b.p.y<TOP+.07&&b.p.z<-.25&&b.p.z>-ZP;
           if(atPlane||short){const d=Math.hypot(b.p.x-A.x,b.p.y-A.y);if(d<=o.reach+R)aiHit()}}}
       if(M.state==='rally'&&b.p.y<.05&&Math.hypot(b.v.x,b.v.y,b.v.z)<.3)onEvent({k:'floor'});
-      if(M.state==='pending'&&now-M.pendT>6000){M.state='rally';point(M.last?other(M.last):'P','')}
+      if(M.state==='pending'&&now-M.pendT>(mode==='online'?9000:6000)){M.state='rally';point(M.last?other(M.last):'P','')}
       M.trail.unshift(cp(b.p));if(M.trail.length>12)M.trail.pop()}else M.rel=null;
     // the computer moves towards where the ball will reach it
     if(mode!=='online'){const ai=M.ai;ai.t-=dt;
       if(M.state==='rally'&&M.last==='P'){if(ai.t<=0){ai.t=.1;const c=predict('A');if(c){if(!ai.plan||!ai.plan.ok)ai.react=o.react;ai.plan={x:c.x+gauss()*o.aim*.4,y:c.y+gauss()*o.aim*.25,ok:true}}}}
       else if(M.state!=='serve'||M.server!=='A')ai.plan={x:M.state==='rally'?b.p.x*.3:0,y:.95,ok:false};
       if(ai.react>0)ai.react-=dt;else if(ai.plan){const dx=ai.plan.x-A.x,dy=ai.plan.y-A.y,dd=Math.hypot(dx,dy),mv=Math.min(dd,o.speed*dt);if(dd>1e-4){A.x+=dx/dd*mv;A.y+=dy/dd*mv}}}
-    else{A.x+=(A.tx-A.x)*k;A.y+=(A.ty-A.y)*k;A.z+=((A.tz??-ZP)-A.z)*k;Net.send({t:'pos',x:+(-P.x).toFixed(3),y:+P.y.toFixed(3),z:+(-P.z).toFixed(3)})}}
+    else{A.x+=(A.tx-A.x)*k;A.y+=(A.ty-A.y)*k;A.z+=((A.tz??-ZP)-A.z)*k;Net.send({t:'pos',x:+(-P.x).toFixed(3),y:+P.y.toFixed(3),z:+(-P.z).toFixed(3)});
+      if(now-(M.syncT||0)>1000){M.syncT=now;Net.send({t:'sync',s:[M.score.A,M.score.P],st:M.state,host:Net.me===0?1:0})}}}
   function render(dt,now){const T=THREE,b=M.ball,P=M.pad.P,A=M.pad.A;three.ball.position.set(b.p.x,b.p.y,b.p.z);
     // show the spin (slowed down so the eye can follow it)
     const wm=Math.hypot(b.w.x,b.w.y,b.w.z);if(wm>.5){const ang=Math.min(.6,wm*dt*.12);three.ball.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(b.w.x/wm,b.w.y/wm,b.w.z/wm),ang))}
@@ -3578,12 +3587,24 @@ const TableTennis=(()=>{
     drawNet(now);three.r.render(three.sc,three.cam)}
   /* ---------- online ---------- */
   function netSetup(){Net.setLive('pos',d=>{if(!M)return;M.pad.A.tx=+d.x||0;M.pad.A.ty=+d.y||.95;if(d.z!=null)M.pad.A.tz=Math.max(-HL-.6,Math.min(-.1,+d.z))});
-    Net.setLive('hit',d=>{if(!M||M.over)return;const b=M.ball;b.p=V(...d.p);b.v=V(...d.v);b.w=V(...d.w);if(d.srv)M.serve={stage:0,net:false};
+    Net.setLive('hit',d=>{if(!M||M.over)return;if(d.h!=null){if(d.h<=M.gotH)return;M.gotH=d.h}
+      if(Array.isArray(d.s)&&d.s[0]+d.s[1]>M.score.P+M.score.A){M.score.P=d.s[0];M.score.A=d.s[1];M.server=serverNow();updateHUD(true)} // we missed a point message: take the score that came with the shot
+      const b=M.ball;b.p=V(...d.p);b.v=V(...d.v);b.w=V(...d.w);if(d.srv)M.serve={stage:0,net:false};M.deadN++;
       M.state='rally';M.last='A';M.bounce={P:0,A:0};M.rally++;M.best=Math.max(M.best,M.rally);M.swing.A=performance.now();sndHit(Math.hypot(b.v.x,b.v.z),false);hint('');
       // catch up on the time the message spent on the way
-      const ev=[];for(let i=0;i<20;i++){step(b,DT,ev)}for(const e of ev)if(M.state==='rally')onEvent(e)});
-    Net.setLive('pt',d=>{if(!M||M.over||M.state==='dead'||M.state==='serve')return;M.state='rally';point(d.w==='P'?'P':'A',d.why||'')});
-    Net.setLive('let',()=>{if(!M||M.over)return;doLet()})}
+      const ev=[];const nSteps=Math.round((.05+(d.age||0)/1000)/DT);for(let i=0;i<nSteps;i++){step(b,DT,ev)}for(const e of ev)if(M.state==='rally')onEvent(e)});
+    Net.setLive('pt',d=>{if(!M||M.over||!Array.isArray(d.s))return;adopt(d.s[0],d.s[1],d.why||'')});
+    Net.setLive('let',d=>{if(!M||M.over)return;if(d.n!=null&&d.n!==M.score.P+M.score.A)return;if(M.state==='rally'||M.state==='pending')doLet()});
+    // once a second each phone says what score it has; the one behind catches up, and if they disagree the host's count wins
+    Net.setLive('sync',d=>{if(!M||M.over||!Array.isArray(d.s))return;const n=d.s[0]+d.s[1],mine=M.score.P+M.score.A;
+      if(n>mine)adopt(d.s[0],d.s[1],'');
+      else if(n===mine&&(d.s[0]!==M.score.P||d.s[1]!==M.score.A)&&d.host&&(M.state==='serve'||M.state==='dead'))adopt(d.s[0],d.s[1],'',true)})}
+  // take the score the other phone announced: show the point if it is new
+  function adopt(sP,sA,why,force){const n=sP+sA,mine=M.score.P+M.score.A;if(n<mine||(n===mine&&!force))return;
+    if(n===mine+1&&!force){const w=sP>M.score.P?'P':'A';M.score.P=sP-(w==='P'?1:0);M.score.A=sA-(w==='A'?1:0);M.state='rally';point(w,why);return}
+    // more than one point apart (a lost message): jump straight to the agreed score
+    M.score.P=sP;M.score.A=sA;updateHUD(true);if((sP>=11||sA>=11)&&Math.abs(sP-sA)>=2){M.over=true;M.state='dead';setTimeout(endMatch,sp(800));return}
+    M.server=serverNow();M.deadN++;placeForServe()}
   /* ---------- screens ---------- */
   function menu(){stopGame();root.innerHTML=`<div class="tt-menu">
       <h3 class="dp-h">${L('Choose your opponent','选择对手')}</h3>
