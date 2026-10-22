@@ -269,6 +269,8 @@ p{margin:0}
 .tt-tilt input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#1E5B3C}
 .tt-centre{position:absolute;left:10px;bottom:10px;height:44px;padding:0 14px;border-radius:99px;border:2px solid #F4F1E8;background:rgba(16,40,28,.86);color:#F4F1E8;font-weight:900;font-size:calc(14px * var(--fs,1));cursor:pointer}
 .tt-centre[hidden]{display:none}
+.tt-tilton{left:auto;right:64px;background:#1E5B3C}
+
 .tt-pause{border-color:#F4F1E8;background:rgba(16,40,28,.86);color:#F4F1E8}
 @media(max-width:600px){.tt-stage{height:calc(100svh - 150px);min-height:440px;border-radius:14px}.tt-card{padding:3px 6px;gap:5px}.tt-card img{display:none}.tt-card b{font-size:calc(24px * var(--fs,1))}}
 .ml-menu{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
@@ -3504,7 +3506,8 @@ const TableTennis=(()=>{
     addEventListener('deviceorientation',tilt.fn)}
   function tiltStop(){if(tilt.fn)removeEventListener('deviceorientation',tilt.fn);tilt.fn=null;tilt.ok=false;tilt.lr=tilt.fb=0}
   function tiltAsk(){// iPhone and iPad ask permission for motion sensors (must come from a tap)
-    if(!tilt.on)return Promise.resolve();const D=window.DeviceOrientationEvent;if(D&&typeof D.requestPermission==='function')return D.requestPermission().then(r=>{if(r!=='granted'){tilt.on=false}}).catch(()=>{});return Promise.resolve()}
+    if(!tilt.on)return Promise.resolve();const D=window.DeviceOrientationEvent;if(D&&typeof D.requestPermission==='function'){let p;try{p=D.requestPermission()}catch(e){return Promise.resolve()}return Promise.resolve(p).then(r=>{tilt.asked=true;if(r==='granted')tilt.granted=true}).catch(()=>{})}return Promise.resolve()}
+  const tiltNeedsTap=()=>tilt.on&&!tilt.granted&&!tilt.asked&&window.DeviceOrientationEvent&&typeof DeviceOrientationEvent.requestPermission==='function'
   /* ---------- the loop ---------- */
   let lastT=0;
   function loop(){const my=token;const frame=now=>{if(my!==token)return;raf=requestAnimationFrame(frame);if(!M||M.paused||!three){lastT=now;return}
@@ -3571,7 +3574,7 @@ const TableTennis=(()=>{
     const az=mode==='online'?A.z:-ZP;three.padA.position.set(A.x,A.y,az-.02);three.padA.rotation.set(.2+sw(M.swing.A)*.6,Math.PI,Math.max(-.7,Math.min(.7,A.x*.6)));
     if(three.body){const bd=three.body,u=bd.userData;bd.position.set(A.x+(.5-u.hand)*u.w*.85,u.h/2+Math.sin(now/380)*.008-Math.min(.06,sw(M.swing.A)*.05),az-.42);
       const vx=(A.x-(u.px??A.x))/Math.max(dt,1e-3);u.px=A.x;u.tilt=(u.tilt||0)*.85+Math.max(-.08,Math.min(.08,-vx*.03))*.15;bd.rotation.z=u.tilt}
-    const c=mode!=='online'&&level!=='hard'&&M.state==='rally'&&M.last==='A'?cross():null;three.ring.visible=!!c;if(c){three.ring.position.set(c.x,c.y,c.z);three.ring.material.opacity=level==='easy'?.8:.4}
+    const c=(mode==='online'||level!=='hard')&&M.state==='rally'&&M.last==='A'?cross():null;three.ring.visible=!!c;if(c){three.ring.position.set(c.x,c.y,c.z);three.ring.material.opacity=mode!=='online'&&level==='easy'?.8:.4}
     drawNet(now);three.r.render(three.sc,three.cam)}
   /* ---------- online ---------- */
   function netSetup(){Net.setLive('pos',d=>{if(!M)return;M.pad.A.tx=+d.x||0;M.pad.A.ty=+d.y||.95;if(d.z!=null)M.pad.A.tz=Math.max(-HL-.6,Math.min(-.1,+d.z))});
@@ -3594,7 +3597,7 @@ const TableTennis=(()=>{
         <label class="tt-tilt"><input type="checkbox" id="ttTilt" ${tilt.on?'checked':''}> <span>${L('Tilt the phone to step around the table (tilt left or right to move sideways, forward or back to move in or out)','倾斜手机在球桌旁走动（左右倾斜横移，前后倾斜靠近或后退）')}</span></label></div>
       <button class="btn primary big" id="ttGo">▶ ${L('Start match','开始比赛')}</button></div>`;
     root.querySelectorAll('.tt-opp').forEach(b=>b.onclick=()=>{sfx.tap();const k=b.dataset.k;
-      if(k==='online'){openOnline();return}
+      if(k==='online'){tiltAsk();openOnline();return}
       if(mode==='online'){Net.onDrop=null;Net.leave()}mode=prevMode='cpu';level=k;
       root.querySelectorAll('.tt-opp').forEach(x=>x.setAttribute('aria-pressed',x===b))});
     $('#ttTilt').onchange=e=>{tilt.on=e.target.checked;try{localStorage.setItem('tt-tilt',tilt.on?'on':'off')}catch(_){}};
@@ -3605,6 +3608,7 @@ const TableTennis=(()=>{
       <div class="tt-hud"><div class="tt-card"><span class="tt-nm"><i class="tt-srv" data-s="P" title="${L('Serving','发球')}"></i>${L('You','你')}</span><b id="ttSP">0</b></div>
         <div class="tt-card right"><img src="${on?FRIEND.img:o.img}" alt=""><span class="tt-nm"><i class="tt-srv" data-s="A"></i>${on?L('Friend','朋友'):L(o.name[0],o.name[1])}</span><b id="ttSA">0</b></div></div>
       <div class="tt-banner" id="ttBanner"></div><span class="tt-spin" id="ttSpin"></span><p class="tt-hint" id="ttHint" hidden></p>
+      <button class="tt-centre tt-tilton" id="ttTiltOn" hidden>📱 ${L('Turn on tilt','开启倾斜')}</button>
       <button class="tt-centre" id="ttCentre" hidden aria-label="${L('Centre the tilt','重设倾斜中心')}">◎ ${L('Centre','回中')}</button>
       <button class="dp-pause tt-pause" id="ttPause" aria-label="${on?L('Leave','离开'):L('Pause','暂停')}">${on?'✕':'❚❚'}</button>
       <div class="dp-load" id="ttLoad"><span class="rg-spin sm"></span><span>${L('Setting up the table…','正在摆好球桌…')}</span></div></div></div>`;
@@ -3612,6 +3616,8 @@ const TableTennis=(()=>{
     const ok=await loadThree();if(my!==token)return;if(!ok){$('#ttLoad').innerHTML=`<span>${L('The 3D table could not load. Check the internet and try again.','3D球桌无法加载，请检查网络后再试。')}</span>`;return}
     const cv=$('#ttCv');try{newMatch();three=buildScene(cv)}catch(e){M=null;$('#ttLoad').innerHTML=`<span>${L('This device cannot show the 3D table.','这台设备无法显示3D球桌。')}</span>`;return}
     size();bindInput(cv);updateHUD();if(on)netSetup();tiltStart();
+    // on iPhone and iPad the motion sensor needs one tap to allow it (online games start without a tap)
+    setTimeout(()=>{if(my!==token||tilt.ok||!tiltNeedsTap())return;const b=$('#ttTiltOn');if(!b)return;b.hidden=false;b.onclick=e=>{e.stopPropagation();tiltAsk().then(()=>{b.hidden=true;tiltStart()})}},1500);
     setTimeout(()=>{const l=$('#ttLoad');if(l)l.hidden=true},300);loop();
     const st=$('#ttStage'),top=(document.querySelector('.top')?.offsetHeight||0);if(st){const y=st.getBoundingClientRect().top+scrollY-top-8;if(Math.abs(y-scrollY)>20)scrollTo({top:y,behavior:'smooth'})}
     vis=()=>{if(document.hidden&&M&&!M.over&&mode!=='online')pause()};document.addEventListener('visibilitychange',vis)}
