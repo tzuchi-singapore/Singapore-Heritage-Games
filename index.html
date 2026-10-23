@@ -286,6 +286,7 @@ p{margin:0}
 .tt-l3 b{background:#1E5B3C;color:#fff;padding:8px 12px;font-size:calc(18px * var(--fs,1));white-space:nowrap}
 .tt-l3 span{background:#0B1F15;color:#FFE27A;padding:8px 12px;font-family:'Alfa Slab One',serif;font-size:calc(18px * var(--fs,1));white-space:nowrap}
 .tt-skip{position:absolute;right:12px;top:calc(9% + 10px);pointer-events:auto;border:2px solid #fff;background:rgba(0,0,0,.55);color:#fff;font-weight:900;border-radius:99px;padding:8px 14px;font-size:calc(14px * var(--fs,1));cursor:pointer}
+.tt-sting{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;z-index:5;pointer-events:none}
 .tt-flash{position:absolute;inset:0;background:#fff;z-index:6;pointer-events:none;animation:ttFlash .7s forwards}
 @keyframes ttFlash{from{opacity:.9}to{opacity:0}}
 
@@ -3613,12 +3614,20 @@ const TableTennis=(()=>{
   function record(){if(M.replay)return;const bd=three.body;
     M.rec.push({t:M.simT,b:arr(three.ball.position),q:three.ball.quaternion.toArray(),pp:[...arr(three.padP.position),...rot(three.padP)],pa:[...arr(three.padA.position),...rot(three.padA)],bd:bd?[...arr(bd.position),bd.rotation.z]:null,s:M._snd||null});
     M._snd=null;while(M.rec.length&&M.rec[0].t<M.simT-9)M.rec.shift()}
+  // Higgsfield-made replay sting (video) plus whoosh, cheering and applause, loaded when a match starts
+  const RFX={sting:'video/tt-replay',whoosh:'music/tt-whoosh.mp3',cheer:'music/tt-cheer.mp3',clap:'music/tt-clap.mp3'},rbuf={};let stingURL=null;
+  function loadRfx(){['whoosh','cheer','clap'].forEach(k=>{if(rbuf[k])return;rbuf[k]='l';fetch(RFX[k]).then(r=>r.ok?r.arrayBuffer():Promise.reject()).then(a=>new Promise((res,rej)=>{AC=AC||new(window.AudioContext||window.webkitAudioContext)();AC.decodeAudioData(a,res,rej)})).then(b=>{rbuf[k]=b}).catch(()=>{delete rbuf[k]})});
+    if(stingURL===null){let vf='mp4';try{const v=document.createElement('video');vf=v.canPlayType('video/mp4; codecs="avc1.4D401E"')?'mp4':v.canPlayType('video/webm; codecs="vp9"')?'webm':'mp4'}catch(e){}
+      stingURL='l';fetch(RFX.sting+'.'+vf).then(r=>r.ok?r.blob():null).then(b=>{stingURL=b?URL.createObjectURL(b):null}).catch(()=>{stingURL=null})}}
+  function playBuf(k,vol){if(!S.sound)return;const b=rbuf[k];if(!(b&&b.duration))return;try{audioUnlock();const src=AC.createBufferSource(),g=AC.createGain();g.gain.value=vol;src.buffer=b;src.connect(g).connect(AC.destination);src.start()}catch(e){}}
+  function sting(){const st=$('#ttStage');if(!st||!stingURL||stingURL==='l')return;const v=document.createElement('video');v.className='tt-sting';v.src=stingURL;v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');
+    st.appendChild(v);v.play().catch(()=>{});v.onended=()=>v.remove();setTimeout(()=>v.remove(),4500)}
   function startReplay(winner){if(!M||!three||M.replay||!$('#ttStage')){endMatch();return}const fr=M.rec;
     const hits=M.hits.filter(h=>h.t<=M.endT),last=hits[hits.length-1],prev=hits[hits.length-2];
     if(fr.length<30||!last){endMatch();return}
     let t0=prev?prev.t-.35:last.t-1.1;t0=Math.max(t0,M.endT-3.4,fr[0].t);const t1=Math.min(fr[fr.length-1].t,M.endT+.9);
     const endB=fr.find(f=>f.t>=M.endT)||fr[fr.length-1];
-    M.replay={fr,t:t0,t0,t1,key:last.t,endT:M.endT,i:fr.findIndex(f=>f.t>=t0),winner,hold:0,sgn:endB.b[0]>0?-1:1,tg:null,done:false};
+    M.replay={fr,t:t0,t0,t1,key:last.t,endT:M.endT,i:fr.findIndex(f=>f.t>=t0),winner,hold:0,wait:stingURL&&stingURL!=='l'?1.05:0,sgn:endB.b[0]>0?-1:1,tg:null,done:false};
     if(M.replay.i<0)M.replay.i=0;
     // a slightly bigger, glowing ball so it is easy to follow on the replay
     three.ball.scale.setScalar(1.7);three.trail.forEach(m=>{m.scale.setScalar(1.6);m.material.opacity*=1.6});
@@ -3626,12 +3635,12 @@ const TableTennis=(()=>{
     const won=winner==='P',ov=$('#ttReplay');if(ov){ov.hidden=false;ov.querySelector('.tt-l3').innerHTML=`<i>${L('MATCH POINT','赛点')}</i><b>${won?L('You win','你赢了'):mode==='online'?L('Your friend wins','朋友赢了'):L(lv().name[0]+' wins',lv().name[1]+'赢了')}</b><span>${M.score.P} – ${M.score.A}</span>`;
       ov.querySelector('#ttSkip').onclick=()=>{sfx.tap();finishReplay()}}
     // a broadcast "whoosh" into the replay
-    [0,1,2,3,4,5].forEach(i=>tone(300+i*120,.05,'sine',.05,i*.03));three.marks.forEach(mk=>{mk.t=0})}
+    if(rbuf.whoosh&&rbuf.whoosh.duration)playBuf('whoosh',.8);else [0,1,2,3,4,5].forEach(i=>tone(300+i*120,.05,'sine',.05,i*.03));sting();three.marks.forEach(mk=>{mk.t=0})}
   const lerp=(a,b,u)=>a+(b-a)*u,lerp3=(a,b,u)=>[lerp(a[0],b[0],u),lerp(a[1],b[1],u),lerp(a[2],b[2],u)];
   function replayFrame(real,now){const R=M.replay,fr=R.fr,T=THREE;if(R.done)return;
     // slow motion, slowest around the winning shot and where the point is won
     const near=Math.max(Math.exp(-Math.pow((R.t-R.key)/.22,2)),.8*Math.exp(-Math.pow((R.t-R.endT)/.25,2)));
-    if(R.t<R.t1)R.t+=real*(.42-.29*near);else{R.hold+=real;if(R.hold>1.1)finishReplay()}
+    if(R.wait>0)R.wait-=real;else if(R.t<R.t1)R.t+=real*(.42-.29*near);else{R.hold+=real;if(R.hold>1.1)finishReplay()}
     while(R.i<fr.length-2&&fr[R.i+1].t<=R.t){R.i++;const sn=fr[R.i].s;if(sn)sn.forEach(e=>{if(e[0]==='h')sndHit(e[1],e[2]);else if(e[0]==='t')sndTable(e[1]);else if(e[0]==='n')sndNet(e[1]);else if(e[0]==='f')sndFloor();else if(e[0]==='w')netHit(e[1],e[2])})}
     const a=fr[R.i],b=fr[R.i+1]||a,u=b.t>a.t?Math.max(0,Math.min(1,(R.t-a.t)/(b.t-a.t))):0;
     const bp=lerp3(a.b,b.b,u);three.ball.position.set(...bp);three.ball.quaternion.slerpQuaternions(new T.Quaternion().fromArray(a.q),new T.Quaternion().fromArray(b.q),u);
@@ -3646,7 +3655,7 @@ const TableTennis=(()=>{
     if(!R.cp)R.cp=cp0.clone();else R.cp.lerp(cp0,1-Math.exp(-real*4));c.position.copy(R.cp);c.lookAt(R.tg);const fv=46-12*near;if(Math.abs(c.fov-fv)>.05){c.fov=fv;c.updateProjectionMatrix()}
     if(three.body&&a.bd){const bd=three.body;bd.position.set(lerp(a.bd[0],b.bd[0],u),lerp(a.bd[1],b.bd[1],u),lerp(a.bd[2],b.bd[2],u));bd.rotation.set(0,Math.atan2(c.position.x-bd.position.x,c.position.z-bd.position.z),a.bd[3])}
     const sl=$('#ttSlow');if(sl)sl.classList.toggle('on',near>.35);
-    if(R.t>=R.t1&&!R.l3){R.l3=true;const l=root.querySelector('.tt-l3');if(l)l.classList.add('show');const won=R.winner==='P';won?sfx.win():tone(330,.2,'sine',.08)}
+    if(R.t>=R.t1&&!R.l3){R.l3=true;const l=root.querySelector('.tt-l3');if(l)l.classList.add('show');const won=R.winner==='P';if(won){sfx.win();playBuf('cheer',.9)}else playBuf('clap',.8)}
     drawNet(now);three.r.render(three.sc,three.cam)}
   function finishReplay(){const R=M&&M.replay;if(!R||R.done)return;R.done=true;const st=$('#ttStage');
     if(st){const f=document.createElement('div');f.className='tt-flash';st.appendChild(f);setTimeout(()=>f.remove(),700)}
@@ -3704,7 +3713,7 @@ const TableTennis=(()=>{
     $('#ttPause').onclick=pause;$('#ttCentre').onclick=()=>{sfx.tap();if(tilt.raw)tilt.z0={...tilt.raw};tilt.lr=tilt.fb=0};
     const ok=await loadThree();if(my!==token)return;if(!ok){$('#ttLoad').innerHTML=`<span>${L('The 3D table could not load. Check the internet and try again.','3D球桌无法加载，请检查网络后再试。')}</span>`;return}
     const cv=$('#ttCv');try{newMatch();three=buildScene(cv)}catch(e){M=null;$('#ttLoad').innerHTML=`<span>${L('This device cannot show the 3D table.','这台设备无法显示3D球桌。')}</span>`;return}
-    size();bindInput(cv);updateHUD();if(on)netSetup();tiltStart();
+    size();bindInput(cv);updateHUD();if(on)netSetup();tiltStart();loadRfx();
     // on iPhone and iPad the motion sensor needs one tap to allow it (online games start without a tap)
     setTimeout(()=>{if(my!==token||tilt.ok||!tiltNeedsTap())return;const b=$('#ttTiltOn');if(!b)return;b.hidden=false;b.onclick=e=>{e.stopPropagation();tiltAsk().then(()=>{b.hidden=true;tiltStart()})}},1500);
     setTimeout(()=>{const l=$('#ttLoad');if(l)l.hidden=true},300);loop();
