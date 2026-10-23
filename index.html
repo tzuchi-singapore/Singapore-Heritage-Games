@@ -269,6 +269,26 @@ p{margin:0}
 .tt-tilt input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:#1E5B3C}
 .tt-centre{position:absolute;left:10px;bottom:10px;height:44px;padding:0 14px;border-radius:99px;border:2px solid #F4F1E8;background:rgba(16,40,28,.86);color:#F4F1E8;font-weight:900;font-size:calc(14px * var(--fs,1));cursor:pointer}
 .tt-centre[hidden]{display:none}
+.tt-stage::before,.tt-stage::after{content:'';position:absolute;left:0;right:0;height:0;background:#000;z-index:3;transition:height .5s ease;pointer-events:none}
+.tt-stage::before{top:0}.tt-stage::after{bottom:0}
+.tt-stage.replay::before,.tt-stage.replay::after{height:9%}
+.tt-stage.replay .tt-hud,.tt-stage.replay .tt-pause,.tt-stage.replay .tt-banner,.tt-stage.replay .tt-spin{opacity:0;pointer-events:none}
+.tt-replay{position:absolute;inset:0;z-index:4;pointer-events:none}
+.tt-replay[hidden]{display:none}
+.tt-rtag{position:absolute;left:14px;top:calc(9% + 12px);display:flex;align-items:center;gap:8px;background:#C62828;color:#fff;font-family:'Alfa Slab One',serif;font-size:calc(18px * var(--fs,1));letter-spacing:2px;padding:5px 14px 5px 10px;transform:skewX(-10deg);box-shadow:4px 4px 0 rgba(0,0,0,.35);animation:ttIn .5s both}
+.tt-rtag i{width:12px;height:12px;border-radius:50%;background:#fff;animation:ttBlink 1s infinite}
+@keyframes ttBlink{50%{opacity:.2}}@keyframes ttIn{from{transform:translateX(-140%) skewX(-10deg)}}
+.tt-slow{position:absolute;left:14px;top:calc(9% + 54px);background:rgba(0,0,0,.6);color:#FFE27A;font-weight:900;letter-spacing:2px;font-size:calc(13px * var(--fs,1));padding:5px 10px;border-radius:6px;opacity:0;transition:opacity .3s}
+.tt-slow.on{opacity:1}
+.tt-l3{position:absolute;left:14px;bottom:calc(9% + 14px);display:flex;align-items:stretch;gap:0;opacity:0;transform:translateX(-30px);transition:all .45s cubic-bezier(.2,1.3,.4,1)}
+.tt-l3.show{opacity:1;transform:none}
+.tt-l3 i{font-style:normal;background:#FFD34E;color:#22142E;font-weight:900;letter-spacing:1px;padding:8px 10px;font-size:calc(13px * var(--fs,1));display:grid;place-items:center}
+.tt-l3 b{background:#1E5B3C;color:#fff;padding:8px 12px;font-size:calc(18px * var(--fs,1));white-space:nowrap}
+.tt-l3 span{background:#0B1F15;color:#FFE27A;padding:8px 12px;font-family:'Alfa Slab One',serif;font-size:calc(18px * var(--fs,1));white-space:nowrap}
+.tt-skip{position:absolute;right:12px;top:calc(9% + 10px);pointer-events:auto;border:2px solid #fff;background:rgba(0,0,0,.55);color:#fff;font-weight:900;border-radius:99px;padding:8px 14px;font-size:calc(14px * var(--fs,1));cursor:pointer}
+.tt-flash{position:absolute;inset:0;background:#fff;z-index:6;pointer-events:none;animation:ttFlash .7s forwards}
+@keyframes ttFlash{from{opacity:.9}to{opacity:0}}
+
 .tt-tilton{left:auto;right:64px;background:#1E5B3C}
 
 .tt-pause{border-color:#F4F1E8;background:rgba(16,40,28,.86);color:#F4F1E8}
@@ -3304,7 +3324,7 @@ const TableTennis=(()=>{
   const gauss=()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
   const firstServer=()=>mode==='online'?(Net.me===0?'P':'A'):'P';
   function newMatch(){M={score:{P:0,A:0},state:'serve',server:firstServer(),ball:{p:V(0,1,HL),v:V(),w:V()},last:null,bounce:{P:0,A:0},serve:null,rally:0,best:0,
-      hitN:0,gotH:0,deadN:0,pad:{P:{x:0,y:.95,z:ZP,tx:0,ty:.95,vx:0,vy:0},A:{x:0,y:.95,z:-ZP,tx:0,ty:.95}},body:{x:0,z:0},rel:null,ai:{plan:null,t:0,react:0},netWave:[],trail:[],over:false,wait:0,swing:{P:0,A:0},paused:false};
+      hitN:0,gotH:0,deadN:0,simT:0,rec:[],hits:[],replay:null,pad:{P:{x:0,y:.95,z:ZP,tx:0,ty:.95,vx:0,vy:0},A:{x:0,y:.95,z:-ZP,tx:0,ty:.95}},body:{x:0,z:0},rel:null,ai:{plan:null,t:0,react:0},netWave:[],trail:[],over:false,wait:0,swing:{P:0,A:0},paused:false};
     placeForServe()}
   function serverNow(){const n=M.score.P+M.score.A,f=firstServer();const swaps=M.score.P>=10&&M.score.A>=10?10+(n-20):Math.floor(n/2);return swaps%2===0?f:other(f)}
   function placeForServe(){const s=M.server,b=M.ball;b.v=V();b.w=V();b.p=V(M.pad[s].x,TOP+.2,(s==='P'?1:-1)*(HL+.1));
@@ -3345,7 +3365,7 @@ const TableTennis=(()=>{
   function spinTag(top,side){const el=$('#ttSpin');if(!el)return;let t='';
     if(top>55)t=L('Topspin','上旋球');else if(top<-45)t=L('Backspin','下旋球');else if(Math.abs(side)>70)t=L('Sidespin','侧旋球');
     if(!t)return;el.textContent=t;el.className='tt-spin '+(top>55?'top':top<-45?'back':'side');void el.offsetWidth;el.classList.add('show')}
-  function hitBall(who,v,w,pace,remote){const b=M.ball;b.v=v;b.w=w;M.last=who;M.bounce={P:0,A:0};M.rally++;M.best=Math.max(M.best,M.rally);M.swing[who]=performance.now();
+  function hitBall(who,v,w,pace,remote){const b=M.ball;M.hits.push({t:M.simT,who});if(M.hits.length>12)M.hits.shift();b.v=v;b.w=w;M.last=who;M.bounce={P:0,A:0};M.rally++;M.best=Math.max(M.best,M.rally);M.swing[who]=performance.now();
     const wasServe=M.state==='serve';if(wasServe)M.state='rally';sndHit(pace,who==='P');
     if(mode==='online'&&!remote&&who==='P'){const m={t:'hit',p:[-b.p.x,b.p.y,-b.p.z],v:[-v.x,v.y,-v.z],w:[-w.x,w.y,-w.z],srv:wasServe?1:0,h:++M.hitN,s:[M.score.A,M.score.P],age:0};
       // sent twice, in case one copy goes missing on the way
@@ -3394,7 +3414,7 @@ const TableTennis=(()=>{
     if(!mine&&M.last==='P'&&mode!=='online'&&level!=='hard'&&Math.abs(M.inTop||0)>40)why+=' · '+(M.inTop<0?L('it had backspin: flick upwards to lift it','对方是下旋：向上挥拍把球提起来'):L('it had topspin: flick up and over the ball','对方是上旋：向上挥拍压住球'));
     banner(mine?L('Your point!','你得分！'):L('Point to '+oppName()[0],oppName()[1]+'得分'),mine?'#7BE0A0':'#FF8A7A',1500,why);mine?sfx.good():tone(220,.14,'sine',.08);updateHUD(true);
     const a=M.score.P,b=M.score.A;
-    if((a>=11||b>=11)&&Math.abs(a-b)>=2){M.over=true;setTimeout(endMatch,sp(1700));return}
+    if((a>=11||b>=11)&&Math.abs(a-b)>=2){M.over=true;M.endT=M.simT;setTimeout(()=>startReplay(winner),sp(1000));return}
     const pd=++M.deadN;setTimeout(()=>{if(!M||M.over)return;M.server=serverNow();updateHUD();if(M.state!=='dead'||M.deadN!==pd)return;
       if(a===b&&a>=10)banner(L('Deuce!','平分！'),'#FFE27A',1200,L('Win by 2 clear points','要领先2分才赢'));
       else if(a>=10&&a>b)banner(L('Game point!','局点！'),'#FFD34E',1200);else if(b>=10&&b>a)banner(L('Game point to '+oppName()[0],oppName()[1]+'局点'),'#FFD34E',1200);
@@ -3464,7 +3484,7 @@ const TableTennis=(()=>{
     // auto zoom: as the ball comes to you, the camera leans in towards where you will hit it
     const zm=M?M.zoom||0:0,f=M&&M.focus;if(zm>.001&&f){const a=zm*.4,b=zm*.45;px+=(f.x-px)*a*.6;py+=(f.y+.5-py)*a;pz+=(f.z+1.05-pz)*a;lx+=(f.x-lx)*b;ly+=(f.y-.1-ly)*b;lz+=(f.z-.6-lz)*b}
     c.position.set(px,py,pz);c.lookAt(lx,ly,lz);const fv=v.fov*(1-.14*zm);if(Math.abs(c.fov-fv)>.05){c.fov=fv;c.updateProjectionMatrix()}}
-  function netHit(x,cord){const s=Math.hypot(M.ball.v.x,M.ball.v.z);M.netWave.push({x,a:cord?.008:Math.min(.05,.014+s*.08),t0:performance.now()})}
+  function netHit(x,cord){rs(['w',x,cord]);const s=Math.hypot(M.ball.v.x,M.ball.v.z);M.netWave.push({x,a:cord?.008:Math.min(.05,.014+s*.08),t0:performance.now()})}
   function drawNet(now){if(!M.netWave.length&&!M._netDirty)return;M._netDirty=M.netWave.length>0;const pos=three.ng.attributes.position,base=three.base;
     for(let i=0;i<pos.count;i++){const x=base[i*3],y=base[i*3+1];let dz=0;
       for(const w of M.netWave){const t=(now-w.t0)/1000;if(t>1.6)continue;const spread=.12+t*.5,fall=Math.exp(-Math.pow((x-w.x)/spread,2))*Math.exp(-t*3);dz+=w.a*fall*Math.cos(t*24-Math.abs(x-w.x)*18)*(.3+.7*(.5-y/NETH))}
@@ -3475,10 +3495,11 @@ const TableTennis=(()=>{
   function knock(f,q,dur,vol){if(!S.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();
     const n=Math.floor(AC.sampleRate*dur),b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,4);
     const s=AC.createBufferSource(),bp=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;bp.type='bandpass';bp.frequency.value=f;bp.Q.value=q;g.gain.value=vol;s.connect(bp).connect(g).connect(AC.destination);s.start()}catch(e){}}
-  function sndHit(p,mine){const v=Math.min(1,p/12);knock(mine?2600:2300,2.5,.05,.5+.6*v);tone(mine?520:470,.04,'sine',.05+.05*v)}
-  function sndTable(s){const v=Math.min(1,(s||3)/6);knock(3300,3,.035,.35+.5*v);tone(1150,.03,'sine',.04+.05*v)}
-  function sndNet(cord){knock(cord?2000:700,cord?4:1.2,cord?.03:.09,.35);if(!cord)tone(160,.08,'triangle',.04)}
-  function sndFloor(){knock(1800,2,.04,.25)}
+  const rs=e=>{if(M&&!M.replay)(M._snd||(M._snd=[])).push(e)};
+  function sndHit(p,mine){rs(['h',p,mine]);const v=Math.min(1,p/12);knock(mine?2600:2300,2.5,.05,.5+.6*v);tone(mine?520:470,.04,'sine',.05+.05*v)}
+  function sndTable(s){rs(['t',s]);const v=Math.min(1,(s||3)/6);knock(3300,3,.035,.35+.5*v);tone(1150,.03,'sine',.04+.05*v)}
+  function sndNet(cord){rs(['n',cord]);knock(cord?2000:700,cord?4:1.2,cord?.03:.09,.35);if(!cord)tone(160,.08,'triangle',.04)}
+  function sndFloor(){rs(['f']);knock(1800,2,.04,.25)}
   /* ---------- HUD ---------- */
   let bannerT=0;
   function banner(t,c,ms,sub){const el=$('#ttBanner');if(!el)return;el.innerHTML=`<b style="color:${c}">${t}</b>${sub?`<small>${sub}</small>`:''}`;el.classList.remove('show');void el.offsetWidth;el.classList.add('show');clearTimeout(bannerT);bannerT=setTimeout(()=>el.classList.remove('show'),sp(ms))}
@@ -3519,7 +3540,8 @@ const TableTennis=(()=>{
   /* ---------- the loop ---------- */
   let lastT=0;
   function loop(){const my=token;const frame=now=>{if(my!==token)return;raf=requestAnimationFrame(frame);if(!M||M.paused||!three){lastT=now;return}
-      const dt=Math.min(.05,(now-(lastT||now))/1000)*tscale();lastT=now;update(dt,now);render(dt,now)};lastT=0;raf=requestAnimationFrame(frame)}
+      const real=Math.min(.05,(now-(lastT||now))/1000);if(M.replay){lastT=now;replayFrame(real,now);return}
+      const dt=real*tscale();lastT=now;update(dt,now);render(dt,now)};lastT=0;raf=requestAnimationFrame(frame)}
   // where the ball will reach a player: crossing their plane, or (for a short ball) just before it would bounce a second time
   function predict(side){const b=M.ball,t={p:cp(b.p),v:cp(b.v),w:cp(b.w),rnd:()=>0},ev=[],s=side==='P'?1:-1,zp=s*ZP;let bounced=M.bounce[side];
     for(let i=0;i<520;i++){const pz=t.p.z;step(t,DT,ev);for(const e of ev.splice(0)){if(e.k==='table'&&e.side===side)bounced++;if(e.k==='floor')return null}
@@ -3563,7 +3585,8 @@ const TableTennis=(()=>{
           if(atPlane||short){const d=Math.hypot(b.p.x-A.x,b.p.y-A.y);if(d<=o.reach+R)aiHit()}}}
       if(M.state==='rally'&&b.p.y<.05&&Math.hypot(b.v.x,b.v.y,b.v.z)<.3)onEvent({k:'floor'});
       if(M.state==='pending'&&now-M.pendT>(mode==='online'?9000:6000)){M.state='rally';point(M.last?other(M.last):'P','')}
-      M.trail.unshift(cp(b.p));if(M.trail.length>12)M.trail.pop()}else M.rel=null;
+      M.trail.unshift(cp(b.p));if(M.trail.length>12)M.trail.pop()}else{M.rel=null;if(M.state==='dead'){let t=dt;while(t>1e-6){const h=Math.min(DT,t);t-=h;step(b,h,null)}}}
+    M.simT+=dt;
     // the computer moves towards where the ball will reach it
     if(mode!=='online'){const ai=M.ai;ai.t-=dt;
       if(M.state==='rally'&&M.last==='P'){if(ai.t<=0){ai.t=.1;const c=predict('A');if(c){if(!ai.plan||!ai.plan.ok)ai.react=o.react;ai.plan={x:c.x+gauss()*o.aim*.4,y:c.y+gauss()*o.aim*.25,ok:true}}}}
@@ -3584,13 +3607,56 @@ const TableTennis=(()=>{
     if(three.body){const bd=three.body,u=bd.userData;bd.position.set(A.x+(.5-u.hand)*u.w*.85,u.h/2+Math.sin(now/380)*.008-Math.min(.06,sw(M.swing.A)*.05),az-.42);
       const vx=(A.x-(u.px??A.x))/Math.max(dt,1e-3);u.px=A.x;u.tilt=(u.tilt||0)*.85+Math.max(-.08,Math.min(.08,-vx*.03))*.15;bd.rotation.z=u.tilt}
     const c=(mode==='online'||level!=='hard')&&M.state==='rally'&&M.last==='A'?cross():null;three.ring.visible=!!c;if(c){three.ring.position.set(c.x,c.y,c.z);three.ring.material.opacity=mode!=='online'&&level==='easy'?.8:.4}
+    record();drawNet(now);three.r.render(three.sc,three.cam)}
+  /* ---------- the winning point, replayed like on TV ---------- */
+  const arr=v=>[v.x,v.y,v.z],rot=o=>[o.rotation.x,o.rotation.y,o.rotation.z];
+  function record(){if(M.replay)return;const bd=three.body;
+    M.rec.push({t:M.simT,b:arr(three.ball.position),q:three.ball.quaternion.toArray(),pp:[...arr(three.padP.position),...rot(three.padP)],pa:[...arr(three.padA.position),...rot(three.padA)],bd:bd?[...arr(bd.position),bd.rotation.z]:null,s:M._snd||null});
+    M._snd=null;while(M.rec.length&&M.rec[0].t<M.simT-9)M.rec.shift()}
+  function startReplay(winner){if(!M||!three||M.replay||!$('#ttStage')){endMatch();return}const fr=M.rec;
+    const hits=M.hits.filter(h=>h.t<=M.endT),last=hits[hits.length-1],prev=hits[hits.length-2];
+    if(fr.length<30||!last){endMatch();return}
+    let t0=prev?prev.t-.35:last.t-1.1;t0=Math.max(t0,M.endT-3.4,fr[0].t);const t1=Math.min(fr[fr.length-1].t,M.endT+.9);
+    const endB=fr.find(f=>f.t>=M.endT)||fr[fr.length-1];
+    M.replay={fr,t:t0,t0,t1,key:last.t,endT:M.endT,i:fr.findIndex(f=>f.t>=t0),winner,hold:0,sgn:endB.b[0]>0?-1:1,tg:null,done:false};
+    if(M.replay.i<0)M.replay.i=0;
+    // a slightly bigger, glowing ball so it is easy to follow on the replay
+    three.ball.scale.setScalar(1.7);three.trail.forEach(m=>{m.scale.setScalar(1.6);m.material.opacity*=1.6});
+    const st=$('#ttStage');st.classList.add('replay');hint('');three.ring.visible=false;['#ttCentre','#ttTiltOn'].forEach(q=>{const e=$(q);if(e)e.hidden=true});
+    const won=winner==='P',ov=$('#ttReplay');if(ov){ov.hidden=false;ov.querySelector('.tt-l3').innerHTML=`<i>${L('MATCH POINT','赛点')}</i><b>${won?L('You win','你赢了'):mode==='online'?L('Your friend wins','朋友赢了'):L(lv().name[0]+' wins',lv().name[1]+'赢了')}</b><span>${M.score.P} – ${M.score.A}</span>`;
+      ov.querySelector('#ttSkip').onclick=()=>{sfx.tap();finishReplay()}}
+    // a broadcast "whoosh" into the replay
+    [0,1,2,3,4,5].forEach(i=>tone(300+i*120,.05,'sine',.05,i*.03));three.marks.forEach(mk=>{mk.t=0})}
+  const lerp=(a,b,u)=>a+(b-a)*u,lerp3=(a,b,u)=>[lerp(a[0],b[0],u),lerp(a[1],b[1],u),lerp(a[2],b[2],u)];
+  function replayFrame(real,now){const R=M.replay,fr=R.fr,T=THREE;if(R.done)return;
+    // slow motion, slowest around the winning shot and where the point is won
+    const near=Math.max(Math.exp(-Math.pow((R.t-R.key)/.22,2)),.8*Math.exp(-Math.pow((R.t-R.endT)/.25,2)));
+    if(R.t<R.t1)R.t+=real*(.42-.29*near);else{R.hold+=real;if(R.hold>1.1)finishReplay()}
+    while(R.i<fr.length-2&&fr[R.i+1].t<=R.t){R.i++;const sn=fr[R.i].s;if(sn)sn.forEach(e=>{if(e[0]==='h')sndHit(e[1],e[2]);else if(e[0]==='t')sndTable(e[1]);else if(e[0]==='n')sndNet(e[1]);else if(e[0]==='f')sndFloor();else if(e[0]==='w')netHit(e[1],e[2])})}
+    const a=fr[R.i],b=fr[R.i+1]||a,u=b.t>a.t?Math.max(0,Math.min(1,(R.t-a.t)/(b.t-a.t))):0;
+    const bp=lerp3(a.b,b.b,u);three.ball.position.set(...bp);three.ball.quaternion.slerpQuaternions(new T.Quaternion().fromArray(a.q),new T.Quaternion().fromArray(b.q),u);
+    const onTable=Math.abs(bp[0])<=HW&&Math.abs(bp[2])<=HL,gy=onTable?TOP+.001:.003,hgt=Math.max(0,bp[1]-gy);three.shadow.position.set(bp[0],gy,bp[2]);const ss=1+hgt*2;three.shadow.scale.set(ss,ss,1);three.shadow.material.opacity=Math.max(.12,1-hgt*1.2);
+    const pp=a.pp.map((v,k)=>lerp(v,b.pp[k],u)),pa=a.pa.map((v,k)=>lerp(v,b.pa[k],u));three.padP.position.set(pp[0],pp[1],pp[2]);three.padP.rotation.set(pp[3],pp[4],pp[5]);three.padA.position.set(pa[0],pa[1],pa[2]);three.padA.rotation.set(pa[3],pa[4],pa[5]);
+    three.trail.forEach((m,k)=>{const f=fr[R.i-1-k*1];m.visible=!!f;if(f)m.position.set(...f.b)});
+    // the camera swings from behind your end round to the side and moves in close for the winning moment
+    // follow the ball over the table, but stay on the table once the point is over
+    const fb=R.t>R.endT?(R.fz||(R.fz=bp.slice())):bp,tgt=new T.Vector3(Math.max(-.9,Math.min(.9,fb[0]*.6)),Math.max(.82,Math.min(1.05,fb[1]*.55+.4)),Math.max(-1.25,Math.min(1.25,fb[2]*.7)));if(!R.tg)R.tg=tgt.clone();else R.tg.lerp(tgt,1-Math.exp(-real*4));
+    const pr=Math.max(0,Math.min(1,(R.t-R.t0)/(R.t1-R.t0))),sm=pr*pr*(3-2*pr),th=.3+1.0*sm,rad=Math.max(1.9,3.4-1.0*near-.45*sm),c=three.cam;
+    const cp0=new T.Vector3(R.tg.x+R.sgn*Math.sin(th)*rad,R.tg.y+.42+.45*(1-near)*(1-sm*.4),R.tg.z+Math.cos(th)*rad);
+    if(!R.cp)R.cp=cp0.clone();else R.cp.lerp(cp0,1-Math.exp(-real*4));c.position.copy(R.cp);c.lookAt(R.tg);const fv=46-12*near;if(Math.abs(c.fov-fv)>.05){c.fov=fv;c.updateProjectionMatrix()}
+    if(three.body&&a.bd){const bd=three.body;bd.position.set(lerp(a.bd[0],b.bd[0],u),lerp(a.bd[1],b.bd[1],u),lerp(a.bd[2],b.bd[2],u));bd.rotation.set(0,Math.atan2(c.position.x-bd.position.x,c.position.z-bd.position.z),a.bd[3])}
+    const sl=$('#ttSlow');if(sl)sl.classList.toggle('on',near>.35);
+    if(R.t>=R.t1&&!R.l3){R.l3=true;const l=root.querySelector('.tt-l3');if(l)l.classList.add('show');const won=R.winner==='P';won?sfx.win():tone(330,.2,'sine',.08)}
     drawNet(now);three.r.render(three.sc,three.cam)}
+  function finishReplay(){const R=M&&M.replay;if(!R||R.done)return;R.done=true;const st=$('#ttStage');
+    if(st){const f=document.createElement('div');f.className='tt-flash';st.appendChild(f);setTimeout(()=>f.remove(),700)}
+    setTimeout(()=>{endMatch()},sp(350))}
   /* ---------- online ---------- */
   function netSetup(){Net.setLive('pos',d=>{if(!M)return;M.pad.A.tx=+d.x||0;M.pad.A.ty=+d.y||.95;if(d.z!=null)M.pad.A.tz=Math.max(-HL-.6,Math.min(-.1,+d.z))});
     Net.setLive('hit',d=>{if(!M||M.over)return;if(d.h!=null){if(d.h<=M.gotH)return;M.gotH=d.h}
       if(Array.isArray(d.s)&&d.s[0]+d.s[1]>M.score.P+M.score.A){M.score.P=d.s[0];M.score.A=d.s[1];M.server=serverNow();updateHUD(true)} // we missed a point message: take the score that came with the shot
       const b=M.ball;b.p=V(...d.p);b.v=V(...d.v);b.w=V(...d.w);if(d.srv)M.serve={stage:0,net:false};M.deadN++;
-      M.state='rally';M.last='A';M.bounce={P:0,A:0};M.rally++;M.best=Math.max(M.best,M.rally);M.swing.A=performance.now();sndHit(Math.hypot(b.v.x,b.v.z),false);hint('');
+      M.state='rally';M.last='A';M.bounce={P:0,A:0};M.rally++;M.best=Math.max(M.best,M.rally);M.swing.A=performance.now();M.hits.push({t:M.simT,who:'A'});sndHit(Math.hypot(b.v.x,b.v.z),false);hint('');
       // catch up on the time the message spent on the way
       const ev=[];const nSteps=Math.round((.05+(d.age||0)/1000)/DT);for(let i=0;i<nSteps;i++){step(b,DT,ev)}for(const e of ev)if(M.state==='rally')onEvent(e)});
     Net.setLive('pt',d=>{if(!M||M.over||!Array.isArray(d.s))return;adopt(d.s[0],d.s[1],d.why||'')});
@@ -3603,7 +3669,7 @@ const TableTennis=(()=>{
   function adopt(sP,sA,why,force){const n=sP+sA,mine=M.score.P+M.score.A;if(n<mine||(n===mine&&!force))return;
     if(n===mine+1&&!force){const w=sP>M.score.P?'P':'A';M.score.P=sP-(w==='P'?1:0);M.score.A=sA-(w==='A'?1:0);M.state='rally';point(w,why);return}
     // more than one point apart (a lost message): jump straight to the agreed score
-    M.score.P=sP;M.score.A=sA;updateHUD(true);if((sP>=11||sA>=11)&&Math.abs(sP-sA)>=2){M.over=true;M.state='dead';setTimeout(endMatch,sp(800));return}
+    M.score.P=sP;M.score.A=sA;updateHUD(true);if((sP>=11||sA>=11)&&Math.abs(sP-sA)>=2){M.over=true;M.state='dead';M.endT=M.simT;setTimeout(()=>startReplay(sP>sA?'P':'A'),sp(900));return}
     M.server=serverNow();M.deadN++;placeForServe()}
   /* ---------- screens ---------- */
   function menu(){stopGame();root.innerHTML=`<div class="tt-menu">
@@ -3628,6 +3694,8 @@ const TableTennis=(()=>{
     root.innerHTML=`<div class="tt-wrap"><div class="tt-stage" id="ttStage"><canvas id="ttCv" aria-label="${L('Table tennis table','乒乓球桌')}"></canvas>
       <div class="tt-hud"><div class="tt-card"><span class="tt-nm"><i class="tt-srv" data-s="P" title="${L('Serving','发球')}"></i>${L('You','你')}</span><b id="ttSP">0</b></div>
         <div class="tt-card right"><img src="${on?FRIEND.img:o.img}" alt=""><span class="tt-nm"><i class="tt-srv" data-s="A"></i>${on?L('Friend','朋友'):L(o.name[0],o.name[1])}</span><b id="ttSA">0</b></div></div>
+      <div class="tt-replay" id="ttReplay" hidden><span class="tt-rtag"><i></i>${L('REPLAY','回放')}</span><span class="tt-slow" id="ttSlow">${L('SLOW MOTION','慢动作')}</span>
+        <div class="tt-l3"></div><button class="tt-skip" id="ttSkip">${L('Skip','跳过')} ▶▶</button></div>
       <div class="tt-banner" id="ttBanner"></div><span class="tt-spin" id="ttSpin"></span><p class="tt-hint" id="ttHint" hidden></p>
       <button class="tt-centre tt-tilton" id="ttTiltOn" hidden>📱 ${L('Turn on tilt','开启倾斜')}</button>
       <button class="tt-centre" id="ttCentre" hidden aria-label="${L('Centre the tilt','重设倾斜中心')}">◎ ${L('Centre','回中')}</button>
