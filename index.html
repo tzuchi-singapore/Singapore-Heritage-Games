@@ -69,6 +69,25 @@ p{margin:0}
 .card{display:grid;grid-template-rows:auto 1fr;background:var(--paper-2);border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;text-align:left;padding:0;box-shadow:0 5px 0 var(--ink);transition:transform .12s}
 .card:hover{transform:translateY(-3px)}
 .card:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.card{position:relative}
+.hot{position:absolute;left:10px;top:10px;z-index:2;display:inline-flex;align-items:center;gap:2px;padding:4px 12px 4px 6px;border-radius:99px;background:linear-gradient(180deg,#FF5A1F,#C8102E);border:2px solid #FFF3C4;color:#fff;box-shadow:0 3px 0 #7A0A14,0 0 0 rgba(255,90,31,.6);animation:hotGlow 1.6s ease-in-out infinite;pointer-events:none}
+.hot b{font-family:'Alfa Slab One',serif;font-weight:400;font-size:calc(17px * var(--fs,1));letter-spacing:1.5px;line-height:1;text-shadow:0 2px 0 #7A0A14}
+.hot-fl{position:relative;width:32px;height:36px;margin:-12px -2px 0 -4px}
+.hot-fl svg{width:100%;height:100%;overflow:visible}
+.hot-fl path{transform-origin:12px 16px;transform-box:view-box}
+.hot-fl .f1{fill:#FFD34E;animation:hotF1 .7s ease-in-out infinite alternate}
+.hot-fl .f2{fill:#FF8A00;transform:scale(.72) translateY(4px);animation:hotF2 .55s ease-in-out infinite alternate}
+.hot-fl .f3{fill:#FFF6C8;transform:scale(.42) translateY(12px);animation:hotF3 .45s ease-in-out infinite alternate}
+.hot-fl i{position:absolute;left:50%;bottom:12px;width:4px;height:4px;border-radius:50%;background:#FFD34E;opacity:0;animation:hotEmber 1.4s ease-out infinite}
+.hot-fl i:nth-child(3){animation-delay:.45s;margin-left:-6px;background:#FF8A00}.hot-fl i:nth-child(4){animation-delay:.9s;margin-left:4px}
+@keyframes hotF1{0%{transform:scale(1,1) skewX(0)}50%{transform:scale(.95,1.08) skewX(-4deg)}100%{transform:scale(1.04,.94) skewX(5deg)}}
+@keyframes hotF2{0%{transform:scale(.72,.72) translateY(4px) skewX(3deg)}100%{transform:scale(.68,.8) translateY(2px) skewX(-6deg)}}
+@keyframes hotF3{0%{transform:scale(.42,.42) translateY(12px)}100%{transform:scale(.38,.5) translateY(9px) skewX(6deg)}}
+@keyframes hotEmber{0%{opacity:0;transform:translate(0,0) scale(1)}15%{opacity:1}100%{opacity:0;transform:translate(6px,-26px) scale(.3)}}
+@keyframes hotGlow{50%{box-shadow:0 3px 0 #7A0A14,0 0 18px rgba(255,120,30,.85)}}
+.hot.sm{position:static;padding:2px 8px 2px 3px;border-width:1.5px;box-shadow:0 2px 0 #7A0A14;margin-left:6px;vertical-align:middle}
+.hot.sm b{font-size:calc(12px * var(--fs,1))}.hot.sm .hot-fl{width:18px;height:20px;margin-top:-6px}
+@media (prefers-reduced-motion:reduce){.hot,.hot-fl path,.hot-fl i{animation:none}}
 .card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--paper-3);border-bottom:2px solid var(--ink)}
 .card .cb{padding:14px 16px 18px;display:grid;gap:4px;align-content:start}
 .card h3{font-size:calc((26px) * var(--fs,1));color:var(--enamel-dk)}
@@ -941,7 +960,7 @@ const GAMES=[
  {id:'carrom',cat:'skill',img:'img/carrom.webp',en:['Carrom','Strike and pocket','Pocket your coins, and cover the red Queen.'],zh:['康乐棋','Carrom','把棋子打进洞，别忘了跟进皇后。'],
   rules:{en:['You play the white coins; your opponent plays black. The red coin is the Queen.','Slide the striker along your baseline, then pull back and let go to shoot it forward.','Pocket one of your own coins and you shoot again. Your opponent’s coins that go in count for them.','The Queen is worth 3 points, but you must cover her by pocketing one of your own coins straight after. Otherwise she goes back to the centre.','Pocketing the striker is a foul: one of your coins goes back to the centre.','The first to pocket all their coins wins.'],
    zh:['你打白子，对手打黑子，红色的是皇后。','沿底线移动母子，往后拉再放开，把它往前打。','打进自己的棋子可以再打一杆，打进对方的棋子算对方的。','皇后值3分，但打进后要马上再进一粒自己的棋子跟进，否则皇后放回中间。','母子进洞是犯规：你的一粒棋子要放回中间。','先把自己所有棋子打进洞的赢。']}},
- {id:'tabletennis',cat:'skill',img:'img/tabletennis.webp',en:['Table Tennis','3D ping pong at the void deck','Rally against Auntie Mei, Uncle Rahman or Champion Priya, with real spin and bounce.'],zh:['乒乓球','组屋楼下3D乒乓','和美姨、拉曼叔或冠军普丽亚对打，球的旋转和弹跳都很真实。'],
+ {id:'tabletennis',cat:'skill',hot:true,img:'img/tabletennis.webp',en:['Table Tennis','3D ping pong at the void deck','Rally against Auntie Mei, Uncle Rahman or Champion Priya, with real spin and bounce.'],zh:['乒乓球','组屋楼下3D乒乓','和美姨、拉曼叔或冠军普丽亚对打，球的旋转和弹跳都很真实。'],
   rules:{en:['Move your bat with your finger or the mouse. Your bat is drawn a little above your finger so you can see it.','Let the ball bounce once on your side, then meet it with your bat. You step to the ball by yourself, even in over the table for a short ball. The yellow ring (Easy and Normal) shows where to put your bat.','On a phone you can also tilt it to step around the table: tilt left or right to move sideways, forward or back to move in or out. Tap ◎ Centre to reset.','Flick faster to hit harder. Flick upwards for topspin (the ball dips and jumps forward), downwards for backspin (it floats and stops short), and sideways to make it curve.','Spin works like the real thing: a ball with heavy spin will kick off your bat, so flick up through a topspin ball to keep it on the table.','To serve, flick upwards or just tap. The serve must bounce on your side first, then on your opponent\'s side. If it clips the net and lands in, it is a let: serve again.','The serve changes every 2 points. First to 11 points wins, but you must be 2 points clear (at 10–10, the serve changes every point).','Play a friend online on two devices with a 4-digit code.'],
    zh:['用手指或鼠标移动球拍。球拍会显示在手指上方一点，方便你看清楚。','让球在你这边弹一下，再用球拍迎上去。你会自动跟着球走位，短球时还会靠近球桌。黄色圆圈（简单和普通）告诉你球拍要放在哪里。','用手机时也可以倾斜手机在球桌旁走动：左右倾斜横移，前后倾斜靠近或后退。按 ◎ 回中 重新设定。','挥得越快打得越重。向上挥是上旋（球会下坠并向前冲），向下挥是下旋（球会飘并停得短），横着挥球会拐弯。','旋转和真的一样：强烈旋转的球碰到球拍会弹偏，所以对上旋球要向上挥拍，把球压在桌上。','发球时向上一挥或轻点一下。发球要先在自己这边弹一下，再落到对方那边。擦网后落在对方台上算重发。','每2分换一次发球。先得11分者胜，但要领先2分（10平后每1分换发球）。','也可以用两台设备和朋友联机，输入4位代码即可。']}},
  {id:'memory',cat:'puzzle',img:'img/memory.webp',en:['Memory Cards','Old-school toys & treats','Turn over the cards and find the matching pairs.'],zh:['记忆翻牌','童年玩具和零食','翻开卡片，找出一样的一对。'],
@@ -966,13 +985,16 @@ function show(id,gameId){
   if(id==='game'){const g=GAMES.find(x=>x.id===gameId);current=IMPL[gameId];renderGameShell(g);current.mount($('#gArea'));}
   window.scrollTo({top:0});
 }
+/* ---------- "HOT" badge: a flickering flame for the most popular games ---------- */
+const FLAME='M12 1c1 3.2 4.6 5.6 4.6 10.1A4.6 4.6 0 0 1 12 15.8a4.6 4.6 0 0 1-4.6-4.7c0-2 1-3.5 2-4.6.1 1.7.9 2.8 2 3.2C11 7.3 11.4 4 12 1z';
+function hotBadge(small){return `<span class="hot${small?' sm':''}" role="img" aria-label="${L('Hot game','热门游戏')}"><span class="hot-fl" aria-hidden="true"><svg viewBox="0 0 24 18"><path class="f1" d="${FLAME}"/><path class="f2" d="${FLAME}"/><path class="f3" d="${FLAME}"/></svg><i></i><i></i><i></i></span><b>${L('HOT','热门')}</b></span>`}
 function renderHome(){
   const wrap=$('#gameCards');wrap.innerHTML='';
   const CATS=[['music',L('Music & rhythm','音乐节奏'),L('Oldies on the getai stage','歌台怀旧金曲')],['board',L('Board games','棋盘游戏'),L('Think ahead, take turns','动脑筋，轮流玩')],['skill',L('Skill & flick games','手巧游戏'),L('Steady hands, sharp eyes','手要稳，眼要准')],['puzzle',L('Puzzles & memories','拼图与回忆'),L('Old Singapore, piece by piece','一块一块拼出老新加坡')]];
   CATS.forEach(([id,title,sub])=>{const sec=document.createElement('section');sec.className='cat';sec.id='cat-'+id;
     sec.innerHTML=`<header class="cat-h"><h2>${title}</h2><span>${sub}</span></header><div class="games"></div>`;const grid=sec.querySelector('.games');
     GAMES.filter(g=>g.cat===id).forEach(g=>{const t=g[S.lang];const b=document.createElement('button');b.className='card';b.id='g-'+g.id;
-      b.innerHTML=`<img src="${g.img}" alt="" loading="lazy"><div class="cb"><h3>${t[0]}</h3><div class="alt">${t[1]}</div><p class="d">${t[2]}</p></div>`;
+      b.innerHTML=`${g.hot?hotBadge():''}<img src="${g.img}" alt="" loading="lazy"><div class="cb"><h3>${t[0]}</h3><div class="alt">${t[1]}</div><p class="d">${t[2]}</p></div>`;
       b.onclick=()=>{sfx.tap();show('game',g.id)};grid.appendChild(b)});
     if(id==='puzzle'){const a=document.createElement('button');a.className='card album';a.id='g-album';
       a.innerHTML=`<div class="album-face"><span>${S.album.length}/${MEMS.length}</span></div><div class="cb"><h3>${L('Memory Album','回忆相册')}</h3><p class="d">${L('Pictures of old Singapore you have collected.','你收集到的老新加坡回忆。')}</p></div>`;
@@ -995,10 +1017,10 @@ function renderJump(CATS){const bar=$('#jumpBar');if(!bar)return;jumpOpen=null;
   bar.querySelectorAll('.jump-btn').forEach(b=>b.onclick=e=>{e.stopPropagation();sfx.tap();jumpOpen===b.dataset.c?closeJump():openJump(b.dataset.c,CATS)})}
 function openJump(cat,CATS){jumpOpen=cat;const bar=$('#jumpBar'),list=$('#jumpList');
   bar.querySelectorAll('.jump-btn').forEach(x=>{const on=x.dataset.c===cat;x.classList.toggle('on',on);x.setAttribute('aria-expanded',on)});
-  const c=CATS.find(x=>x[0]===cat),items=GAMES.filter(g=>g.cat===cat).map(g=>({id:g.id,img:g.img,name:g[S.lang][0],alt:g[S.lang][1]}));
+  const c=CATS.find(x=>x[0]===cat),items=GAMES.filter(g=>g.cat===cat).map(g=>({id:g.id,img:g.img,name:g[S.lang][0],alt:g[S.lang][1],hot:g.hot}));
   if(cat==='puzzle')items.push({id:'album',img:'img/m2-kampong.webp',name:L('Memory Album','回忆相册'),alt:L(`${S.album.length} of ${MEMS.length} collected`,`已收集 ${S.album.length}/${MEMS.length}`)});
   list.innerHTML=`<div class="jump-head"><b>${c[1]}</b><button class="jump-all" data-go="cat-${cat}">${L('Show all','查看全部')}</button></div>`+
-    items.map(it=>`<button class="jump-item" role="menuitem" data-go="g-${it.id}">${it.img?`<img src="${it.img}" alt="" loading="lazy">`:'<span class="jump-alb" aria-hidden="true"></span>'}<span><b>${it.name}</b><small>${it.alt}</small></span><i class="jump-arrow" aria-hidden="true"></i></button>`).join('');
+    items.map(it=>`<button class="jump-item" role="menuitem" data-go="g-${it.id}">${it.img?`<img src="${it.img}" alt="" loading="lazy">`:'<span class="jump-alb" aria-hidden="true"></span>'}<span><b>${it.name}${it.hot?hotBadge(true):''}</b><small>${it.alt}</small></span><i class="jump-arrow" aria-hidden="true"></i></button>`).join('');
   list.hidden=false;list.querySelectorAll('[data-go]').forEach(x=>x.onclick=e=>{e.stopPropagation();sfx.tap();closeJump();jumpTo(x.dataset.go)})}
 function closeJump(){jumpOpen=null;const l=$('#jumpList');if(l)l.hidden=true;document.querySelectorAll('.jump-btn').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-expanded','false')})}
 function jumpTo(id){const el=document.getElementById(id);if(!el)return;
